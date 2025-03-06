@@ -1,12 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
-const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
-]
+import DropDownMenu from '../DropDownMenu/DropDownMenu'
+import { navigation } from '../../Constants/navbarOptions'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -35,19 +30,9 @@ export default function Navbar() {
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
-                    className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
-                    )}
-                  >
-                    {item.name}
-                  </a>
+              <div className="flex space-x-3">
+                {navigation.map((items) =>(
+                  <DropDownMenu options={items.name} values={items.options} key={items.name}/>
                 ))}
               </div>
             </div>
@@ -110,6 +95,7 @@ export default function Navbar() {
       </div>
 
       <DisclosurePanel className="sm:hidden">
+      
         <div className="space-y-1 px-2 pt-2 pb-3">
           {navigation.map((item) => (
             <DisclosureButton
@@ -122,7 +108,7 @@ export default function Navbar() {
                 'block rounded-md px-3 py-2 text-base font-medium',
               )}
             >
-              {item.name}
+              {item.name} {"vipi"}
             </DisclosureButton>
           ))}
         </div>
