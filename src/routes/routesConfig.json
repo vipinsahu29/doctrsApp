@@ -1,0 +1,23 @@
+[
+    {
+      "path": "/book_appointment",
+      "component": "BookAppointment",
+      "role": "all"
+    },
+    {
+      "path": "/edit_appointment",
+      "component": "EditAppointment",
+      "role": "all"
+    },
+    {
+      "path": "/",
+      "component": "BookAppointment",
+      "role": "admin"
+    },
+    {
+      "path": "/appointment_list",
+      "component": "AppointmentList",
+      "role": "user"
+    }
+  ]
+  
