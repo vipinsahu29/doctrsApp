@@ -1,11 +1,16 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import DropDownMenu from '../DropDownMenu/DropDownMenu'
-import { navigation } from '../../Constants/navbarOptions'
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import DropDownMenu from "../DropDownMenu/DropDownMenu";
+import { navigation } from "../../Constants/navbarOptions";
+import drLogo from "../../assets/drLogo.jpeg";
 
 export default function Navbar() {
   return (
@@ -17,22 +22,28 @@ export default function Navbar() {
             <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block size-6 group-data-open:hidden" />
-              <XMarkIcon aria-hidden="true" className="hidden size-6 group-data-open:block" />
+              <Bars3Icon
+                aria-hidden="true"
+                className="block size-6 group-data-open:hidden"
+              />
+              <XMarkIcon
+                aria-hidden="true"
+                className="hidden size-6 group-data-open:block"
+              />
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <img
-                alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto"
-              />
+              <img alt="Your Company" src={drLogo} className="h-8 w-auto" />
             </div>
             <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-3">
-                {navigation.map((items) =>(
-                  <DropDownMenu options={items.name} values={items.options} key={items.name}/>
+              <div className="flex space-x-0">
+                {navigation.map((items) => (
+                  <DropDownMenu
+                    options={items.name}
+                    values={items.options}
+                    key={items.name}
+                  />
                 ))}
               </div>
             </div>
@@ -95,24 +106,16 @@ export default function Navbar() {
       </div>
 
       <DisclosurePanel className="sm:hidden">
-      
-        <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
-            <DisclosureButton
-              key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? 'page' : undefined}
-              className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
-              )}
-            >
-              {item.name} {"vipi"}
-            </DisclosureButton>
+        <div className="space-y-4 px-2 pt-2 pb-3 flex flex-col">
+          {navigation.map((items) => (
+            <DropDownMenu
+              options={items.name}
+              values={items.options}
+              key={items.name}
+            />
           ))}
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
+  );
 }
