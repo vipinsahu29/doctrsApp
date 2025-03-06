@@ -1,17 +1,12 @@
-import HeaderNavbar from "./components/headerNavbar/index.headerNavbar";
 import Navbar from "./components/headerNavbar/navbar";
+import AppointmentsList from "./pages/appointments/appointmentsList";
 
 function App() {
   return (
     <div className="w-full h-full bg-blue text-red">
-<<<<<<< HEAD
-    {/* <Navbar/> */}
-    <HeaderNavbar/>
-=======
       <Navbar/>
-      <h1>Hello</h1>
->>>>>>> master
-    </div>
+      <AppointmentsList/>
+          </div>
   );
 }
 
