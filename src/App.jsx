@@ -1,11 +1,11 @@
+import HeaderNavbar from "./components/headerNavbar/index.headerNavbar";
 import Navbar from "./components/headerNavbar/navbar";
 
 function App() {
-
   return (
     <div className="w-full h-full bg-blue text-red">
-    <Navbar/>
-      <h1>Hello</h1>
+    {/* <Navbar/> */}
+    <HeaderNavbar/>
     </div>
     
   );
