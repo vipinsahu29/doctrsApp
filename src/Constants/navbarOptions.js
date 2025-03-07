@@ -1,7 +1,39 @@
 export const navigation = [
-    { name: 'Appointment', href: '#', current: true, options:['Book Appointment', 'Appointment List','Edit Appointment','Cancel Appointment'] },
-    { name: 'Patients', href: '#', current: false, options:['Add Patients','Patients List',"Edit Patient"] },
-    { name: 'Doctors', href: '#', current: false, options:['Add Doctors','Doctors List',"Edit Doctors"] },
-    { name: 'More', href: '#', current: false, options:['Staff','Salary','Others','Dashboard'] },
-  
-  ]
+  {
+    name: "Appointment",
+    current: true,
+    options: [
+      { name: "Book Appointment", path: "/book_appointment" },
+      { name: "Appointment List", path: "/appointment_list" },
+      { name: "Edit Appointment", path: "/edit_appointment" },
+    ],
+  },
+  {
+    name: "Patients",
+    current: false,
+    options: [
+      { name: "Add Patients", path: "/" },
+      { name: "Patients List", path: "/" },
+      { name: "Edit Patient", path: "/" },
+    ],
+  },
+  {
+    name: "Doctors",
+    current: false,
+    options: [
+      { name: "Add Doctors", path: "}/" },
+      { name: "Doctors List", path: "/" },
+      { name: "Edit Doctors", path: "/" },
+    ],
+  },
+  {
+    name: "More",
+    current: false,
+    options: [
+      { name: "Staff", path: "/" },
+      { name: "Salary", path: "/" },
+      { name: "Others", path: "/" },
+      { name: "Dashboard", path: "/" },
+    ],
+  },
+];
