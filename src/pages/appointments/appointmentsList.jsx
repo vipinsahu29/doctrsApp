@@ -1,221 +1,280 @@
-import React from 'react'
-import { Formik, Field, Form, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
+import React from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+
+// Validation schema for the form	
+const validationSchema = Yup.object({
+  firstName: Yup.string()
+    .min(2, 'First Name must be at least 2 characters')
+    .matches(/^[A-Za-z]+$/, 'First Name should contain only alphabets')
+    .required('First Name is required'),
+  lastName: Yup.string()
+    .min(2, 'Last Name must be at least 2 characters')
+    .matches(/^[A-Za-z]+$/, 'Last Name should contain only alphabets')
+    .required('Last Name is required'),
+  mobile: Yup.string()
+    .matches(/^\+(\d{2})\d{10}$|^\d{10}$/, 'Mobile number must be in the format: +XX1234567890 or 1234567890')
+    .required('Mobile number is required'),
+  email: Yup.string().email('Invalid email address').required('Email is required'),
+  age: Yup.string().required('Age is required'),
+  height: Yup.string().required('Height is required'),
+  weight: Yup.string().required('Weight is required'),
+  gender: Yup.string().required('Gender is required'),
+  address: Yup.string().required('Address is required'),
+  appointmentDate: Yup.string()
+    .required('Appointment Date is required')
+    .test('is-future-date', 'Appointment date cannot be in the past', (value) => {
+      const today = new Date();
+      const selectedDate = new Date(value);
+      selectedDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return selectedDate >= today;
+    })
+});
+
+// Initial values for the form
+const initialValues ={
+  firstName: '',
+  lastName: '',
+  mobile: '',
+  email: '',
+  age: '',
+  height: '',
+  weight: '',
+  gender: '',
+  address: '',
+  appointmentDate: '',
+  appointmentTime: '',
+  doctor: '',
+  images: null
+}
 
 const AppointmentsList = () => {
-
-  const validationSchema = Yup.object({
-    firstName: Yup.string()
-      .min(2, 'First Name must be at least 2 characters')
-      .matches(/^[A-Za-z]+$/, 'First Name should contain only alphabets')
-      .required('First Name is required'),
-    lastName: Yup.string()
-      .min(2, 'Last Name must be at least 2 characters')
-      .matches(/^[A-Za-z]+$/, 'Last Name should contain only alphabets')
-      .required('Last Name is required'),
-    mobile: Yup.string()
-      .matches(/^\+(\d{2})\d{10}$|^\d{10}$/, 'Mobile number must be in the format: +XX1234567890 or 1234567890')
-      .required('Mobile number is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required'),
-    age : Yup.string().required('Age is required'),
-    height : Yup.string().required('Height is required'),
-    weight : Yup.string().required('Weight is required'),
-    gender : Yup.string().required("Gender is required"),
-    address: Yup.string().required('Address is required'),
-    appointmentDate: Yup.string().required('Appointment Date is required')
-      .required('Appointment date is required')
-      .test('is-future-date', 'Appointment date cannot be in the past', (value) => {
-        const today = new Date();
-        const selectedDate = new Date(value);
-        selectedDate.setHours(0, 0, 0, 0);  // Ensure no time is included for comparison
-        today.setHours(0, 0, 0, 0);  // Set today’s date to have no time
-        return selectedDate >= today
-      }),
-    doctor: Yup.string().required('Consulting Doctor is required'),
-    treatment: Yup.string().required('Treatment is required'),
-    notes: Yup.string().required('Notes are required'),
-  })
+  // Formik hook to handle form state
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    // Form submission handler
+    onSubmit: (values, { resetForm }) => {
+      console.log('Form Data:', values);
+      alert('Appointment submitted successfully!');
+      resetForm();
+    }
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6">
       <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-white">Appointment Form</h2>
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 1. FirstName and LastName Field  */}
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-white">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {/* Showing Error If User touched Field and not filled*/}
+              {formik.touched.firstName && formik.errors.firstName ? (
+                <p className="text-red-500 text-xs">{formik.errors.firstName}</p>
+              ) : null}
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-white">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.lastName && formik.errors.lastName ? (
+                <p className="text-red-500 text-xs">{formik.errors.lastName}</p>
+              ) : null}
+            </div>
+          </div>
 
-        <Formik
-          initialValues={{
-            firstName: '',
-            lastName: '',
-            mobile: '',
-            email: '',
-            age: '',
-            height: '',
-            weight: '',
-            gender: '',
-            address: '',
-            appointmentDate: '',
-            appointmentTime: '',
-            doctor: '',
-            images: null
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log('Form Data:', values) // You can replace this with the logic to save or send the data
-          }}
-        >
-          {({ setFieldValue }) => (
-            <Form className="space-y-4">
-              {/* Patient Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-white">First Name</label>
-                  <Field
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="firstName" component="p" className="text-red-500 text-xs" />
-                </div>
-                <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-white">Last Name</label>
-                  <Field
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="lastName" component="p" className="text-red-500 text-xs" />
-                </div>
-              </div>
+          {/* 2.Email and Mobile Number Field */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="mobile" className="block text-sm font-medium text-white">Mobile</label>
+              <input
+                type="number"
+                id="mobile"
+                name="mobile"
+                value={formik.values.mobile}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.mobile && formik.errors.mobile ? (
+                <p className="text-red-500 text-xs">{formik.errors.mobile}</p>
+              ) : null}
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.email && formik.errors.email ? (
+                <p className="text-red-500 text-xs">{formik.errors.email}</p>
+              ) : null}
+            </div>
+          </div>
 
-              {/* Other form fields like mobile, email, etc. */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="mobile" className="block text-sm font-medium text-white">Mobile</label>
-                  <Field
-                    type="text"
-                    id="mobile"
-                    name="mobile"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="mobile" component="p" className="text-red-500 text-xs" />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
-                  <Field
-                    type="email"
-                    id="email"
-                    name="email"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="email" component="p" className="text-red-500 text-xs" />
-                </div>
-              </div>
-              {/* New Fields: Age, Height, Weight, Gender */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="age" className="block text-sm font-medium text-white">Age</label>
-                  <Field
-                    type="number"
-                    id="age"
-                    name="age"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="age" component="p" className="text-red-500 text-xs" />
-                </div>
-                <div>
-                  <label htmlFor="height" className="block text-sm font-medium text-white">Height (cm)</label>
-                  <Field
-                    type="number"
-                    id="height"
-                    name="height"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="height" component="p" className="text-red-500 text-xs" />
-                </div>
-                <div>
-                  <label htmlFor="weight" className="block text-sm font-medium text-white">Weight (kg)</label>
-                  <Field
-                    type="number"
-                    id="weight"
-                    name="weight"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="weight" component="p" className="text-red-500 text-xs" />
-                </div>
-                <div>
-                  <label htmlFor="gender" className="block text-sm font-medium text-white">Gender</label>
-                  <Field as="select" id="gender" name="gender" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    <option value="">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </Field>
-                  <ErrorMessage name="gender" component="p" className="text-red-500 text-xs" />
-                </div>
-              </div>
-              {/* Appointment Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="appointmentDate" className="block text-sm font-medium text-white">Date of Appointment</label>
-                  <Field
-                    type="date"
-                    id="appointmentDate"
-                    name="appointmentDate"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="appointmentDate" component="p" className="text-red-500 text-xs" />
-                </div>
-                <div>
-                  <label htmlFor="appointmentTime" className="block text-sm font-medium text-white">Time</label>
-                  <Field
-                    type="time"
-                    id="appointmentTime"
-                    name="appointmentTime"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  <ErrorMessage name="appointmentTime" component="p" className="text-red-500 text-xs" />
-                </div>
-              </div>
+          {/* 3.Age, Height */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="age" className="block text-sm font-medium text-white">Age</label>
+              <input
+                type="text"
+                id="age"
+                name="age"
+                value={formik.values.age}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.age && formik.errors.age ? (
+                <p className="text-red-500 text-xs">{formik.errors.age}</p>
+              ) : null}
+            </div>
+            <div>
+              <label htmlFor="height" className="block text-sm font-medium text-white">Height</label>
+              <input
+                type="text"
+                id="height"
+                name="height"
+                value={formik.values.height}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.height && formik.errors.height ? (
+                <p className="text-red-500 text-xs">{formik.errors.height}</p>
+              ) : null}
+            </div>
+          </div>
 
-              {/* Other fields like Doctor, Treatment, Notes, and File Upload */}
-              <div>
-                <label htmlFor="doctor" className="block text-sm font-medium text-white">Consulting Doctor</label>
-                <Field
-                  as="select"
-                  id="doctor"
-                  name="doctor"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option>Dr. Smith</option>
-                  <option>Dr. Jane</option>
-                  <option>Dr. Johnson</option>
-                </Field>
-                <ErrorMessage name="doctor" component="p" className="text-red-500 text-xs" />
-              </div>
+          {/* Weight ,Gender,Address,Appointment Date */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="weight" className="block text-sm font-medium text-white">Weight</label>
+              <input
+                type="text"
+                id="weight"
+                name="weight"
+                value={formik.values.weight}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.weight && formik.errors.weight ? (
+                <p className="text-red-500 text-xs">{formik.errors.weight}</p>
+              ) : null}
+            </div>
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium text-white">Gender</label>
+              <select
+                id="gender"
+                name="gender"
+                value={formik.values.gender}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              {formik.touched.gender && formik.errors.gender ? (
+                <p className="text-red-500 text-xs">{formik.errors.gender}</p>
+              ) : null}
+            </div>
+          </div>
 
-              {/* File Upload */}
-              <div>
-                <label htmlFor="images" className="block text-sm font-medium text-white">Photo</label>
-                <input
-                  type="file"
-                  id="images"
-                  name="images"
-                  onChange={(e) => setFieldValue('images', e.target.files[0])}
-                  className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:bg-gray-50 file:text-white focus:outline-none"
-                />
-              </div>
+          <div>
+            <label htmlFor="address" className="block text-sm font-medium text-white">Address</label>
+            <textarea
+              id="address"
+              name="address"
+              value={formik.values.address}
+              onChange={formik.handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+            {formik.touched.address && formik.errors.address ? (
+              <p className="text-red-500 text-xs">{formik.errors.address}</p>
+            ) : null}
+          </div>
 
-              {/* Submit Button */}
-              <div className="flex justify-center mt-6">
-                <button type="submit" className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Submit Appointment</button>
-              </div>
-            </Form>
-          )}
-        </Formik>
+          <div>
+            <label htmlFor="appointmentDate" className="block text-sm font-medium text-white">Appointment Date</label>
+            <input
+              type="date"
+              id="appointmentDate"
+              name="appointmentDate"
+              value={formik.values.appointmentDate}
+              onChange={formik.handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+            {formik.touched.appointmentDate && formik.errors.appointmentDate ? (
+              <p className="text-red-500 text-xs">{formik.errors.appointmentDate}</p>
+            ) : null}
+          </div>
+
+          <div>
+            <label htmlFor="appointmentTime" className="block text-sm font-medium text-white">Appointment Time</label>
+            <input
+              type="time"
+              id="appointmentTime"
+              name="appointmentTime"
+              value={formik.values.appointmentTime}
+              onChange={formik.handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="doctor" className="block text-sm font-medium text-white">Doctor</label>
+            <input
+              type="text"
+              id="doctor"
+              name="doctor"
+              value={formik.values.doctor}
+              onChange={formik.handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="images" className="block text-sm font-medium text-white">Photo</label>
+            <input
+              type="file"
+              id="images"
+              name="images"
+              onChange={(e) => formik.setFieldValue('images', e.target.files[0])}
+              className="mt-1 block w-full text-sm text-gray-500"
+            />
+          </div>
+
+            {/* Submit Button */}
+          <div className="flex justify-center mt-6">
+            <button type="submit" className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+              Submit Appointment
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AppointmentsList
+export default AppointmentsList;
