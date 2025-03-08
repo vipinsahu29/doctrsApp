@@ -1,9 +1,9 @@
 import React from 'react'
 
-const doctrsList = () => {
+const DoctrsList = () => {
   return (
     <div>doctrsList</div>
   )
 }
 
-export default doctrsList
+export default DoctrsList
