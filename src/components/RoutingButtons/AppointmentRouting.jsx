@@ -10,12 +10,12 @@ const AppointmentRouting = ({ pageName }) => {
   }
   const navValues = navOptions[0].options;
   return (
-    <div>
+    <div className="mt-16">
       {navValues.map((item) => (
         <Link
           key={item.name}
           to={item.path}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 m-10 focus:ring-4 focus:ring-blue-300 font-medium  text-sm  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          className="md:px-6 md:py-2 sm: px-2 sm: py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 md:m-10 sm: m-2 focus:ring-4 focus:ring-blue-300 font-medium  text-sm  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
           {item.name}
         </Link>
