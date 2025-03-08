@@ -3,7 +3,7 @@ import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouti
 const AppointmentsList = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-12">
-      <AppointmentRouting />
+      <AppointmentRouting pageName="Appointment"/>
 
       <div className="w-full max-w-3xl bg-white-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-black-50">

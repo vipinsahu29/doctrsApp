@@ -2,7 +2,6 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
-
 // Validation schema for the form
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -73,7 +72,7 @@ const BookAppointment = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
-      <AppointmentRouting />
+      <AppointmentRouting pageName="Appointment"/>
       <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-white">
           Appointment Form

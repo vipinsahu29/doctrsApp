@@ -5,7 +5,6 @@ export const navigation = [
     options: [
       { name: "Book Appointment", path: "/book_appointment" },
       { name: "Appointment List", path: "/appointment_list" },
-      { name: "Edit Appointment", path: "/edit_appointment" },
     ],
   },
   {
@@ -14,16 +13,14 @@ export const navigation = [
     options: [
       { name: "Add Patients", path: "/" },
       { name: "Patients List", path: "/" },
-      { name: "Edit Patient", path: "/" },
     ],
   },
   {
     name: "Doctors",
-    current: false,
+    current: true,
     options: [
-      { name: "Add Doctors", path: "}/" },
-      { name: "Doctors List", path: "/" },
-      { name: "Edit Doctors", path: "/" },
+      { name: "Add Doctors", path: "/add_doctor" },
+      { name: "Doctors List", path: "/doctor_list" },
     ],
   },
   {

@@ -5,9 +5,12 @@ import { lazy,Suspense,createElement } from "react";
 const userRole = "user"; // Example: Change this dynamically based on authentication
 const loadComponent = (componentName) => {
   const Components = {
-    BookAppointment: lazy(() => import("../pages/appointments/BookAppointment")),
+    BookAppointment: lazy(() => import("../pages/appointments/bookAppointment")),
     EditAppointment: lazy(() => import("../pages/appointments/EditAppointment")),
-    AppointmentList: lazy(() => import("../pages/appointments/AppointmentsList")),
+    AppointmentsList: lazy(() => import("../pages/appointments/AppointmentsList")),
+    AddDoctor: lazy(()=> import("../pages/doctors/AddDoctor")),
+    DoctrsList: lazy(()=>import("../pages/doctors/DoctrsList"))
+
   };
   return Components[componentName] || (() => <h2>Component Not Found</h2>);
 };

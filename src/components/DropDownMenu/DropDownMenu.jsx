@@ -10,7 +10,7 @@ export default function DropDownMenu({options='options',values=[] }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div className='sm: mx-5 md:mx-2'>
-        <MenuButton className="inline-flex md:w-full sm: w-40  justify-center gap-x-1.5 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-500">
+        <MenuButton key={options} className="inline-flex md:w-full sm: w-40  justify-center gap-x-1.5 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-500">
           {options}
           <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-white" />
         </MenuButton>
@@ -22,7 +22,7 @@ export default function DropDownMenu({options='options',values=[] }) {
       >
         <div className="py-3">
         { values.map((items)=>
-          <MenuItem key={items}>
+          <MenuItem key={items.name}>
             <Link
               to={items.path}
               className="block px-4 py-2 text-sm text-white data-focus:bg-gray-400 data-focus:text-gray-900 data-focus:outline-hidden hover:bg-gray-600"
