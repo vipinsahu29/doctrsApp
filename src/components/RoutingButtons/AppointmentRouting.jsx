@@ -23,7 +23,7 @@ const AppointmentRouting = ({ pageName }) => {
     </div>
   );
 };
-AppointmentRouting.PropTypes = {
+AppointmentRouting.propTypes = {
   pageName: PropTypes.string.isRequired,
 };
 
