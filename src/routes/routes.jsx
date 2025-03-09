@@ -8,6 +8,9 @@ const loadComponent = (componentName) => {
     BookAppointment: lazy(() => import("../pages/appointments/bookAppointment")),
     EditAppointment: lazy(() => import("../pages/appointments/editAppointment")),
     AppointmentList: lazy(() => import("../pages/appointments/appointmentsList")),
+    AddDoctor: lazy(()=> import("../pages/doctors/AddDoctor")),
+    DoctrsList: lazy(()=>import("../pages/doctors/DoctrsList"))
+
   };
   return Components[componentName] || (() => <h2>Component Not Found</h2>);
 };

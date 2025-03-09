@@ -12,12 +12,22 @@
     {
       "path": "/",
       "component": "BookAppointment",
-      "role": "admin"
+      "role": "user"
     },
     {
       "path": "/appointment_list",
-      "component": "AppointmentList",
+      "component": "AppointmentsList",
       "role": "user"
+    },
+    {
+      "path":"/add_doctor",
+      "component":"AddDoctor",
+      "role":"user"
+    },
+    {
+      "path":"/doctor_list",
+      "component":"DoctrsList",
+      "role":"user"
     }
   ]
   
