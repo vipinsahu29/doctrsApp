@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
+import AppointmentsList from "./appointmentsList";
+import Store from "../../zustand/store/store";
 
 // Validation schema for the form
 const validationSchema = Yup.object({
@@ -27,6 +29,9 @@ const validationSchema = Yup.object({
   weight: Yup.string().required("Weight is required"),
   gender: Yup.string().required("Gender is required"),
   address: Yup.string().required("Address is required"),
+  appointmentTime: Yup.string()
+  .required("Appointment Time is required")
+  .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid time format"),
   appointmentDate: Yup.string()
     .required("Appointment Date is required")
     .test(
@@ -59,17 +64,35 @@ const initialValues = {
   images: null,
 };
 const BookAppointment = () => {
+  const addAppointment = Store((state) => state.addAppointment);
+  const [imagePreview, setImagePreview] = useState(null); // State to store image preview URL
+
   // Formik hook to handle form state
   const formik = useFormik({
     initialValues,
     validationSchema,
     // Form submission handler
-    onSubmit: (values, { resetForm }) => {
-      console.log("Form Data:", values);
-      alert("Appointment submitted successfully!");
-      resetForm();
+    onSubmit: (values,{  resetForm }) => {
+      addAppointment({
+        ...values, // All form values, including appointmentDate, appointmentTime, image
+      })
+      resetForm();  // This resets the form fields to initial values
+      setImagePreview(null); // Reset image preview after form submission
     },
+
   });
+  // Handle image file input change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      formik.setFieldValue("images", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // Set the preview URL once the file is read
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
@@ -304,13 +327,17 @@ const BookAppointment = () => {
                 Appointment Time
               </label>
               <input
-                type="time"
-                id="appointmentTime"
-                name="appointmentTime"
-                value={formik.values.appointmentTime}
-                onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                 type="time"
+                 id="appointmentTime"
+                 name="appointmentTime"
+                 value={formik.values.appointmentTime}
+                 onChange={formik.handleChange}  // This should update formik.values
+                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
+               {/* Optionally, display error */}
+              {formik.touched.appointmentTime && formik.errors.appointmentTime ? (
+                <p className="text-red-500 text-xs">{formik.errors.appointmentTime}</p>
+              ) : null}
             </div>
           </div>
           <div>
@@ -341,13 +368,17 @@ const BookAppointment = () => {
               type="file"
               id="images"
               name="images"
-              onChange={(e) =>
-                formik.setFieldValue("images", e.target.files[0])
-              }
+              onChange={handleImageChange} // Handle image change
               className="mt-1 block w-full text-sm text-gray-500"
             />
           </div>
-
+        {/* Image preview */}
+        {imagePreview && (
+                    <div className="mt-4">
+                      <h3 className="text-white">Image Preview:</h3>
+                      <img src={imagePreview} alt="Preview" className="w-40 h-40 object-cover mt-2 rounded-md" />
+                    </div>
+                  )}
           {/* Submit Button */}
           <div className="flex justify-center mt-6">
             <button
