@@ -6,8 +6,8 @@ const userRole = "user"; // Example: Change this dynamically based on authentica
 const loadComponent = (componentName) => {
   const Components = {
     BookAppointment: lazy(() => import("../pages/appointments/bookAppointment")),
-    EditAppointment: lazy(() => import("../pages/appointments/editAppointment")),
-    AppointmentList: lazy(() => import("../pages/appointments/appointmentsList")),
+    EditAppointment: lazy(() => import("../pages/appointments/EditAppointment")),
+    AppointmentsList: lazy(() => import("../pages/appointments/appointmentsList")),
     AddDoctor: lazy(()=> import("../pages/doctors/AddDoctor")),
     DoctrsList: lazy(()=>import("../pages/doctors/DoctrsList"))
 

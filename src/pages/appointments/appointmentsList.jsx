@@ -188,7 +188,7 @@ const columns = [
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-12">
-      <AppointmentRouting />
+      <AppointmentRouting pageName="Appointment"/>
       <ThemeProvider theme={theme}> {/* Apply theme to the app */}
       <Typography variant="h4" gutterBottom>
           Appointment List
