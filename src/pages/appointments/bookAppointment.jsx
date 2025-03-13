@@ -1,6 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import {AppointmentData} from '../../Constants/AppointmentData'
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 // Validation schema for the form
 const validationSchema = Yup.object({
@@ -57,6 +58,7 @@ const initialValues = {
   doctor: "",
   images: null,
 };
+console.log(AppointmentData)
 const BookAppointment = () => {
   // Formik hook to handle form state
   const formik = useFormik({
