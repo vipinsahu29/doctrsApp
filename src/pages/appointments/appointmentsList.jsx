@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import Pagination from "../../components/pagination/Paginations";
 import { AppointmentData } from "../../Constants/AppointmentData";
 import { FaEdit, FaRegEye } from "react-icons/fa";
@@ -24,8 +24,15 @@ const columns = [
 
 const AppointmentsList = () => {
   const [parPage, setParPage] = useState(10);
+  const [searchValue, setSearchValue] = useState("");
+  console.log(searchValue)
   const [currentPage, setCurrentPage] = useState(1);
-
+  const filteredUsers = searchValue
+    ? AppointmentData.filter(user =>
+        user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : AppointmentData;
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="Appointment" />
@@ -34,6 +41,16 @@ const AppointmentsList = () => {
           <h2 className="text-2xl font-semibold text-center text-white">
             Appointment List
           </h2>
+          <input
+          className="px-4 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+          type="text"
+          placeholder="search"
+          onChange={(e) =>
+            setTimeout(() => {
+              setSearchValue(e.target.value), 1000;
+            })
+          }
+          />
           <div className="flex justify-center items-center">
             <div className="relative overflow-x-auto min-h-auto pb-5">
               <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
@@ -62,8 +79,8 @@ const AppointmentsList = () => {
                 <td>No response from server..</td>
               </tr>
             ) : (*/}
-                  {AppointmentData.map((d, i) => (
-                    <tr key={d.Mobile}>
+                  {filteredUsers.map((d, i) => (
+                    <tr key={d.Mobile + d.FirstName}>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
