@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Pagination from "../../components/pagination/Paginations";
 import { AppointmentData } from "../../Constants/AppointmentData";
-import { FaEdit, FaTrash, FaCopy } from "react-icons/fa";
+import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 // import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 // import { DataGrid } from '@mui/x-data-grid';
@@ -18,6 +18,7 @@ const columns = [
   "Gender",
   "Appointment date",
   "Time",
+  "Payment Status",
   "Action",
 ];
 
@@ -28,18 +29,22 @@ const AppointmentsList = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="Appointment" />
-      <div className="flex flex-wrap w-full py-6 flex-col gap-7 items-center justify-center">
-        <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
+      <div className="flex flex-wrap w-full py-2 flex-col gap-7 items-center justify-center">
+        <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-2xl font-semibold text-center text-white">
             Appointment List
           </h2>
-          <div className="flex justify-between items-center">
-            <div className="relative overflow-x-auto min-h-auto pb-11">
-              <table className="w-full text-sm text-left text-[#d0d2d6]">
-                <thead className="text-sm text-[#d0d2d6] uppercase border-b border-slate-700">
+          <div className="flex justify-center items-center">
+            <div className="relative overflow-x-auto min-h-auto pb-5">
+              <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
+                <thead className=" text-sm text-[#d0d2d6] uppercase">
                   <tr>
                     {columns.map((items) => (
-                      <th scope="col" className="py-3 px-4" key={items}>
+                      <th
+                        scope="col"
+                        className="py-3 px-4 border border-gray-300"
+                        key={items}
+                      >
                         {items}
                       </th>
                     ))}
@@ -61,43 +66,48 @@ const AppointmentsList = () => {
                     <tr key={d.Mobile}>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {i + 1}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {d.FirstName + " " + d.LastName}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {d.Mobile}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {d.Gender}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {d.AppointmentDate}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {d.Time}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap"
+                        className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${d.Payment === 'Pending' ? " text-red-400" : " text-green-400"}`}                   >
+                        {d.Payment}
+                      </td>
+                      <td
+                        scope="row"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         <div className="flex justify-start items-center gap-4">
                           <div
@@ -107,13 +117,10 @@ const AppointmentsList = () => {
                             {" "}
                             <FaEdit color="black" />{" "}
                           </div>
-                          <div className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer">
-                            {" "}
-                            <FaCopy color="black" />{" "}
-                          </div>
+
                           <div className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer">
                             {" "}
-                            <FaTrash />{" "}
+                            <FaRegEye />{" "}
                           </div>
                         </div>
                       </td>
