@@ -1,8 +1,9 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import Pagination from "../../components/pagination/Paginations";
 import { AppointmentData } from "../../Constants/AppointmentData";
 import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
+import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
 // import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 // import { DataGrid } from '@mui/x-data-grid';
 // import Paper from '@mui/material/Paper';
@@ -24,15 +25,21 @@ const columns = [
 
 const AppointmentsList = () => {
   const [parPage, setParPage] = useState(10);
+  const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
-  console.log(searchValue)
+  const [viewDetails, setViewDetails] = useState(false);
+  console.log(searchValue);
   const [currentPage, setCurrentPage] = useState(1);
   const filteredUsers = searchValue
-    ? AppointmentData.filter(user =>
+    ? AppointmentData.filter((user) =>
         user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
       )
     : AppointmentData;
-  
+
+  const handleViewDetails = (id) => {
+    setViewDetails(true);
+    setViewData(AppointmentData.filter((value) => value.Id === id));
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="Appointment" />
@@ -42,14 +49,14 @@ const AppointmentsList = () => {
             Appointment List
           </h2>
           <input
-          className="px-4 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
-          type="text"
-          placeholder="search"
-          onChange={(e) =>
-            setTimeout(() => {
-              setSearchValue(e.target.value), 1000;
-            })
-          }
+            className="px-4 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+            type="text"
+            placeholder="search"
+            onChange={(e) =>
+              setTimeout(() => {
+                setSearchValue(e.target.value), 1000;
+              })
+            }
           />
           <div className="flex justify-center items-center">
             <div className="relative overflow-x-auto min-h-auto pb-5">
@@ -119,7 +126,12 @@ const AppointmentsList = () => {
                       </td>
                       <td
                         scope="row"
-                        className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${d.Payment === 'Pending' ? " text-red-400" : " text-green-400"}`}                   >
+                        className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${
+                          d.Payment === "Pending"
+                            ? " text-red-400"
+                            : " text-green-400"
+                        }`}
+                      >
                         {d.Payment}
                       </td>
                       <td
@@ -135,7 +147,12 @@ const AppointmentsList = () => {
                             <FaEdit color="black" />{" "}
                           </div>
 
-                          <div className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer">
+                          <div
+                            role="button"
+                            tabIndex={"0"}
+                            className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
+                            onClick={() => handleViewDetails(d.Id)}
+                          >
                             {" "}
                             <FaRegEye />{" "}
                           </div>
@@ -161,6 +178,13 @@ const AppointmentsList = () => {
           </div>
         </div>
       </div>
+      {viewDetails && (
+        <AppointmentViewDetailsModal
+          isOpen={viewDetails}
+          onClose={() => setViewDetails(false)}
+          data={viewData[0]}
+        />
+      )}
     </div>
   );
 };
