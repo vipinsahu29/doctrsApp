@@ -4,6 +4,7 @@ import { AppointmentData } from "../../Constants/AppointmentData";
 import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
+import EditPatientModal from "../../components/modal/EditPatientModal";
 // import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 // import { DataGrid } from '@mui/x-data-grid';
 // import Paper from '@mui/material/Paper';
@@ -28,7 +29,7 @@ const AppointmentsList = () => {
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
   const [viewDetails, setViewDetails] = useState(false);
-  console.log(searchValue);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const filteredUsers = searchValue
     ? AppointmentData.filter((user) =>
@@ -38,6 +39,10 @@ const AppointmentsList = () => {
 
   const handleViewDetails = (id) => {
     setViewDetails(true);
+    setViewData(AppointmentData.filter((value) => value.Id === id));
+  };
+  const handleEditDetails = (id) => {
+    setIsEditOpen(true);
     setViewData(AppointmentData.filter((value) => value.Id === id));
   };
   return (
@@ -141,6 +146,7 @@ const AppointmentsList = () => {
                         <div className="flex justify-start items-center gap-4">
                           <div
                             tabIndex={-1}
+                            onClick={() => handleEditDetails(d.Id)}
                             className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer"
                           >
                             {" "}
@@ -149,7 +155,7 @@ const AppointmentsList = () => {
 
                           <div
                             role="button"
-                            tabIndex={"0"}
+                            tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
                             onClick={() => handleViewDetails(d.Id)}
                           >
@@ -185,6 +191,13 @@ const AppointmentsList = () => {
           data={viewData[0]}
         />
       )}
+      {isEditOpen &&
+        <EditPatientModal
+        isOpen={isEditOpen}
+          patient={viewData[0]}
+          onSave={""}
+          onClose={() => setIsEditOpen(false)}/>
+      }
     </div>
   );
 };

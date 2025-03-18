@@ -20,7 +20,7 @@ const AppointmentViewDetailsModal = ({ isOpen, onClose, data }) => {
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative md:bottom-0 sm: bottom-[273px] transform overflow-hidden rounded-lg bg-gray-700 text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg md:max-w-5xl data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+            className="relative md:bottom-0 sm: bottom-[73px] transform overflow-hidden rounded-lg bg-gray-700 text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg md:max-w-5xl data-closed:sm:translate-y-0 data-closed:sm:scale-95"
           >
             <div className="bg-gray-200 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <DialogTitle
@@ -73,6 +73,10 @@ const AppointmentViewDetailsModal = ({ isOpen, onClose, data }) => {
                 <div className="flex flex-col">
                   <h2 className="font-bold text-red-600">Payment:</h2>
                   {data.Payment}
+                </div>
+                <div className="flex flex-col">
+                    <h2 className="font-bold">Blood Group:</h2>
+                    {data.BooldGroup}
                 </div>
               </div>
             </div>
