@@ -15,3 +15,12 @@ export const generateTimeSlots = () => {
 
   return timeSlots;
 };
+export const validateEmail = (email) => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+};
+
+export const validateMobile = (mobile) => {
+  const mobileRegex = /^[6-9]\d{9}$/; // Ensures number starts with 6-9 and is 10 digits long
+  return mobileRegex.test(mobile);
+};

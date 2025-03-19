@@ -6,9 +6,17 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-const AppointmentViewDetailsModal = ({ isOpen, onClose, data }) => {
+const AppointmentViewDetailsModal = ({
+  isOpen,
+  onClose,
+  data,
+  onNewAppointment,
+}) => {
+  const handleBookAppointment = () => {
+    onClose(false);
+    onNewAppointment(true);
+  };
   if (!isOpen) return null;
-  console.log("modal-", data);
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">
       <DialogBackdrop
@@ -51,32 +59,32 @@ const AppointmentViewDetailsModal = ({ isOpen, onClose, data }) => {
                   {data.Time}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-bold">Email:</h2>
-                    {data.Email}
+                  <h2 className="font-bold">Email:</h2>
+                  {data.Email}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-bold">Age:</h2>
-                    {data.Age}
+                  <h2 className="font-bold">Age:</h2>
+                  {data.Age}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-bold">Weight:</h2>
-                    {data.Weight + "kg"}
+                  <h2 className="font-bold">Weight:</h2>
+                  {data.Weight + "kg"}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-bold">Height:</h2>
-                    {data.Height}
+                  <h2 className="font-bold">Height:</h2>
+                  {data.Height}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-bold">Doctor:</h2>
-                    {data.DoctorName}
+                  <h2 className="font-bold">Doctor:</h2>
+                  {data.DoctorName}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold text-red-600">Payment:</h2>
                   {data.Payment}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-bold">Blood Group:</h2>
-                    {data.BooldGroup}
+                  <h2 className="font-bold">Blood Group:</h2>
+                  {data.BooldGroup}
                 </div>
               </div>
             </div>
@@ -91,10 +99,10 @@ const AppointmentViewDetailsModal = ({ isOpen, onClose, data }) => {
               <button
                 type="button"
                 data-autofocus
-                onClick={() => onClose(false)}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                onClick={handleBookAppointment}
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-green-400 sm:mt-0 sm:w-auto"
               >
-                Edit
+                Book new appointment
               </button>
             </div>
           </DialogPanel>

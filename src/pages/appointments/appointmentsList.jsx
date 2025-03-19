@@ -5,13 +5,6 @@ import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
 import EditPatientModal from "../../components/modal/EditPatientModal";
-// import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
-// import { DataGrid } from '@mui/x-data-grid';
-// import Paper from '@mui/material/Paper';
-// import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ThemeProvider, Typography } from "@mui/material";
-// import Store from "../../store/store"
-// import { format } from 'date-fns'; // Import date-fns for date formatting
-// import { theme } from "../../utility/theme";
 
 const columns = [
   "No.",
@@ -31,17 +24,21 @@ const AppointmentsList = () => {
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [newAppointment, setNewAppointment] = useState(false);
   const filteredUsers = searchValue
     ? AppointmentData.filter((user) =>
         user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
       )
     : AppointmentData;
-
+  const handleEditmodal = () => {
+    setNewAppointment(false)
+    setIsEditOpen(false)}
   const handleViewDetails = (id) => {
     setViewDetails(true);
     setViewData(AppointmentData.filter((value) => value.Id === id));
   };
   const handleEditDetails = (id) => {
+    setNewAppointment(false)
     setIsEditOpen(true);
     setViewData(AppointmentData.filter((value) => value.Id === id));
   };
@@ -188,14 +185,16 @@ const AppointmentsList = () => {
           isOpen={viewDetails}
           onClose={() => setViewDetails(false)}
           data={viewData[0]}
+          onNewAppointment = {()=>setNewAppointment(true)}
         />
       )}
-      {isEditOpen && (
+      {(isEditOpen || newAppointment) && (
         <EditPatientModal
-          isOpen={isEditOpen}
+          isOpen={isEditOpen || newAppointment}
           patient={viewData[0]}
           onSave={""}
-          onClose={() => setIsEditOpen(false)}
+          isNewAppointment={newAppointment}
+          onClose={handleEditmodal}
         />
       )}
     </div>

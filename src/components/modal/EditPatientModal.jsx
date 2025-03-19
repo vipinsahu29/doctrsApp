@@ -7,21 +7,38 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import PropTypes from "prop-types";
-import { generateTimeSlots } from "./../../utility/util";
+import {
+  generateTimeSlots,
+  validateEmail,
+  validateMobile,
+} from "./../../utility/util";
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
+  isNewAppointment: PropTypes.bool,
   patient: PropTypes.array,
   onSave: PropTypes.func,
   onClose: PropTypes.func,
 };
-export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
+export default function EditPatientModal({
+  isOpen,
+  patient,
+  onSave,
+  onClose,
+  isNewAppointment,
+}) {
   const [formData, setFormData] = useState({ ...patient });
+  const [isMobileValid, setIsMobileValid] = useState(true);
+  const [isValidEmail, setIsValidEmail] = useState(true);
   const today = new Date().toISOString().split("T")[0];
   const handleFnameChange = (e) => {
     setFormData({ ...formData, FirstName: e.target.value });
   };
   const handleLnameChange = (e) => {
     setFormData({ ...formData, LastName: e.target.value });
+  };
+  const handleMobileChange = (e) => {
+    setIsMobileValid(validateMobile(e.target.value));
+    setFormData({ ...formData, Mobile: e.target.value });
   };
   const handleGenderChange = (e) => {
     setFormData({ ...formData, Gender: e.target.value });
@@ -36,6 +53,7 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
     setFormData({ ...formData, Dob: e.target.value });
   };
   const handleEmailChange = (e) => {
+    setIsValidEmail(validateEmail(e.target.value));
     setFormData({ ...formData, Email: e.target.value });
   };
   const handleWeightChange = (e) => {
@@ -73,7 +91,9 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
                 as="h3"
                 className="text-base font-semibold text-gray-900"
               >
-                Edit Patient Details
+                {isNewAppointment
+                  ? "Book Appointment:"
+                  : "Edit Patient Details"}
               </DialogTitle>
               <form onSubmit={handleSubmit}>
                 <div className="grid sm: grid-cols-1 md:grid-cols-3 md:gap-4 sm: gap-2 pt-3">
@@ -106,6 +126,25 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
                     />
                   </div>
                   <div className="flex flex-col">
+                    <label className="mb-1" htmlFor="mobile">
+                      Mobile:
+                    </label>
+                    <input
+                      type="text"
+                      id="mobile"
+                      name="mobile"
+                      value={formData.Mobile}
+                      placeholder="XXXXXXXXXXX"
+                      onChange={handleMobileChange}
+                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                    {!isMobileValid && (
+                      <h3 className="text-red-600">
+                        Please enter valid mobile no.
+                      </h3>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
                     <label className="mb-1" htmlFor="gender">
                       Gender:
                     </label>
@@ -123,7 +162,10 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
                     </select>
                   </div>
                   <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="appointmentDate">
+                    <label
+                      className="mb-1 text-red-800"
+                      htmlFor="appointmentDate"
+                    >
                       Appointment Date:
                     </label>
                     <input
@@ -133,7 +175,7 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
                       min={today} // Prevent past dates
                       placeholder="mm-dd--yyyy"
                       onChange={handleDateChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border w-[250px] border-green-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
                   </div>
                   <div className="flex flex-col">
@@ -172,6 +214,11 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
                       required
                       onChange={handleEmailChange}
                     />
+                    {!isValidEmail && (
+                      <h3 className="text-red-600">
+                        Please enter valid Email.
+                      </h3>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <label className="mb-1" htmlFor="dob">
@@ -240,24 +287,26 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
                       <option value="Other">Other</option>
                     </select>
                   </div>
-                  <div className="flex flex-col">
-                    <label className="mb-1 text-red-600" htmlFor="doctor">
-                      Payment Method:
-                    </label>
-                    <select
-                      name="doctor"
-                      id="doctor"
-                      value={formData.Payment}
-                      onChange={handlePaymentChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option value="">Select Option</option>
-                      <option value="Pending">Pending</option>
-                      <option value="UPI">UPI</option>
-                      <option value="Cash">Cash</option>
-                      <option value="Credit Card">Credit Card</option>
-                    </select>
-                  </div>
+                  {!isNewAppointment && (
+                    <div className="flex flex-col">
+                      <label className="mb-1 text-red-600" htmlFor="doctor">
+                        Payment Method:
+                      </label>
+                      <select
+                        name="doctor"
+                        id="doctor"
+                        value={formData.Payment}
+                        onChange={handlePaymentChange}
+                        className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      >
+                        <option value="">Select Option</option>
+                        <option value="Pending">Pending</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Credit Card">Credit Card</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
               </form>
             </div>
