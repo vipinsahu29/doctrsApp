@@ -144,24 +144,23 @@ const AppointmentsList = () => {
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         <div className="flex justify-start items-center gap-4">
-                          <div
+                          <button
                             tabIndex={-1}
                             onClick={() => handleEditDetails(d.Id)}
                             className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer"
                           >
                             {" "}
                             <FaEdit color="black" />{" "}
-                          </div>
+                          </button>
 
-                          <div
-                            role="button"
+                          <button
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
                             onClick={() => handleViewDetails(d.Id)}
                           >
                             {" "}
                             <FaRegEye />{" "}
-                          </div>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -191,13 +190,14 @@ const AppointmentsList = () => {
           data={viewData[0]}
         />
       )}
-      {isEditOpen &&
+      {isEditOpen && (
         <EditPatientModal
-        isOpen={isEditOpen}
+          isOpen={isEditOpen}
           patient={viewData[0]}
           onSave={""}
-          onClose={() => setIsEditOpen(false)}/>
-      }
+          onClose={() => setIsEditOpen(false)}
+        />
+      )}
     </div>
   );
 };

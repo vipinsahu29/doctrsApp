@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import PropTypes from "prop-types";
+import { generateTimeSlots } from "./../../utility/util";
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
   patient: PropTypes.array,
@@ -52,24 +53,6 @@ export default function EditPatientModal({ isOpen, patient, onSave, onClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
-  };
-  // Generate Time Options in 15-Minute Intervals (8:00 AM - 8:00 PM)
-  const generateTimeSlots = () => {
-    const timeSlots = [];
-    let startTime = 8 * 60; // 8:00 AM in minutes
-    let endTime = 20 * 60; // 8:00 PM in minutes
-
-    while (startTime <= endTime) {
-      let hours = Math.floor(startTime / 60);
-      let minutes = startTime % 60;
-      let formattedTime = `${String(hours).padStart(2, "0")}:${String(
-        minutes
-      ).padStart(2, "0")}`;
-      timeSlots.push(formattedTime);
-      startTime += 15; // Increment by 15 minutes
-    }
-
-    return timeSlots;
   };
   if (!isOpen) return null;
   return (

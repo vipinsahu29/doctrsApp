@@ -1,8 +1,7 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems, useClose } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { useClose } from "@headlessui/react";
 DropDownMenu.propTypes = {
   options: PropTypes.string.isRequired,
   values: PropTypes.array.isRequired,
