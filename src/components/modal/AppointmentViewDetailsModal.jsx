@@ -5,6 +5,8 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import PropTypes from "prop-types";
+
 
 const AppointmentViewDetailsModal = ({
   isOpen,
@@ -112,3 +114,9 @@ const AppointmentViewDetailsModal = ({
   );
 };
 export default AppointmentViewDetailsModal;
+AppointmentViewDetailsModal.prototype = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func,
+    data: PropTypes.object,
+    onNewAppointment: PropTypes.func
+}

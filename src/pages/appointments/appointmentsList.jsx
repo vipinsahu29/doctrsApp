@@ -25,23 +25,31 @@ const AppointmentsList = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [newAppointment, setNewAppointment] = useState(false);
-  const filteredUsers = searchValue
+  const filteredUsers = searchValue && isNaN(searchValue) 
     ? AppointmentData.filter((user) =>
         user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
       )
-    : AppointmentData;
+    : AppointmentData.filter((user) =>
+      user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  console.log(isNaN(searchValue))
   const handleEditmodal = () => {
-    setNewAppointment(false)
-    setIsEditOpen(false)}
+    setNewAppointment(false);
+    setIsEditOpen(false);
+  };
   const handleViewDetails = (id) => {
     setViewDetails(true);
     setViewData(AppointmentData.filter((value) => value.Id === id));
   };
   const handleEditDetails = (id) => {
-    setNewAppointment(false)
+    setNewAppointment(false);
     setIsEditOpen(true);
     setViewData(AppointmentData.filter((value) => value.Id === id));
   };
+  const handleSearch = (e) =>{
+    setTimeout(() => {
+      setSearchValue(e.target.value)}, 1000)
+    }
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="Appointment" />
@@ -54,11 +62,7 @@ const AppointmentsList = () => {
             className="px-4 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
             type="text"
             placeholder="search"
-            onChange={(e) =>
-              setTimeout(() => {
-                setSearchValue(e.target.value), 1000;
-              })
-            }
+            onChange={(e) => handleSearch(e)}
           />
           <div className="flex justify-center items-center">
             <div className="relative overflow-x-auto min-h-auto pb-5">
@@ -185,7 +189,7 @@ const AppointmentsList = () => {
           isOpen={viewDetails}
           onClose={() => setViewDetails(false)}
           data={viewData[0]}
-          onNewAppointment = {()=>setNewAppointment(true)}
+          onNewAppointment={() => setNewAppointment(true)}
         />
       )}
       {(isEditOpen || newAppointment) && (
