@@ -89,7 +89,7 @@ export default function EditPatientModal({
             <div className="bg-gray-200 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <DialogTitle
                 as="h3"
-                className="text-base font-semibold text-gray-900"
+                className="text-lg text-indigo-700 font-bold"
               >
                 {isNewAppointment
                   ? "Book Appointment:"
@@ -136,6 +136,7 @@ export default function EditPatientModal({
                       value={formData.Mobile}
                       placeholder="XXXXXXXXXXX"
                       onChange={handleMobileChange}
+                      maxLength="10"
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
                     {!isMobileValid && (

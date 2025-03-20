@@ -35,7 +35,7 @@ const AppointmentViewDetailsModal = ({
             <div className="bg-gray-200 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <DialogTitle
                 as="h3"
-                className="text-base font-semibold text-gray-900"
+                className="text-lg text-indigo-700 font-bold"
               >
                 Patient Details
               </DialogTitle>
@@ -114,7 +114,7 @@ const AppointmentViewDetailsModal = ({
   );
 };
 export default AppointmentViewDetailsModal;
-AppointmentViewDetailsModal.prototype = {
+AppointmentViewDetailsModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func,
     data: PropTypes.object,
