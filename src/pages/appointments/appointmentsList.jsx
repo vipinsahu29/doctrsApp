@@ -67,7 +67,7 @@ const AppointmentsList = () => {
           <div className="flex justify-center items-center">
             <div className="relative overflow-x-auto min-h-auto pb-5">
               <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
-                <thead className=" text-sm text-[#d0d2d6] uppercase">
+                <thead className=" text-sm text-yellow-400 uppercase">
                   <tr>
                     {columns.map((items) => (
                       <th

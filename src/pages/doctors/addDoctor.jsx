@@ -6,19 +6,19 @@ export default function AddDoctor() {
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    mobile: "",
-    email: "",
-    dob: "",
-    qualification: "",
-    gender: "",
-    specialization: "",
-    careerStartDate: "",
-    shifts: [
-      { days: [], startTime: "", endTime: "" },
-      { days: [], startTime: "", endTime: "" },
-      { days: [], startTime: "", endTime: "" },
+    FirstName: "",
+    LastName: "",
+    Mobile: "",
+    Email: "",
+    DOB: "",
+    Qualification: "",
+    Gender: "",
+    Specialization: "",
+    CareerStartDate: "",
+    Shifts: [
+      { Days: [], StartTime: "", EndTime: "" },
+      { Days: [], StartTime: "", EndTime: "" },
+      { Days: [], StartTime: "", EndTime: "" },
     ],
   });
 
@@ -37,22 +37,22 @@ export default function AddDoctor() {
   };
 
   const handleShiftChange = (shiftIndex, field, value) => {
-    const updatedShifts = [...formData.shifts];
+    const updatedShifts = [...formData.Shifts];
     updatedShifts[shiftIndex][field] = value;
-    setFormData({ ...formData, shifts: updatedShifts });
+    setFormData({ ...formData, Shifts: updatedShifts });
   };
 
   const handleDayToggle = (shiftIndex, day) => {
-    const updatedShifts = [...formData.shifts];
-    const dayExists = updatedShifts[shiftIndex].days.includes(day);
+    const updatedShifts = [...formData.Shifts];
+    const dayExists = updatedShifts[shiftIndex].Days.includes(day);
     if (dayExists) {
-      updatedShifts[shiftIndex].days = updatedShifts[shiftIndex].days.filter(
+      updatedShifts[shiftIndex].Days = updatedShifts[shiftIndex].Days.filter(
         (d) => d !== day
       );
     } else {
-      updatedShifts[shiftIndex].days.push(day);
+      updatedShifts[shiftIndex].Days.push(day);
     }
-    setFormData({ ...formData, shifts: updatedShifts });
+    setFormData({ ...formData, Shifts: updatedShifts });
   };
 
   const handleSubmit = (e) => {
@@ -80,7 +80,7 @@ export default function AddDoctor() {
               type="text"
               name="firstName"
               placeholder="First Name"
-              value={formData.firstName}
+              value={formData.FirstName}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
@@ -97,7 +97,7 @@ export default function AddDoctor() {
               type="text"
               name="lastName"
               placeholder="Last Name"
-              value={formData.lastName}
+              value={formData.LastName}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
@@ -114,7 +114,7 @@ export default function AddDoctor() {
               type="tel"
               name="mobile"
               placeholder="Mobile"
-              value={formData.mobile}
+              value={formData.Mobile}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
               maxLength="10"
@@ -137,7 +137,7 @@ export default function AddDoctor() {
               type="email"
               name="email"
               placeholder="Email"
-              value={formData.email}
+              value={formData.Email}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
@@ -158,7 +158,7 @@ export default function AddDoctor() {
             <input
               type="date"
               name="dob"
-              value={formData.dob}
+              value={formData.DOB}
               max={today}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
@@ -176,7 +176,7 @@ export default function AddDoctor() {
               type="text"
               name="qualification"
               placeholder="Qualification"
-              value={formData.qualification}
+              value={formData.Qualification}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
@@ -193,7 +193,7 @@ export default function AddDoctor() {
               type="text"
               name="specialization"
               placeholder="Specialization"
-              value={formData.specialization}
+              value={formData.Specialization}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
@@ -209,7 +209,7 @@ export default function AddDoctor() {
             <input
               type="date"
               name="careerStartDate"
-              value={formData.careerStartDate}
+              value={formData.CareerStartDate}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
@@ -224,7 +224,7 @@ export default function AddDoctor() {
             </label>
             <select
               name="gender"
-              value={formData.gender}
+              value={formData.Gender}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             >
@@ -236,7 +236,7 @@ export default function AddDoctor() {
         </form>
 
         {/* Shift Details */}
-        {formData.shifts.map((shift, index) => (
+        {formData.Shifts.map((shift, index) => (
           <div key={index} className="mt-4 p-4 border rounded bg-gray-800">
             <h3 className="text-lg font-semibold text-white">
               Shift-{index + 1} Working Days
@@ -246,7 +246,7 @@ export default function AddDoctor() {
                 <label key={day} className="flex items-center">
                   <input
                     type="checkbox"
-                    checked={shift.days.includes(day)}
+                    checked={shift.Days.includes(day)}
                     onChange={() => handleDayToggle(index, day)}
                     className="mr-1"
                   />
@@ -258,18 +258,18 @@ export default function AddDoctor() {
             <div className="flex mt-2 space-x-2">
               <input
                 type="time"
-                value={shift.startTime}
+                value={shift.StartTime}
                 onChange={(e) =>
-                  handleShiftChange(index, "startTime", e.target.value)
+                  handleShiftChange(index, "StartTime", e.target.value)
                 }
                 className="p-2 border rounded bg-white text-black"
               />
               <span className="text-white mt-3">To</span>
               <input
                 type="time"
-                value={shift.endTime}
+                value={shift.EndTime}
                 onChange={(e) =>
-                  handleShiftChange(index, "endTime", e.target.value)
+                  handleShiftChange(index, "EndTime", e.target.value)
                 }
                 className="p-2 border rounded bg-white text-black"
               />

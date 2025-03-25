@@ -24,3 +24,20 @@ export const validateMobile = (mobile) => {
   const mobileRegex = /^[6-9]\d{9}$/; // Ensures number starts with 6-9 and is 10 digits long
   return mobileRegex.test(mobile);
 };
+
+export const calculateExperience = (careerStartDate) => {
+  const [day, month, year] = careerStartDate.split("-").map(Number);
+  const startDate = new Date(year, month - 1, day); // Convert to Date object
+  const today = new Date();
+
+  let years = today.getFullYear() - startDate.getFullYear();
+  let months = today.getMonth() - startDate.getMonth();
+
+  // Adjust if the current month is before the start month
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  return `${years} Y ${months} M`;
+};

@@ -1,7 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {AppointmentData} from '../../Constants/AppointmentData'
+import { AppointmentData } from "../../Constants/AppointmentData";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 // Validation schema for the form
 const validationSchema = Yup.object({
@@ -22,7 +22,7 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  age: Yup.string().required("Age is required"),
+  dob: Yup.string().required("DOB is required"),
   height: Yup.string().required("Height is required"),
   weight: Yup.string().required("Weight is required"),
   gender: Yup.string().required("Gender is required"),
@@ -48,7 +48,7 @@ const initialValues = {
   lastName: "",
   mobile: "",
   email: "",
-  age: "",
+  dob: "",
   height: "",
   weight: "",
   gender: "",
@@ -58,9 +58,10 @@ const initialValues = {
   doctor: "",
   images: null,
 };
-console.log(AppointmentData)
+console.log(AppointmentData);
 const BookAppointment = () => {
   // Formik hook to handle form state
+  const today = new Date().toISOString().split("T")[0];
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -74,7 +75,7 @@ const BookAppointment = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
-      <AppointmentRouting pageName="Appointment"/>
+      <AppointmentRouting pageName="Appointment" />
       <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-white">
           Appointment Form
@@ -171,22 +172,21 @@ const BookAppointment = () => {
           {/* 3.Age, Height */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label
-                htmlFor="age"
-                className="block text-sm font-medium text-white"
-              >
-                Age
+              <label className="mb-1 text-white" htmlFor="dob">
+                Date of birth:
               </label>
               <input
-                type="text"
-                id="age"
-                name="age"
-                value={formik.values.age}
+                type="date"
+                name="dob"
+                value={formik.values.dob}
+                max={today} // Prevent past dates
+                placeholder="mm-dd--yyyy"
                 onChange={formik.handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
-              {formik.touched.age && formik.errors.age ? (
-                <p className="text-red-500 text-xs">{formik.errors.age}</p>
+
+              {formik.touched.dob && formik.errors.dob ? (
+                <p className="text-red-500 text-xs">{formik.errors.dob}</p>
               ) : null}
             </div>
             <div>
@@ -288,7 +288,7 @@ const BookAppointment = () => {
                 name="appointmentDate"
                 value={formik.values.appointmentDate}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
               />
               {formik.touched.appointmentDate &&
               formik.errors.appointmentDate ? (
@@ -311,7 +311,7 @@ const BookAppointment = () => {
                 name="appointmentTime"
                 value={formik.values.appointmentTime}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
               />
             </div>
           </div>
@@ -328,7 +328,7 @@ const BookAppointment = () => {
               name="doctor"
               value={formik.values.doctor}
               onChange={formik.handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-[300px] px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
 
