@@ -24,10 +24,17 @@ export const navigation = [
     ],
   },
   {
+    name: "Staffs",
+    current: true,
+    options: [
+      { name: "Add Staff", path: "/add_staff" },
+      { name: "Staffs List", path: "/staffs_list" },
+    ],
+  },
+  {
     name: "More",
     current: false,
     options: [
-      { name: "Staff", path: "/" },
       { name: "Salary", path: "/" },
       { name: "Others", path: "/" },
       { name: "Dashboard", path: "/" },
