@@ -26,20 +26,26 @@ export default function AddDoctor() {
   const today = new Date().toISOString().split("T")[0];
 
   const handleChange = (e) => {
-    console.log("name-", e.target.name);
-    if (e.target.name === "mobile") {
-      setIsMobileValid(validateMobile(e.target.value));
+    const { name, value } = e.target;
+
+    // Handle mobile and email validation separately
+    if (name === "mobile") {
+      setIsMobileValid(validateMobile(value));
     }
-    if (e.target.name === "email") {
-      setIsValidEmail(validateEmail(e.target.value));
+    if (name === "email") {
+      setIsValidEmail(validateEmail(value));
     }
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleShiftChange = (shiftIndex, field, value) => {
     const updatedShifts = [...formData.Shifts];
     updatedShifts[shiftIndex][field] = value;
-    setFormData({ ...formData, Shifts: updatedShifts });
+    setFormData((prevData) => ({ ...prevData, Shifts: updatedShifts }));
   };
 
   const handleDayToggle = (shiftIndex, day) => {
@@ -52,11 +58,19 @@ export default function AddDoctor() {
     } else {
       updatedShifts[shiftIndex].Days.push(day);
     }
-    setFormData({ ...formData, Shifts: updatedShifts });
+    setFormData((prevData) => ({ ...prevData, Shifts: updatedShifts }));
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevents the default form submission
+
+    // Validate mobile and email before submitting
+    if (!isMobileValid || !isValidEmail) {
+      console.log("Please fix validation errors.");
+      return; // Prevent form submission if validation fails
+    }
+
+    // Log the form data to check the values
     console.log("Form Submitted:", formData);
   };
 
@@ -71,14 +85,14 @@ export default function AddDoctor() {
           {/* First Name */}
           <div>
             <label
-              htmlFor="firstName"
+              htmlFor="FirstName"
               className="block text-sm font-medium text-white"
             >
               First Name
             </label>
             <input
               type="text"
-              name="firstName"
+              name="FirstName"
               placeholder="First Name"
               value={formData.FirstName}
               onChange={handleChange}
@@ -88,14 +102,14 @@ export default function AddDoctor() {
           {/* Last Name */}
           <div>
             <label
-              htmlFor="lastName"
+              htmlFor="LastName"
               className="block text-sm font-medium text-white"
             >
               Last Name
             </label>
             <input
               type="text"
-              name="lastName"
+              name="LastName"
               placeholder="Last Name"
               value={formData.LastName}
               onChange={handleChange}
@@ -105,14 +119,14 @@ export default function AddDoctor() {
           {/* Mobile */}
           <div>
             <label
-              htmlFor="mobile"
+              htmlFor="Mobile"
               className="block text-sm font-medium text-white"
             >
               Mobile
             </label>
             <input
               type="tel"
-              name="mobile"
+              name="Mobile"
               placeholder="Mobile"
               value={formData.Mobile}
               onChange={handleChange}
@@ -121,43 +135,41 @@ export default function AddDoctor() {
             />
             {!isMobileValid && (
               <h3 className="text-red-600">
-                Please enter valid mobile no.
+                Please enter a valid mobile number.
               </h3>
             )}
           </div>
           {/* Email */}
           <div>
             <label
-              htmlFor="email"
+              htmlFor="Email"
               className="block text-sm font-medium text-white"
             >
               Email
             </label>
             <input
               type="email"
-              name="email"
+              name="Email"
               placeholder="Email"
               value={formData.Email}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
             {!isValidEmail && (
-              <h3 className="text-red-600">
-                Please enter valid Email.
-              </h3>
+              <h3 className="text-red-600">Please enter a valid email.</h3>
             )}
           </div>
           {/* DOB */}
           <div>
             <label
-              htmlFor="dob"
+              htmlFor="DOB"
               className="block text-sm font-medium text-white"
             >
               DOB
             </label>
             <input
               type="date"
-              name="dob"
+              name="DOB"
               value={formData.DOB}
               max={today}
               onChange={handleChange}
@@ -167,14 +179,14 @@ export default function AddDoctor() {
           {/* Qualification */}
           <div>
             <label
-              htmlFor="qualification"
+              htmlFor="Qualification"
               className="block text-sm font-medium text-white"
             >
               Qualification
             </label>
             <input
               type="text"
-              name="qualification"
+              name="Qualification"
               placeholder="Qualification"
               value={formData.Qualification}
               onChange={handleChange}
@@ -184,14 +196,14 @@ export default function AddDoctor() {
           {/* Specialization */}
           <div>
             <label
-              htmlFor="specialization"
+              htmlFor="Specialization"
               className="block text-sm font-medium text-white"
             >
               Specialization
             </label>
             <input
               type="text"
-              name="specialization"
+              name="Specialization"
               placeholder="Specialization"
               value={formData.Specialization}
               onChange={handleChange}
@@ -201,14 +213,14 @@ export default function AddDoctor() {
           {/* Career Start Date */}
           <div>
             <label
-              htmlFor="careerStartDate"
+              htmlFor="CareerStartDate"
               className="block text-sm font-medium text-white"
             >
               Career Start Date
             </label>
             <input
               type="date"
-              name="careerStartDate"
+              name="CareerStartDate"
               value={formData.CareerStartDate}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
@@ -217,13 +229,13 @@ export default function AddDoctor() {
           {/* Gender */}
           <div>
             <label
-              htmlFor="gender"
+              htmlFor="Gender"
               className="block text-sm font-medium text-white"
             >
               Gender
             </label>
             <select
-              name="gender"
+              name="Gender"
               value={formData.Gender}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
@@ -279,6 +291,7 @@ export default function AddDoctor() {
 
         {/* Submit Button */}
         <button
+          type="submit"
           onClick={handleSubmit}
           className="w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
         >

@@ -28,6 +28,16 @@
       "path":"/doctor_list",
       "component":"DoctrsList",
       "role":"user"
+    },
+    {
+      "path":"/add_staff",
+      "component":"AddStaff",
+      "role":"user"
+    },
+    {
+      "path":"/staffs_list",
+      "component":"StaffList",
+      "role":"user"
     }
   ]
   

@@ -1,16 +1,23 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import routesConfig from "./routesConfig.json"; // Import the JSON config
-import { lazy,Suspense,createElement } from "react";
+import { lazy, Suspense, createElement } from "react";
 
 const userRole = "user"; // Example: Change this dynamically based on authentication
 const loadComponent = (componentName) => {
   const Components = {
-    BookAppointment: lazy(() => import("../pages/appointments/bookAppointment")),
-    EditAppointment: lazy(() => import("../pages/appointments/EditAppointment")),
-    AppointmentsList: lazy(() => import("../pages/appointments/AppointmentsList")),
-    AddDoctor: lazy(()=> import("../pages/doctors/AddDoctor")),
-    DoctrsList: lazy(()=>import("../pages/doctors/DoctrsList"))
-
+    BookAppointment: lazy(() =>
+      import("../pages/appointments/bookAppointment")
+    ),
+    EditAppointment: lazy(() =>
+      import("../pages/appointments/EditAppointment")
+    ),
+    AppointmentsList: lazy(() =>
+      import("../pages/appointments/AppointmentsList")
+    ),
+    AddDoctor: lazy(() => import("../pages/doctors/addDoctor")),
+    DoctrsList: lazy(() => import("../pages/doctors/DoctrsList")),
+    AddStaff: lazy(() => import("../pages/staff/AddStaff")),
+    StaffList: lazy(() => import("../pages/staff/staffList")),
   };
   return Components[componentName] || (() => <h2>Component Not Found</h2>);
 };
@@ -21,7 +28,11 @@ export default function AppRoutes() {
       <Routes>
         {routesConfig.map(({ path, component, role }) =>
           role === "all" || role === userRole ? (
-            <Route key={path} path={path} element={createElement(loadComponent(component))} />
+            <Route
+              key={path}
+              path={path}
+              element={createElement(loadComponent(component))}
+            />
           ) : null
         )}
         {/* Redirect unauthorized users */}
