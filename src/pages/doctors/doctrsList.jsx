@@ -60,7 +60,7 @@ const DoctrsList = () => {
     }, 1000);
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
+    <div className="min-h-screen flex items-center bg-white flex-col gap-7 mt-7">
       <AppointmentRouting pageName="Doctors" />
       <div className="flex flex-wrap w-full py-2 flex-col gap-7 items-center justify-center">
         <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">

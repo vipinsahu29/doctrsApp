@@ -305,6 +305,9 @@ export default function EditPatientModal({
                         <option value="UPI">UPI</option>
                         <option value="Cash">Cash</option>
                         <option value="Credit Card">Credit Card</option>
+                        <option value="No Fee">No Fee</option>
+                        <option value="Cancel">Cancel</option>
+
                       </select>
                     </div>
                   )}

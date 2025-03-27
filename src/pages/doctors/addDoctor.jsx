@@ -67,7 +67,7 @@ export default function AddDoctor() {
         <h2 className="text-2xl font-semibold text-center text-white">
           Fill doctors details
         </h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
           {/* First Name */}
           <div>
             <label
