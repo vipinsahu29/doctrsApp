@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { navigation } from "../../Constants/navbarOptions";
+import { moreNavigation } from "../../Constants/navMoreOptions";
+
 import PropTypes from "prop-types";
 
 const AppointmentRouting = ({ pageName }) => {
-  const navOptions = navigation.filter((item) => item.name === pageName);
+  const navOptions = !pageName.includes("More")
+    ? navigation.filter((item) => item.name === pageName)
+    : moreNavigation.filter((item) => item.name === pageName);
   if (navOptions.length === 0) {
     return;
   }

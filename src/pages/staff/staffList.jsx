@@ -63,7 +63,7 @@ const StaffList = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
-      <AppointmentRouting pageName="Staffs" />
+      <AppointmentRouting pageName="MoreStaff" />
       <div className="flex flex-wrap w-full py-2 flex-col gap-7 items-center justify-center">
         <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-2xl font-semibold text-center text-white">
