@@ -38,6 +38,11 @@
       "path":"/staffs_list",
       "component":"StaffList",
       "role":"user"
+    },
+    {
+      "path":"/checkin",
+      "component":"CheckIn",
+      "role":"user"
     }
   ]
   

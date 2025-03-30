@@ -5,7 +5,7 @@ import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
 import EditPatientModal from "../../components/modal/EditPatientModal";
-
+import { useNavigate } from "react-router-dom";
 const columns = [
   "No.",
   "Full Name",
@@ -33,6 +33,7 @@ const AppointmentsList = () => {
       user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
     )
   console.log(isNaN(searchValue))
+  const navigate = useNavigate();
   const handleEditmodal = () => {
     setNewAppointment(false);
     setIsEditOpen(false);
@@ -50,6 +51,13 @@ const AppointmentsList = () => {
     setTimeout(() => {
       setSearchValue(e.target.value)}, 1000)
     }
+
+    const handleCheckinClick = (id) => {
+      const checkinData = AppointmentData.filter((value) => value.Id === id)
+  
+      navigate("/checkin", { state: checkinData });
+    };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="Appointment" />
@@ -161,6 +169,12 @@ const AppointmentsList = () => {
                           >
                             {" "}
                             <FaRegEye />{" "}
+                          </button>
+                          <button
+                            tabIndex={-1}
+                            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-4 py-2 text-center me-1 mb-1 border-white"
+                            onClick={()=>handleCheckinClick(d.Id)}
+                          > Check-in
                           </button>
                         </div>
                       </td>
