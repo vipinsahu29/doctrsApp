@@ -73,7 +73,7 @@ const AppointmentsList = () => {
             onChange={(e) => handleSearch(e)}
           />
           <div className="flex justify-center items-center">
-            <div className="relative overflow-x-auto min-h-auto pb-5">
+            <div className="overflow-x-auto min-h-auto pb-5">
               <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
                 <thead className=" text-sm text-yellow-400 uppercase">
                   <tr>
@@ -172,7 +172,7 @@ const AppointmentsList = () => {
                           </button>
                           <button
                             tabIndex={-1}
-                            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-4 py-2 text-center me-1 mb-1 border-white"
+                            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-300"
                             onClick={()=>handleCheckinClick(d.Id)}
                           > Check-in
                           </button>
