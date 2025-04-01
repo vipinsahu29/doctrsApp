@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { calculateExperience } from "../../utility/util";
 import { checkInFields } from "../../Constants/checkinPageFields";
 import CheckInMiddlePart from "./CheckInMiddlePart";
+import CheckInMedecine from "./CheckInMedecine";
 const CheckIn = () => {
   const location = useLocation();
   const checkinData = location.state || {};
@@ -40,6 +41,7 @@ const CheckIn = () => {
         </div>
       </div>
       <CheckInMiddlePart/>
+      <CheckInMedecine/>
     </div>
   );
 };

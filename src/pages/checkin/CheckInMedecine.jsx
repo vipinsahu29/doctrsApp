@@ -1,0 +1,137 @@
+import React, { useState } from "react";
+
+const timeOptions = [
+  { label: "Morn-Noon-Night (1-1-1)", value: "1-1-1" },
+  { label: "Morn-Night (1-0-1)", value: "1-0-1" },
+  { label: "Morn Only (1-0-0)", value: "1-0-0" },
+  { label: "Noon Only (0-1-0)", value: "0-1-0" },
+  { label: "Night Only (0-0-1)", value: "0-0-1" },
+  { label: "Morn-Noon (1-1-0)", value: "1-1-0" },
+  { label: "Noon-Night (0-1-1)", value: "0-1-1" },
+];
+const CheckInMedecine = () => {
+  const [medicineName, setMedicineName] = useState("");
+  const [dose, setDose] = useState("");
+  const [timeADay, setTimeADay] = useState(timeOptions[0].value);
+  const [durationDays, setDurationDays] = useState("");
+  const [medicines, setMedicines] = useState([]);
+  const [remark, setRemark] = useState("");
+
+  const addMedicine = () => {
+    if (!medicineName || !dose || !timeADay || !durationDays) {
+      alert("Please fill all fields before adding!");
+      return;
+    }
+    const newMedicine = { medicineName, dose, timeADay, durationDays, remark };
+    setMedicines([...medicines, newMedicine]);
+
+    // Clear input fields after adding
+    setMedicineName("");
+    setDose("");
+    setTimeADay(timeOptions[0].value);
+    setDurationDays("");
+    setRemark("");
+  };
+  return (
+    <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-lg space-y-6">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="Medicine Name"
+          value={medicineName}
+          onChange={(e) => setMedicineName(e.target.value)}
+          className="border p-2 w-1/4"
+        />
+        <input
+          type="text"
+          placeholder="Dose"
+          value={dose}
+          onChange={(e) => setDose(e.target.value)}
+          className="border p-2 w-1/12"
+        />
+        <select
+          value={timeADay}
+          onChange={(e) => setTimeADay(e.target.value)}
+          className="border p-2 w-1/5"
+        >
+          {timeOptions.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <input
+          type="number"
+          placeholder="Duration (Days)"
+          value={durationDays}
+          onChange={(e) => setDurationDays(e.target.value)}
+          className="border p-2 w-2/12"
+        />
+        <input
+          type="text"
+          placeholder="Remark"
+          value={remark}
+          onChange={(e) => setRemark(e.target.value)}
+          className="border p-2 w-2/12"
+        />
+
+        {/* Add Button */}
+      </div>
+      <button
+        onClick={addMedicine}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-[300px]"
+      >
+        Add medicine
+      </button>
+
+      {/* Table */}
+      {medicines.length > 0 && (
+        <table className="w-full mt-4 border-collapse border border-gray-900">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border p-1 border-gray-900 w-[20px]">S.No.</th>
+              <th className="border p-1 border-gray-900">Medicine Name</th>
+              <th className="border p-1 border-gray-900 w-[20px]">
+                Dose (ML/MG)
+              </th>
+              <th className="border p-1 border-gray-900">Times/Day</th>
+              <th className="border p-1 border-gray-900 w-[20px]">
+                Duration (Days)
+              </th>
+              <th className="border p-1 border-gray-900 w-1/6">Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {medicines.map((medicine, index) => (
+              <tr key={index} className="text-center">
+                <td className="border p-2 border-gray-900 w-[20px]">
+                  {index + 1}
+                </td>
+                <td className="border p-2 border-gray-900">
+                  {medicine.medicineName}
+                </td>
+                <td className="border p-2 border-gray-900 w-[20px]">
+                  {medicine.dose}
+                </td>
+                <td className="border p-2 border-gray-900 w-14">
+                  {medicine.timeADay}
+                </td>
+                <td className="border p-2 border-gray-900 w-[20px]">
+                  {medicine.durationDays}
+                </td>
+                <td className="border p-2 border-gray-900 w-[20px]">
+                  {medicine.remark}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <h2>Advice:</h2>
+      <h2>Diet:</h2>
+      <h2>Follow-up Date:</h2>
+    </div>
+  );
+};
+
+export default CheckInMedecine;

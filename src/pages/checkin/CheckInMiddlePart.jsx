@@ -75,8 +75,8 @@ const CheckInMiddlePart = () => {
         </label>
         <input
           type="text"
-          className="border p-2 w-full"
-          placeholder="Type symptom..."
+          className="border-red-300 border-2 p-2 w-full"
+          placeholder="Search symptom..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown} // Handle Enter key
@@ -105,7 +105,7 @@ const CheckInMiddlePart = () => {
         )}
 
         <textarea
-          className="border p-2 w-full mt-2"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
           rows="3"
           value={selectedSymptoms}
           placeholder="Selected symptoms will appear here..."
