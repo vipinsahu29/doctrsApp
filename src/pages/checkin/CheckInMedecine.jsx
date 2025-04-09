@@ -33,7 +33,7 @@ const CheckInMedecine = () => {
     setRemark("");
   };
   return (
-    <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-lg space-y-6">
+    <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-xl space-y-6 border border-slate-400">
       <div className="grid md:grid-cols-5 sm: grid-cols-2 gap-2">
         <input
           type="text"

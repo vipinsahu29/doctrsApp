@@ -10,7 +10,7 @@ const CheckIn = () => {
   const checkinData = location.state || {};
   console.log(checkinData);
   return (
-    <div className="min-h-screen flex items-center mt-16 bg-white py-6 flex-col gap-7">
+    <div className="min-h-screen flex items-center mt-16 bg-gray-100 py-6 flex-col gap-7">
       <div className="w-full max-w-7xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-white">
           Checkin
