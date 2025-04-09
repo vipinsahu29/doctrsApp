@@ -22,6 +22,7 @@ const CheckInMiddlePart = () => {
     }
   }, [input]);
   const addSymptom = (symptom) => {
+    console.log(symptom)
     if (!symptom) return;
 
     // Ask for number of days (1-30)
@@ -63,7 +64,6 @@ const CheckInMiddlePart = () => {
       }
     }
   };
-  console.log("suggestions-", suggestions, symptomsData.symptoms);
   return (
     <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-xl space-y-6 border border-slate-400">
       <div className="mx-auto mt-3">

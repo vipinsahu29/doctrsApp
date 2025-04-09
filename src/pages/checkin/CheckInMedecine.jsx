@@ -1,14 +1,8 @@
 import React, { useState } from "react";
 
-const timeOptions = [
-  { label: "Morn-Noon-Night (1-1-1)", value: "1-1-1" },
-  { label: "Morn-Night (1-0-1)", value: "1-0-1" },
-  { label: "Morn Only (1-0-0)", value: "1-0-0" },
-  { label: "Noon Only (0-1-0)", value: "0-1-0" },
-  { label: "Night Only (0-0-1)", value: "0-0-1" },
-  { label: "Morn-Noon (1-1-0)", value: "1-1-0" },
-  { label: "Noon-Night (0-1-1)", value: "0-1-1" },
-];
+// import medecineData from "../../Constants/indian_medicine_data.json";
+
+import { timeOptions } from "../../Constants/constantUtil";
 const CheckInMedecine = () => {
   const [medicineName, setMedicineName] = useState("");
   const [dose, setDose] = useState("");
@@ -17,6 +11,7 @@ const CheckInMedecine = () => {
   const [medicines, setMedicines] = useState([]);
   const [remark, setRemark] = useState("");
 
+  // console.log(medecineData)
   const addMedicine = () => {
     if (!medicineName || !dose || !timeADay || !durationDays) {
       alert("Please fill all fields before adding!");

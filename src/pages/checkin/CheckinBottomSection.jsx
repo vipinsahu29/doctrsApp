@@ -5,7 +5,7 @@ const CheckinBottomSection = () => {
   const [diet, setDiet] = useState("");
 
   const today = new Date().toISOString().split("T")[0];
-  const [followUpDate, setFollowupDate] = useState("DD-MM-YYYY");
+  const [followUpDate, setFollowupDate] = useState("");
   const handleDateChange = (e) => {
     setFollowupDate(e.target.value);
   };
@@ -52,7 +52,7 @@ const CheckinBottomSection = () => {
           name="appointment_date"
           value={followUpDate}
           min={today} // Prevent past dates
-          placeholder="mm-dd--yyyy"
+          placeholder="mm-dd-yyyy"
           onChange={handleDateChange}
           className="bg-gray-50 border w-[150px] border-green-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
