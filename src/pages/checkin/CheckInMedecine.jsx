@@ -34,28 +34,28 @@ const CheckInMedecine = () => {
   };
   return (
     <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-lg space-y-6">
-      <div className="flex gap-2">
+      <div className="grid md:grid-cols-5 sm: grid-cols-2 gap-2">
         <input
           type="text"
           placeholder="Medicine Name"
           value={medicineName}
           onChange={(e) => setMedicineName(e.target.value)}
-          className="border p-2 w-1/4"
+          className="border p-2"
         />
         <input
           type="text"
           placeholder="Dose"
           value={dose}
           onChange={(e) => setDose(e.target.value)}
-          className="border p-2 w-1/12"
+          className="border p-2"
         />
         <select
           value={timeADay}
           onChange={(e) => setTimeADay(e.target.value)}
-          className="border p-2 w-1/5"
+          className="border p-2"
         >
-          {timeOptions.map((option, index) => (
-            <option key={index} value={option.value}>
+          {timeOptions.map((option) => (
+            <option key={option.label} value={option.value}>
               {option.label}
             </option>
           ))}
@@ -65,14 +65,14 @@ const CheckInMedecine = () => {
           placeholder="Duration (Days)"
           value={durationDays}
           onChange={(e) => setDurationDays(e.target.value)}
-          className="border p-2 w-2/12"
+          className="border p-2"
         />
         <input
           type="text"
           placeholder="Remark"
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
-          className="border p-2 w-2/12"
+          className="border p-2"
         />
 
         {/* Add Button */}
@@ -85,25 +85,26 @@ const CheckInMedecine = () => {
       </button>
 
       {/* Table */}
-      {medicines.length > 0 && (
-        <table className="w-full mt-4 border-collapse border border-gray-900">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-1 border-gray-900 w-[20px]">S.No.</th>
-              <th className="border p-1 border-gray-900">Medicine Name</th>
-              <th className="border p-1 border-gray-900 w-[20px]">
-                Dose (ML/MG)
-              </th>
-              <th className="border p-1 border-gray-900">Times/Day</th>
-              <th className="border p-1 border-gray-900 w-[20px]">
-                Duration (Days)
-              </th>
-              <th className="border p-1 border-gray-900 w-1/6">Remark</th>
-            </tr>
-          </thead>
+
+      <table className="w-full mt-4 border-collapse border border-gray-900">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border p-1 border-gray-900 w-[20px]">S.No.</th>
+            <th className="border p-1 border-gray-900">Medicine Name</th>
+            <th className="border p-1 border-gray-900 w-[20px]">
+              Dose (ML/MG)
+            </th>
+            <th className="border p-1 border-gray-900">Times/Day</th>
+            <th className="border p-1 border-gray-900 w-[20px]">
+              Duration (Days)
+            </th>
+            <th className="border p-1 border-gray-900 w-1/6">Remark</th>
+          </tr>
+        </thead>
+        {medicines.length > 0 && (
           <tbody>
             {medicines.map((medicine, index) => (
-              <tr key={index} className="text-center">
+              <tr key={medicine.medicineName} className="text-center">
                 <td className="border p-2 border-gray-900 w-[20px]">
                   {index + 1}
                 </td>
@@ -125,11 +126,8 @@ const CheckInMedecine = () => {
               </tr>
             ))}
           </tbody>
-        </table>
-      )}
-      <h2>Advice:</h2>
-      <h2>Diet:</h2>
-      <h2>Follow-up Date:</h2>
+        )}
+      </table>
     </div>
   );
 };
