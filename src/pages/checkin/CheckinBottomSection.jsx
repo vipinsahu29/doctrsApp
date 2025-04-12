@@ -10,7 +10,7 @@ const CheckinBottomSection = () => {
     setFollowupDate(e.target.value);
   };
   return (
-    <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-xl space-y-6 mb-10 border border-slate-400">
+    <div className="w-full max-w-7xl bg-slate-200 p-6 rounded-lg shadow-xl space-y-6 mb-2 border border-slate-400">
       <div>
         <label
           htmlFor="advice"

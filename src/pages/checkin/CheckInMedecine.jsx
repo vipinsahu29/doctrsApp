@@ -3,17 +3,17 @@ import React, { useState } from "react";
 // import medecineData from "../../Constants/indian_medicine_data.json";
 
 import { timeOptions } from "../../Constants/constantUtil";
-const CheckInMedecine = () => {
+const CheckInMedecine = React.forwardRef(() => {
   const [medicineName, setMedicineName] = useState("");
   const [dose, setDose] = useState("");
   const [timeADay, setTimeADay] = useState(timeOptions[0].value);
   const [durationDays, setDurationDays] = useState("");
   const [medicines, setMedicines] = useState([]);
   const [remark, setRemark] = useState("");
-
+  const disabled = !medicineName || !dose || !timeADay || !durationDays;
   // console.log(medecineData)
   const addMedicine = () => {
-    if (!medicineName || !dose || !timeADay || !durationDays) {
+    if (disabled) {
       alert("Please fill all fields before adding!");
       return;
     }
@@ -74,7 +74,10 @@ const CheckInMedecine = () => {
       </div>
       <button
         onClick={addMedicine}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-[300px]"
+        disabled={disabled}
+        className={`md:px-6 md:py-2 sm: px-2 sm: py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 md:m-1 sm: m-1 focus:ring-4 focus:ring-blue-300 font-medium  text-sm  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       >
         Add medicine
       </button>
@@ -125,6 +128,6 @@ const CheckInMedecine = () => {
       </table>
     </div>
   );
-};
+});
 
 export default CheckInMedecine;
