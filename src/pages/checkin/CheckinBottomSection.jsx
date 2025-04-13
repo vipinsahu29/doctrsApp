@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 
-const CheckinBottomSection = () => {
-  const [advice, setAdvice] = useState("");
-  const [diet, setDiet] = useState("");
-
+const CheckinBottomSection = ({
+  advice,
+  setAdvice,
+  diet,
+  setDiet,
+  followUpDate,
+  setFollowupDate,
+}) => {
   const today = new Date().toISOString().split("T")[0];
-  const [followUpDate, setFollowupDate] = useState("");
   const handleDateChange = (e) => {
     setFollowupDate(e.target.value);
   };

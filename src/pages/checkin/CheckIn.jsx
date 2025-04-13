@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { calculateExperience } from "../../utility/util";
 import { checkInFields } from "../../Constants/checkinPageFields";
@@ -7,16 +7,38 @@ import CheckInMedecine from "./CheckInMedecine";
 import CheckinBottomSection from "./CheckinBottomSection";
 import PrintPrescription from "./PrintPrescription";
 import { useReactToPrint } from "react-to-print";
+
 const CheckIn = () => {
   const location = useLocation();
   const checkinData = location.state || {};
   const componentRef = useRef();
+  const [familyHistory, setFamiliyHistory] = useState("");
+  const [selectedSymptoms, setSelectedSymptoms] = useState([]);
+  const [medicines, setMedicines] = useState([]);
+  const [advice, setAdvice] = useState("");
+  const [diet, setDiet] = useState("");
+  const [followUpDate, setFollowupDate] = useState("");
+
   const printData = {
-    ...checkinData
+    ...checkinData,
+    familyHistory: familyHistory,
+    selectedSymptoms: selectedSymptoms,
+    medicines: medicines,
+    advice: advice,
+    diet: diet,
+    followUpDate: followUpDate,
   };
   const reactToPrintFn = useReactToPrint({
     contentRef: componentRef,
   });
+  console.log(
+    "familyHistory:",
+    familyHistory,
+    "  symptom:",
+    selectedSymptoms,
+    "print:",
+    printData
+  );
   return (
     <div className="min-h-screen flex items-center mt-16 bg-gray-100 py-6 flex-col gap-7">
       <div className="w-full max-w-7xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
@@ -49,9 +71,21 @@ const CheckIn = () => {
           ))}
         </div>
       </div>
-      <CheckInMiddlePart />
-      <CheckInMedecine />
-      <CheckinBottomSection />
+      <CheckInMiddlePart
+        familyHistory={familyHistory}
+        setFamiliyHistory={setFamiliyHistory}
+        selectedSymptoms={selectedSymptoms}
+        setSelectedSymptoms={setSelectedSymptoms}
+      />
+      <CheckInMedecine medicines={medicines} setMedicines={setMedicines} />
+      <CheckinBottomSection
+        advice={advice}
+        setAdvice={setAdvice}
+        diet={diet}
+        setDiet={setDiet}
+        followUpDate={followUpDate}
+        setFollowupDate={setFollowupDate}
+      />
 
       <div className="print:hidden text-center">
         <button

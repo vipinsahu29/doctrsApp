@@ -25,7 +25,8 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
                 <strong>OPD-ID:</strong>232
               </div>
               <div>
-                <strong>Name:</strong> {data[0].FirstName + ' ' + data[0].LastName}
+                <strong>Name:</strong>{" "}
+                {data[0].FirstName + " " + data[0].LastName}
                 Doe
               </div>
               <div>
@@ -49,14 +50,16 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
             <div className="mb-3">
               <strong>Symptoms/History:</strong>
               <div className="border p-2 mt-1 min-h-[40px]">
-                Selected symptoms will appear here...
+                {data.selectedSymptoms}
               </div>
             </div>
 
             {/* Family History */}
             <div className="mb-3">
               <strong>Family History:</strong>
-              <div className="border p-2 mt-1 min-h-[40px]">NA</div>
+              <div className="border p-2 mt-1 min-h-[40px]">
+                {data.familyHistory ? data.familyHistory : "N.A."}
+              </div>
             </div>
 
             {/* Medicines */}
@@ -73,30 +76,21 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border p-1 text-center">paracitamol</td>
-                    <td className="border p-1 text-center">500mg</td>
-                    <td className="border p-1 text-center">1-0-1</td>
-                    <td className="border p-1 text-center">5</td>
-                    <td className="border p-1 text-center">AF</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-1 text-center">
-                      paracitamol paracitamol paracitamol paracitamol
-                      paracitamol
-                    </td>
-                    <td className="border p-1 text-center">500mg</td>
-                    <td className="border p-1 text-center">1-0-1</td>
-                    <td className="border p-1 text-center">5</td>
-                    <td className="border p-1 text-center">AF</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-1 text-center">paracitamol</td>
-                    <td className="border p-1 text-center">500mg</td>
-                    <td className="border p-1 text-center">1-0-1</td>
-                    <td className="border p-1 text-center">5</td>
-                    <td className="border p-1 text-center">AF</td>
-                  </tr>
+                  {data.medicines.map((items) => (
+                    <tr key={items.medicineName}>
+                      <td className="border p-1 text-center">
+                        {items.medicineName}
+                      </td>
+                      <td className="border p-1 text-center">{items.dose}</td>
+                      <td className="border p-1 text-center">
+                        {items.timeADay}
+                      </td>
+                      <td className="border p-1 text-center">
+                        {items.durationDays}
+                      </td>
+                      <td className="border p-1 text-center">{items.remark}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -105,19 +99,23 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
             <div className="mb-3">
               <strong>Advice:</strong>
               <div className="border p-2 mt-1 min-h-[40px]">
-                dont go outside
+                {data.advice
+                  ? data.advice
+                  : "Enjoy the life, Dont think too much, do exersice"}
               </div>
             </div>
             <div className="mb-3">
               <strong>Diet:</strong>
               <div className="border p-2 mt-1 min-h-[40px]">
-                dont eat anything
+                {data.diet
+                  ? data.diet
+                  : " eat healthy, avoid oily food, eat home made food, avoid extra sugar and salt, include more fiber foods "}
               </div>
             </div>
 
             {/* Follow-up */}
             <div className="text-right mt-4">
-              <strong>Follow-up Date:</strong> 19-04-2025
+              <strong>Follow-up Date:</strong> {data.followUpDate}
             </div>
           </div>
         </div>

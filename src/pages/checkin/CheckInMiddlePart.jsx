@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import symptomsData from "../../Constants/symptoms.json";
 
-const CheckInMiddlePart = () => {
+const CheckInMiddlePart = ({
+  familyHistory,
+  setFamiliyHistory,
+  selectedSymptoms,
+  setSelectedSymptoms,
+}) => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [familyHistory, setFamiliyHistory] = useState("");
-  const [selectedSymptoms, setSelectedSymptoms] = useState([]);
+  // const [familyHistory, setFamiliyHistory] = useState("");
+  // const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const inputRef = useRef(null); // Keeps cursor in input field
 
   useEffect(() => {
@@ -22,7 +27,7 @@ const CheckInMiddlePart = () => {
     }
   }, [input]);
   const addSymptom = (symptom) => {
-    console.log(symptom)
+    console.log(symptom);
     if (!symptom) return;
 
     // Ask for number of days (1-30)
@@ -109,7 +114,7 @@ const CheckInMiddlePart = () => {
           rows="3"
           value={selectedSymptoms}
           placeholder="Selected symptoms will appear here..."
-          onChange={e=>setSelectedSymptoms(e.target.value)}
+          onChange={(e) => setSelectedSymptoms(e.target.value)}
         />
       </div>
       <div>
