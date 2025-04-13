@@ -1,7 +1,8 @@
 import React, { forwardRef } from "react";
+import { calculateExperience } from "../../utility/util";
 
 const PrintPrescription = forwardRef(({ data }, ref) => {
-  console.log(data, ref);
+  console.log(data[0]?.Id);
   return (
     <div
       ref={ref}
@@ -18,29 +19,29 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
             {/* Header */}
             <div className="grid grid-cols-2 gap-x-24 gap-y-2 mb-2 text-xs">
               <div>
-                <strong>Patient-ID:</strong>
+                <strong>Patient-ID:</strong>123
               </div>
               <div>
-                <strong>OPD-ID:</strong>
+                <strong>OPD-ID:</strong>232
               </div>
               <div>
-                <strong>Name:</strong> John Doe John Doe John DoeJohn Doe John
+                <strong>Name:</strong> {data[0].FirstName + ' ' + data[0].LastName}
                 Doe
               </div>
               <div>
-                <strong>Gender:</strong> Male
+                <strong>Gender:</strong> {data[0].Gender}
               </div>
               <div>
-                <strong>Height:</strong> 175
+                <strong>Height:</strong> {data[0].Height}
               </div>
               <div>
-                <strong>Weight:</strong> 70
+                <strong>Weight:</strong> {data[0].Weight}
               </div>
               <div>
-                <strong>Age:</strong> 106 Y 8 M
+                <strong>Age:</strong> {calculateExperience(data[0].Dob)}
               </div>
               <div>
-                <strong>Appointment:</strong> 2025-03-13
+                <strong>Appointment:</strong> {data[0].AppointmentDate}
               </div>
             </div>
             <hr className="border-gray-500 dark:border-neutral-500 my-4" />

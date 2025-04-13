@@ -12,8 +12,7 @@ const CheckIn = () => {
   const checkinData = location.state || {};
   const componentRef = useRef();
   const printData = {
-    name: "John Doe",
-    symptoms: "Fever, Cough",
+    ...checkinData
   };
   const reactToPrintFn = useReactToPrint({
     contentRef: componentRef,
