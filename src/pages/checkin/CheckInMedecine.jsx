@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // import medecineData from "../../Constants/indian_medicine_data.json";
 
 import { timeOptions } from "../../Constants/constantUtil";
-const CheckInMedecine = React.forwardRef(({medicines, setMedicines}) => {
+const CheckInMedecine = ({ medicines, setMedicines }) => {
   const [medicineName, setMedicineName] = useState("");
   const [dose, setDose] = useState("");
   const [timeADay, setTimeADay] = useState(timeOptions[0].value);
@@ -128,6 +128,6 @@ const CheckInMedecine = React.forwardRef(({medicines, setMedicines}) => {
       </table>
     </div>
   );
-});
+};
 
 export default CheckInMedecine;

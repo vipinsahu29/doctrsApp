@@ -19,7 +19,7 @@ const CheckinBottomSection = ({
           htmlFor="advice"
           className="block text-sm font-medium text-gray-900"
         >
-          Advice
+          Advice (Sonography/x-ray/CTScan...)
         </label>
         <textarea
           type="text"

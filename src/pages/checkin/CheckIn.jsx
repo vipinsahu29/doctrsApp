@@ -7,6 +7,7 @@ import CheckInMedecine from "./CheckInMedecine";
 import CheckinBottomSection from "./CheckinBottomSection";
 import PrintPrescription from "./PrintPrescription";
 import { useReactToPrint } from "react-to-print";
+import CheckInLabTest from "./CheckInLabTest";
 
 const CheckIn = () => {
   const location = useLocation();
@@ -18,6 +19,7 @@ const CheckIn = () => {
   const [advice, setAdvice] = useState("");
   const [diet, setDiet] = useState("");
   const [followUpDate, setFollowupDate] = useState("");
+  const [selectedData, setSelectedData] = useState("");
 
   const printData = {
     ...checkinData,
@@ -27,18 +29,11 @@ const CheckIn = () => {
     advice: advice,
     diet: diet,
     followUpDate: followUpDate,
+    labTest: selectedData
   };
   const reactToPrintFn = useReactToPrint({
     contentRef: componentRef,
   });
-  console.log(
-    "familyHistory:",
-    familyHistory,
-    "  symptom:",
-    selectedSymptoms,
-    "print:",
-    printData
-  );
   return (
     <div className="min-h-screen flex items-center mt-16 bg-gray-100 py-6 flex-col gap-7">
       <div className="w-full max-w-7xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
@@ -78,6 +73,10 @@ const CheckIn = () => {
         setSelectedSymptoms={setSelectedSymptoms}
       />
       <CheckInMedecine medicines={medicines} setMedicines={setMedicines} />
+      <CheckInLabTest
+        selectedData={selectedData}
+        setSelectedData={setSelectedData}
+      />
       <CheckinBottomSection
         advice={advice}
         setAdvice={setAdvice}

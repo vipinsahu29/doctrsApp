@@ -2,7 +2,6 @@ import React, { forwardRef } from "react";
 import { calculateExperience } from "../../utility/util";
 
 const PrintPrescription = forwardRef(({ data }, ref) => {
-  console.log(data[0]?.Id);
   return (
     <div
       ref={ref}
@@ -97,7 +96,16 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
 
             {/* Advice & Diet */}
             <div className="mb-3">
-              <strong>Advice:</strong>
+              <strong>Pathology Test:</strong>
+              <div className="border p-2 mt-1 min-h-[40px]">
+                {data.labTest ? data.labTest : "Not required."}
+              </div>
+            </div>
+            <div className="mb-3">
+              <div className="flex">
+                <strong>Advice </strong>{" "}
+                <h6 className="text-[8px]">( X-Ray, Sonography, CT-Scan...):</h6>
+              </div>
               <div className="border p-2 mt-1 min-h-[40px]">
                 {data.advice
                   ? data.advice
