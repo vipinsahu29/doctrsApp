@@ -6,6 +6,7 @@ import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouti
 import { doctorsData } from "../../Constants/doctorsListData";
 import { calculateExperience } from "../../utility/util";
 import DoctorsViewDetails from "../../components/modal/DoctorsViewDetails";
+import EditDoctorsModal from "../../components/modal/EditDoctorsModal";
 
 const columns = [
   "No.",
@@ -25,7 +26,6 @@ const DoctrsList = () => {
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [newAppointment, setNewAppointment] = useState(false);
   const filteredUsers =
     searchValue && isNaN(searchValue)
       ? doctorsData.filter((user) =>
@@ -36,7 +36,6 @@ const DoctrsList = () => {
         );
   console.log(isNaN(searchValue));
   const handleEditmodal = () => {
-    setNewAppointment(false);
     setIsEditOpen(false);
   };
   const handleViewDetails = (id) => {
@@ -50,7 +49,6 @@ const DoctrsList = () => {
     setViewData("")
   }
   const handleEditDetails = (id) => {
-    setNewAppointment(false);
     setIsEditOpen(true);
     setViewData(doctorsData.filter((value) => value.Id === id));
   };
@@ -208,18 +206,17 @@ const DoctrsList = () => {
           isOpen={viewDetails}
           onClose={handleCloseView}
           data={viewData[0]}
-          onNewAppointment={() => setNewAppointment(true)}
+          onNewAppointment={() => {}}
         />
       )}
-      {/*(isEditOpen || newAppointment) && (
-        <EditPatientModal
-          isOpen={isEditOpen || newAppointment}
-          patient={viewData[0]}
+      {(isEditOpen) && (
+        <EditDoctorsModal
+          isOpen={isEditOpen}
+          doctor={viewData[0]}
           onSave={""}
-          isNewAppointment={newAppointment}
           onClose={handleEditmodal}
         />
-      )*/}
+      )}
     </div>
   );
 };

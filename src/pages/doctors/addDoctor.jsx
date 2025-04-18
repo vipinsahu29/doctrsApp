@@ -113,6 +113,7 @@ export default function AddDoctor() {
               placeholder="Last Name"
               value={formData.LastName}
               onChange={handleChange}
+              
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
           </div>

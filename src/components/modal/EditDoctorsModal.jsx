@@ -7,69 +7,60 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import PropTypes from "prop-types";
-import {
-  generateTimeSlots,
-  validateEmail,
-  validateMobile,
-} from "./../../utility/util";
-EditPatientModal.propTypes = {
+import { validateEmail, validateMobile } from "./../../utility/util";
+EditDoctorsModal.propTypes = {
   isOpen: PropTypes.bool,
-  isNewAppointment: PropTypes.bool,
-  patient: PropTypes.array,
+  doctor: PropTypes.object,
   onSave: PropTypes.func,
   onClose: PropTypes.func,
 };
-export default function EditPatientModal({
-  isOpen,
-  patient,
-  onSave,
-  onClose,
-  isNewAppointment,
-}) {
-  const [formData, setFormData] = useState({ ...patient });
+export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
+  const [formData, setFormData] = useState({ ...doctor });
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const today = new Date().toISOString().split("T")[0];
-  const handleFnameChange = (e) => {
-    setFormData({ ...formData, FirstName: e.target.value });
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  console.log("doc", formData.CareerStartDate, formData);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Handle mobile and email validation separately
+    if (name === "mobile") {
+      setIsMobileValid(validateMobile(value));
+    }
+    if (name === "email") {
+      setIsValidEmail(validateEmail(value));
+    }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
-  const handleLnameChange = (e) => {
-    setFormData({ ...formData, LastName: e.target.value });
+  const handleShiftChange = (shiftIndex, field, value) => {
+    const updatedShifts = [...formData.Shifts];
+    updatedShifts[shiftIndex][field] = value;
+    setFormData((prevData) => ({ ...prevData, Shifts: updatedShifts }));
   };
-  const handleMobileChange = (e) => {
-    setIsMobileValid(validateMobile(e.target.value));
-    setFormData({ ...formData, Mobile: e.target.value });
-  };
-  const handleGenderChange = (e) => {
-    setFormData({ ...formData, Gender: e.target.value });
-  };
-  const handleDateChange = (e) => {
-    setFormData({ ...formData, AppointmentDate: e.target.value });
-  };
-  const handleTimeChange = (e) => {
-    setFormData({ ...formData, Time: e.target.value });
-  };
-  const handleDobChange = (e) => {
-    setFormData({ ...formData, Dob: e.target.value });
-  };
-  const handleEmailChange = (e) => {
-    setIsValidEmail(validateEmail(e.target.value));
-    setFormData({ ...formData, Email: e.target.value });
-  };
-  const handleWeightChange = (e) => {
-    setFormData({ ...formData, Weight: e.target.value });
-  };
-  const handleHeightChange = (e) => {
-    setFormData({ ...formData, Height: e.target.value });
-  };
-  const handleDoctorChange = (e) => {
-    setFormData({ ...formData, DoctorName: e.target.value });
-  };
-  const handlePaymentChange = (e) => {
-    setFormData({ ...formData, Payment: e.target.value });
+
+  const handleDayToggle = (shiftIndex, day) => {
+    const updatedShifts = [...formData.Shifts];
+    const dayExists = updatedShifts[shiftIndex].Days.includes(day);
+    if (dayExists) {
+      updatedShifts[shiftIndex].Days = updatedShifts[shiftIndex].Days.filter(
+        (d) => d !== day
+      );
+    } else {
+      updatedShifts[shiftIndex].Days.push(day);
+    }
+    setFormData((prevData) => ({ ...prevData, Shifts: updatedShifts }));
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isMobileValid || !isValidEmail) {
+      console.warn("Please fix validation errors.");
+      return; // Prevent form submission if validation fails
+    }
     onSave(formData);
   };
   if (!isOpen) return null;
@@ -91,9 +82,7 @@ export default function EditPatientModal({
                 as="h3"
                 className="text-lg text-indigo-700 font-bold"
               >
-                {isNewAppointment
-                  ? "Book Appointment:"
-                  : "Edit Patient Details"}
+                {"Edit Doctors Details"}
               </DialogTitle>
               <form onSubmit={handleSubmit}>
                 <div className="grid sm: grid-cols-1 md:grid-cols-3 md:gap-4 sm: gap-2 pt-3">
@@ -107,7 +96,7 @@ export default function EditPatientModal({
                       name="firstname"
                       value={formData.FirstName}
                       placeholder="First name"
-                      onChange={handleFnameChange}
+                      onChange={handleChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
                   </div>
@@ -121,7 +110,7 @@ export default function EditPatientModal({
                       name="lastname"
                       placeholder="Last name"
                       value={formData.LastName}
-                      onChange={handleLnameChange}
+                      onChange={handleChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
                   </div>
@@ -135,7 +124,7 @@ export default function EditPatientModal({
                       name="mobile"
                       value={formData.Mobile}
                       placeholder="XXXXXXXXXXX"
-                      onChange={handleMobileChange}
+                      onChange={handleChange}
                       maxLength="10"
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
@@ -153,7 +142,7 @@ export default function EditPatientModal({
                       name="gender"
                       id="gender"
                       value={formData.Gender}
-                      onChange={handleGenderChange}
+                      onChange={handleChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
                       <option value="">Select Gender</option>
@@ -162,43 +151,7 @@ export default function EditPatientModal({
                       <option value="Other">Other</option>
                     </select>
                   </div>
-                  <div className="flex flex-col">
-                    <label
-                      className="mb-1 text-red-800"
-                      htmlFor="appointmentDate"
-                    >
-                      Appointment Date:
-                    </label>
-                    <input
-                      type="date"
-                      name="appointment_date"
-                      value={formData.AppointmentDate}
-                      min={today} // Prevent past dates
-                      placeholder="mm-dd--yyyy"
-                      onChange={handleDateChange}
-                      className="bg-gray-50 border w-[250px] border-green-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    {/*Appointment time field */}
-                    <label className="mb-1" htmlFor="time">
-                      Time:
-                    </label>
-                    <select
-                      name="time"
-                      id="time"
-                      value={formData.appointment_time}
-                      onChange={handleTimeChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option value="">Select Time</option>
-                      {generateTimeSlots().map((time) => (
-                        <option key={time} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+
                   <div className="flex flex-col">
                     <label
                       htmlFor="email"
@@ -213,7 +166,7 @@ export default function EditPatientModal({
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="john.doe@company.com"
                       required
-                      onChange={handleEmailChange}
+                      onChange={handleChange}
                     />
                     {!isValidEmail && (
                       <h3 className="text-red-600">
@@ -222,95 +175,118 @@ export default function EditPatientModal({
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="dob">
+                    <label className="mb-1" htmlFor="DOB">
                       Date of birth:
                     </label>
                     <input
+                      id="DOB"
                       type="date"
-                      name="dob"
-                      value={formData.Dob}
+                      name="DOB"
+                      value={formData.DOB}
                       max={today} // Prevent past dates
                       placeholder="mm-dd-yyyy"
-                      onChange={handleDobChange}
+                      onChange={handleChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
                   </div>
                   <div className="flex flex-col">
-                    {/* Weight Field */}
-                    <label className="block mb-4">
-                      Weight (kg):
-                      <div className="flex items-center gap-2 mt-1">
-                        <input
-                          type="number"
-                          name="weight"
-                          value={formData.Weight}
-                          min="1"
-                          max="250"
-                          onChange={handleWeightChange}
-                          placeholder="Enter weight"
-                          className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        />
-                      </div>
-                    </label>
-                  </div>
-                  <div className="flex flex-col">
-                    {/* Height Field */}
-                    <label className="block mb-4">
-                      Height (CM):
-                      <div className="flex items-center gap-2 mt-1">
-                        <input
-                          type="number"
-                          name="height"
-                          value={formData.Height}
-                          min="1"
-                          max="250"
-                          onChange={handleHeightChange}
-                          placeholder="Enter height"
-                          className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        />
-                      </div>
-                    </label>
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="doctor">
-                      Doctor:
-                    </label>
-                    <select
-                      name="doctor"
-                      id="doctor"
-                      value={formData.DoctorName}
-                      onChange={handleDoctorChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    {/* Qualification Field */}
+                    <label
+                      htmlFor="Qualification"
+                      className="block text-sm font-medium text-black"
                     >
-                      <option value="">Select Doctor</option>
-                      <option value="Dr. Anderson">Dr. Anderson</option>
-                      <option value="Dr. Williams">Dr. Williams</option>
-                      <option value="Other">Other</option>
-                    </select>
+                      Qualification
+                    </label>
+                    <input
+                      type="text"
+                      name="Qualification"
+                      placeholder="Qualification"
+                      value={formData.Qualification}
+                      onChange={handleChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+                    />
                   </div>
-                  {!isNewAppointment && (
-                    <div className="flex flex-col">
-                      <label className="mb-1 text-red-600" htmlFor="doctor">
-                        Payment Method:
-                      </label>
-                      <select
-                        name="doctor"
-                        id="doctor"
-                        value={formData.Payment}
-                        onChange={handlePaymentChange}
-                        className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      >
-                        <option value="">Select Option</option>
-                        <option value="Pending">Pending</option>
-                        <option value="UPI">UPI</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="No Fee">No Fee</option>
-                        <option value="Cancel">Cancel</option>
-
-                      </select>
+                  <div className="flex flex-col">
+                    {/* Specialization Field */}
+                    <label
+                      htmlFor="Specialization"
+                      className="block text-sm font-medium text-black"
+                    >
+                      Specialization
+                    </label>
+                    <input
+                      type="text"
+                      name="Specialization"
+                      placeholder="Specialization"
+                      value={formData.Specialization}
+                      onChange={handleChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="CareerStartDate"
+                      className="block text-sm font-medium text-black"
+                    >
+                      Career Start Date
+                    </label>
+                    <input
+                      id="CareerStartDate"
+                      type="date"
+                      name="CareerStartDate"
+                    //   placeholder="mm-dd-yyyy"
+                      value={formData.CareerStartDate}
+                    //   onChange={handleChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+                    />
+                  </div>
+                  {formData.Shifts.map((shift, index) => (
+                    <div
+                      key={index}
+                      className="mt-4 p-4 border rounded bg-gray-800"
+                    >
+                      <h3 className="text-lg font-semibold text-white">
+                        Shift-{index + 1} Working Days
+                      </h3>
+                      <div className="flex space-x-2 mt-2 text-white">
+                        {daysOfWeek.map((day) => (
+                          <label key={day} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={shift.Days.includes(day)}
+                              onChange={() => handleDayToggle(index, day)}
+                              className="mr-1"
+                            />
+                            {day}
+                          </label>
+                        ))}
+                      </div>
+                      {/* Shift Timing */}
+                      <div className="flex mt-2 space-x-2">
+                        <input
+                          type="time"
+                          value={shift.StartTime}
+                          onChange={(e) =>
+                            handleShiftChange(
+                              index,
+                              "StartTime",
+                              e.target.value
+                            )
+                          }
+                          className="p-2 border rounded bg-white text-black"
+                        />
+                        <span className="text-white mt-3">To</span>
+                        <input
+                          type="time"
+                          value={shift.EndTime}
+                          onChange={(e) =>
+                            handleShiftChange(index, "EndTime", e.target.value)
+                          }
+                          className="p-2 border rounded bg-white text-black"
+                        />
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               </form>
             </div>
