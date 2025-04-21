@@ -17,7 +17,7 @@ const columns = [
   "Action",
 ];
 
-const AppointmentsList = () => {
+const AppointmentsList = ({ source }) => {
   const [parPage, setParPage] = useState(10);
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
@@ -25,14 +25,15 @@ const AppointmentsList = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [newAppointment, setNewAppointment] = useState(false);
-  const filteredUsers = searchValue && isNaN(searchValue) 
-    ? AppointmentData.filter((user) =>
-        user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : AppointmentData.filter((user) =>
-      user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
-    )
-  console.log(isNaN(searchValue))
+  const filteredUsers =
+    searchValue && isNaN(searchValue)
+      ? AppointmentData.filter((user) =>
+          user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      : AppointmentData.filter((user) =>
+          user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
+        );
+  console.log(isNaN(searchValue));
   const navigate = useNavigate();
   const handleEditmodal = () => {
     setNewAppointment(false);
@@ -47,24 +48,26 @@ const AppointmentsList = () => {
     setIsEditOpen(true);
     setViewData(AppointmentData.filter((value) => value.Id === id));
   };
-  const handleSearch = (e) =>{
+  const handleSearch = (e) => {
     setTimeout(() => {
-      setSearchValue(e.target.value)}, 1000)
-    }
+      setSearchValue(e.target.value);
+    }, 1000);
+  };
 
-    const handleCheckinClick = (id) => {
-      const checkinData = AppointmentData.filter((value) => value.Id === id)
-  
-      navigate("/checkin", { state: checkinData });
-    };
-  
+  const handleCheckinClick = (id) => {
+    const checkinData = AppointmentData.filter((value) => value.Id === id);
+
+    navigate("/checkin", { state: checkinData });
+  };
+  const heading = source === "Patients" ? "Patients List" : "Appointment List";
+  const pageName = source === "Patients" ? "Patients" : "Appointment";
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
-      <AppointmentRouting pageName="Appointment" />
+      <AppointmentRouting pageName={pageName} />
       <div className="flex flex-wrap w-full py-2 flex-col gap-7 items-center justify-center">
         <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-2xl font-semibold text-center text-white">
-            Appointment List
+            {heading}
           </h2>
           <input
             className="px-4 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
@@ -173,8 +176,10 @@ const AppointmentsList = () => {
                           <button
                             tabIndex={-1}
                             className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-300"
-                            onClick={()=>handleCheckinClick(d.Id)}
-                          > Check-in
+                            onClick={() => handleCheckinClick(d.Id)}
+                          >
+                            {" "}
+                            Check-in
                           </button>
                         </div>
                       </td>

@@ -43,6 +43,12 @@
       "path":"/checkin",
       "component":"CheckIn",
       "role":"user"
+    },
+    {
+      "path":"/patientList",
+      "component":"PatientList",
+      "role":"all"
     }
+    
   ]
   

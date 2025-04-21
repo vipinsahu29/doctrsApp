@@ -9,10 +9,10 @@ export const navigation = [
   },
   {
     name: "Patients",
-    current: false,
+    current: true,
     options: [
       { name: "Add Patients", path: "/" },
-      { name: "Patients List", path: "/" },
+      { name: "Patients List", path: "/patientList" },
     ],
   },
   {
