@@ -48,6 +48,11 @@
       "path":"/patientList",
       "component":"PatientList",
       "role":"all"
+    },
+    {
+      "path":"/dashboard",
+      "component":"Dashboard",
+      "role":"all"
     }
     
   ]

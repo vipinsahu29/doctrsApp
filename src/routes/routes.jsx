@@ -20,6 +20,7 @@ const loadComponent = (componentName) => {
     StaffList: lazy(() => import("../pages/staff/staffList")),
     CheckIn: lazy(()=>import("../pages/checkin/CheckIn")),
     PatientList: lazy(()=>import("../pages/patients/PatientsList")),
+    Dashboard: lazy(()=>import("../pages/doctrsDashboard/Dashboard")),
   };
   return Components[componentName] || (() => <h2>Component Not Found</h2>);
 };

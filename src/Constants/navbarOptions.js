@@ -30,7 +30,7 @@ export const navigation = [
       { name: "Staff", path: "/add_staff" },
       { name: "Salary", path: "/" },
       { name: "Others", path: "/" },
-      { name: "Dashboard", path: "/" },
+      { name: "Dashboard", path: "/dashboard" },
     ],
   },
 ];
