@@ -19,12 +19,13 @@ const AddStaff = () => {
     City: "",
     State: "",
     Country: "",
+    PANCard: "",
+    Adhar: "",
   });
 
   const today = new Date().toISOString().split("T")[0];
 
   const handleChange = (e) => {
-    console.log("name-", e.target.name);
     if (e.target.name === "mobile") {
       setIsMobileValid(validateMobile(e.target.value));
     }
@@ -162,6 +163,38 @@ const AddStaff = () => {
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
+          </div>
+          <div>
+            <label
+              htmlFor="panCard"
+              className="block text-sm font-medium text-white"
+            >
+              PAN Card
+            </label>
+            <input
+              type="text"
+              name="panCard"
+              placeholder="PAN Card"
+              value={formData.PANCard}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="adhar"
+              className="block text-sm font-medium text-white"
+            >
+              Adhar number
+            </label>
+            <input
+              type="text"
+              name="adhar"
+              placeholder="1111-1111-1111"
+              value={formData.Adhar}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+            />
           </div>
           {/* Qualification */}
           <div>

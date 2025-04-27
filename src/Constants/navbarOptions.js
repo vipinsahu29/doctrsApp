@@ -11,7 +11,7 @@ export const navigation = [
     name: "Patients",
     current: true,
     options: [
-      { name: "Add Patients", path: "/" },
+      { name: "Add Patients", path: "/addPatient" },
       { name: "Patients List", path: "/patientList" },
     ],
   },

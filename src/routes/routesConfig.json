@@ -50,10 +50,16 @@
       "role":"all"
     },
     {
+      "path":"/addPatient",
+      "component":"AddPatients",
+      "role":"all"
+    },
+    {
       "path":"/dashboard",
       "component":"Dashboard",
       "role":"all"
     }
+
     
   ]
   
