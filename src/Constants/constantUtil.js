@@ -1,9 +1,68 @@
+export const today = new Date().toISOString().split("T")[0];
 export const timeOptions = [
-    { label: "Morn-Noon-Night (1-1-1)", value: "1-1-1" },
-    { label: "Morn-Night (1-0-1)", value: "1-0-1" },
-    { label: "Morn Only (1-0-0)", value: "1-0-0" },
-    { label: "Noon Only (0-1-0)", value: "0-1-0" },
-    { label: "Night Only (0-0-1)", value: "0-0-1" },
-    { label: "Morn-Noon (1-1-0)", value: "1-1-0" },
-    { label: "Noon-Night (0-1-1)", value: "0-1-1" },
-  ];
+  { label: "Morn-Noon-Night (1-1-1)", value: "1-1-1" },
+  { label: "Morn-Night (1-0-1)", value: "1-0-1" },
+  { label: "Morn Only (1-0-0)", value: "1-0-0" },
+  { label: "Noon Only (0-1-0)", value: "0-1-0" },
+  { label: "Night Only (0-0-1)", value: "0-0-1" },
+  { label: "Morn-Noon (1-1-0)", value: "1-1-0" },
+  { label: "Noon-Night (0-1-1)", value: "0-1-1" },
+];
+
+const commonFields = [
+  { label: "First Name", name: "FirstName", type: "text", required: true },
+  { label: "Last Name", name: "LastName", type: "text", required: true },
+  { label: "Mobile", name: "Mobile", type: "tel", required: true },
+  { label: "Email", name: "Email", type: "email", required: true },
+  { label: "DOB", name: "DOB", type: "date", max: today, required: true },
+  {
+    label: "Gender",
+    name: "Gender",
+    type: "select",
+    options: ["Male", "Female", "Other"],
+    required: true,
+  },
+];
+export const addPatientsInputFields = [
+  ...commonFields,
+  { label: "PAN Card", name: "PANCard", type: "text", required: false },
+  { label: "Adhar number", name: "Adhar", type: "text", required: false },
+  {
+    label: "Occupation",
+    name: "Occupation",
+    type: "text",
+    required: true,
+  },
+  { label: "Last Visit", name: "LastVisit", type: "date", max: today, required: true },
+  { label: "City", name: "City", type: "text", required: true },
+  { label: "State", name: "State", type: "text", required: true },
+  { label: "Country", name: "Country", type: "text", required: true },
+];
+
+export const addStaffInputFields = [
+  ...commonFields,
+  { label: "PAN Card", name: "PANCard", type: "text", required: true },
+  { label: "Adhar number", name: "Adhar", type: "text", required: true },
+  {
+    label: "Qualification",
+    name: "Qualification",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "Specialization",
+    name: "Specialization",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "Department",
+    name: "Department",
+    type: "select",
+    options: ["Orthopedics", "Dentist", "Bones"],
+    required: true,
+  },
+  { label: "City", name: "City", type: "text", required: true },
+  { label: "State", name: "State", type: "text", required: true },
+  { label: "Country", name: "Country", type: "text", required: true },
+];

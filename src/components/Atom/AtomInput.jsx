@@ -24,6 +24,7 @@ const AtomInput = ({
       setError("");
     }
   };
+  const today = new Date().toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
 
   return (
     <div>
@@ -58,6 +59,7 @@ const AtomInput = ({
           onBlur={handleBlur}
           className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
           required={required}
+          max={today}
         />
       )}
       {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
@@ -75,6 +77,7 @@ AtomInput.propTypes = {
     .isRequired,
   required: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.string),
+  setError: PropTypes.func.isRequired
 };
 
 export default AtomInput;
