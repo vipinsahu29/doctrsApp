@@ -76,7 +76,7 @@ const StaffList = () => {
             onChange={handleSearch}
           />
           <div className="flex justify-center items-center">
-            <div className="relative overflow-x-auto min-h-auto pb-5">
+            <div className=" overflow-x-auto min-h-auto pb-5">
               <table className="border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
                 <thead className="text-sm uppercase">
                   <tr>

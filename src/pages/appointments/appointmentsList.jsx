@@ -25,6 +25,9 @@ const AppointmentsList = ({ source }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [newAppointment, setNewAppointment] = useState(false);
+  const filteredColums = columns.filter((col) =>
+    source === "Patients" ? col !== "Payment Status" : col
+  );
   const filteredUsers =
     searchValue && isNaN(searchValue)
       ? AppointmentData.filter((user) =>
@@ -80,13 +83,14 @@ const AppointmentsList = ({ source }) => {
               <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
                 <thead className=" text-sm text-yellow-400 uppercase">
                   <tr>
-                    {columns.map((items) => (
+                    {filteredColums.map((items) => (
                       <th
                         scope="col"
                         className="py-3 px-4 border border-gray-300"
                         key={items}
                       >
-                        {items}
+                      
+                        {source === "Patients" && items === "Appointment date" ? "Last visit Date" : items}
                       </th>
                     ))}
                   </tr>
@@ -141,16 +145,18 @@ const AppointmentsList = ({ source }) => {
                       >
                         {d.Time}
                       </td>
-                      <td
-                        scope="row"
-                        className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${
-                          d.Payment === "Pending"
-                            ? " text-red-400"
-                            : " text-green-400"
-                        }`}
-                      >
-                        {d.Payment}
-                      </td>
+                      {source !== "Patients" && (
+                        <td
+                          scope="row"
+                          className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${
+                            d.Payment === "Pending"
+                              ? " text-red-400"
+                              : " text-green-400"
+                          }`}
+                        >
+                          {d.Payment}
+                        </td>
+                      )}
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
