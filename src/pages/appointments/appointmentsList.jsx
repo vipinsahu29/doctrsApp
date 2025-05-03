@@ -67,13 +67,13 @@ const AppointmentsList = ({ source }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName={pageName} />
-      <div className="flex flex-wrap w-full py-2 flex-col gap-7 items-center justify-center">
-        <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
-          <h2 className="text-2xl font-semibold text-center text-white">
+      <div className="flex flex-wrap w-auto py-2 flex-col gap-7 items-center justify-center">
+        <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mx-4">
+          <h2 className="text-2xl font-semibold text-center text-yellow-400">
             {heading}
           </h2>
           <input
-            className="px-4 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+            className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
             type="text"
             placeholder="search"
             onChange={(e) => handleSearch(e)}
@@ -179,14 +179,15 @@ const AppointmentsList = ({ source }) => {
                             {" "}
                             <FaRegEye />{" "}
                           </button>
-                          <button
+
+                          { source !== "Patients" && <button
                             tabIndex={-1}
                             className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-300"
                             onClick={() => handleCheckinClick(d.Id)}
                           >
                             {" "}
                             Check-in
-                          </button>
+                          </button>}
                         </div>
                       </td>
                     </tr>

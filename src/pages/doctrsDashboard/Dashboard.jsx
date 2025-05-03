@@ -74,12 +74,12 @@ const Dashboard = () => {
   }));
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 mt-11">Clinic Dashboard</h1>
+    <div className="p-8 bg-gray-500 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 mt-11 text-yellow-400">Clinic Dashboard</h1>
       <div className="flex flex-col md:flex-row items-center gap-4 p-4">
         {/* Start Date */}
         <div className="flex flex-col">
-          <label className="text-sm font-semibold text-gray-600 mb-1">
+          <label className="text-sm font-semibold text-yellow-400 mb-1 ">
             Start Date
           </label>
           <input
@@ -93,7 +93,7 @@ const Dashboard = () => {
 
         {/* End Date */}
         <div className="flex flex-col">
-          <label className="text-sm font-semibold text-gray-600 mb-1">
+          <label className="text-sm font-semibold text-yellow-400 mb-1">
             End Date
           </label>
           <input

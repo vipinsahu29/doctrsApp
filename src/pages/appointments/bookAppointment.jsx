@@ -77,7 +77,7 @@ const BookAppointment = () => {
     <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="Appointment" />
       <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
-        <h2 className="text-2xl font-semibold text-center text-white">
+        <h2 className="text-2xl font-semibold text-center text-yellow-400">
           Appointment Form
         </h2>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
