@@ -4,7 +4,8 @@ import { salaryInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
 const Salary = () => {
   const [salaryData, setSalaryData] = useState([]);
-
+  const [addNewSalary, setAddNewSalary] = useState(false);
+  // Fetching salary data from a mock API
   const [data, setData] = useState({
     Name: "",
     Designation: "",
@@ -36,6 +37,7 @@ const Salary = () => {
       Deduction: "",
       NetSalary: "",
     });
+    setAddNewSalary(false);
     console.log("Form Submitted:", data, salaryData);
   };
 
@@ -46,34 +48,50 @@ const Salary = () => {
         <h2 className="text-2xl font-semibold text-center text-yellow-400">
           Salary Page
         </h2>
-        <div className="grid md:grid-cols-3 sm: grid-cols-2 gap-2">
-          {salaryInputFields.map((field) => (
-            <div key={field.name}>
-              <AtomInput
-                label={field.label}
-                name={field.name}
-                placeholder={field.label}
-                value={data[field.name]}
-                onChange={field.name === "NetSalary" ? () => {} : handleChange}
-                type={field.type}
-                options={field.options}
-                required={field.required}
-                disableInput={field.name === "NetSalary"}
-                setError={() => {}}
-              />
-            </div>
-          ))}
-        </div>
+        { ! addNewSalary &&
         <button
-          type="submit"
-          onClick={handleSubmit}
+          onClick={() => setAddNewSalary(true)}
           className={`md:px-6 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-gray-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
-            disabled && "cursor-not-allowed"
+            addNewSalary && "cursor-not-allowed"
           }`}
-          disabled={disabled}
+          disabled={addNewSalary}
         >
-          Save details
-        </button>
+          Add New Data
+        </button>}
+        {addNewSalary && (
+          <>
+            <div className="grid md:grid-cols-3 sm: grid-cols-2 gap-2">
+              {salaryInputFields.map((field) => (
+                <div key={field.name}>
+                  <AtomInput
+                    label={field.label}
+                    name={field.name}
+                    placeholder={field.label}
+                    value={data[field.name]}
+                    onChange={
+                      field.name === "NetSalary" ? () => {} : handleChange
+                    }
+                    type={field.type}
+                    options={field.options}
+                    required={field.required}
+                    disableInput={field.name === "NetSalary"}
+                    setError={() => {}}
+                  />
+                </div>
+              ))}
+            </div>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className={`md:px-6 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-gray-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
+                disabled && "cursor-not-allowed"
+              }`}
+              disabled={disabled}
+            >
+              Save details
+            </button>
+          </>
+        )}
 
         <table className="w-full mt-4 border-collapse border border-gray-900 p-2">
           <thead>
