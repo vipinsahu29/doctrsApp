@@ -354,7 +354,7 @@ const BookAppointment = () => {
           <div className="flex justify-center mt-6">
             <button
               type="submit"
-              className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              className="px-6 py-2 font-semibold bg-yellow-300 text-gray-900 rounded-md hover:bg-yellow-600 hover:text-gray-50 hover:font-bold border-2 border-gray-200"
             >
               Submit Appointment
             </button>

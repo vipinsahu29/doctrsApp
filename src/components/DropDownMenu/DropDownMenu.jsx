@@ -14,7 +14,7 @@ export default function DropDownMenu({ options = "options", values = [] }) {
       <div className="sm: mx-5 md:mx-2">
         <MenuButton
           key={options}
-          className="inline-flex md:w-full sm: w-40  justify-center gap-x-2.5 rounded-md bg-gray-800 px-2 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-500"
+          className="inline-flex md:w-full sm: w-40  justify-center gap-x-2.5 rounded-md bg-gray-800 px-2 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-yellow-400 hover:text-gray-900 hover:font-bold"
         >
           {options}
           <ChevronDownIcon
@@ -34,7 +34,7 @@ export default function DropDownMenu({ options = "options", values = [] }) {
               <Link
                 to={items.path}
                 onClick={() => close()}
-                className="block px-3 py-2 text-sm text-white data-focus:bg-gray-400 data-focus:text-gray-900 data-focus:outline-hidden hover:bg-gray-600"
+                className="block px-3 py-2 text-sm text-white data-focus:bg-gray-400 data-focus:text-gray-900 data-focus:outline-hidden hover:bg-yellow-400 hover:text-gray-900 hover:font-bold"
               >
                 {items.name}
               </Link>
