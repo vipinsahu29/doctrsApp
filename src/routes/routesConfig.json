@@ -58,6 +58,16 @@
       "path":"/dashboard",
       "component":"Dashboard",
       "role":"all"
+    },
+    {
+      "path":"/expence",
+      "component":"Expences",
+      "role":"all"
+    },
+    {
+      "path":"/salary",
+      "component":"Salary",
+      "role":"all"
     }
 
     

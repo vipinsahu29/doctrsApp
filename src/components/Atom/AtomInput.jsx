@@ -9,8 +9,9 @@ const AtomInput = ({
   onChange,
   type,
   options,
-  required=false,
-  setError
+  required = false,
+  setError,
+  disableInput = false
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -18,7 +19,6 @@ const AtomInput = ({
     if (required && value.trim() === "") {
       setErrorMessage(`${label} is required.`);
       setError(`${label} is required.`);
-
     } else {
       setErrorMessage("");
       setError("");
@@ -28,9 +28,11 @@ const AtomInput = ({
 
   return (
     <div>
-      <label htmlFor={name} className="block text-sm font-medium text-white">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={name} className="block text-sm font-medium text-white">
+          {label}
+        </label>
+      )}
       {type === "select" ? (
         <select
           id={name}
@@ -60,6 +62,7 @@ const AtomInput = ({
           className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
           required={required}
           max={today}
+          disabled={disableInput}
         />
       )}
       {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
@@ -68,7 +71,7 @@ const AtomInput = ({
 };
 
 AtomInput.propTypes = {
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
@@ -77,7 +80,8 @@ AtomInput.propTypes = {
     .isRequired,
   required: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.string),
-  setError: PropTypes.func.isRequired
+  setError: PropTypes.func,
+  disableInput: PropTypes.bool
 };
 
 export default AtomInput;

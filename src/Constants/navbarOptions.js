@@ -28,7 +28,7 @@ export const navigation = [
     current: false,
     options: [
       { name: "Staff", path: "/add_staff" },
-      { name: "Salary & Expenses", path: "/" },
+      { name: "Salary & Expenses", path: "/salary" },
       { name: "Others", path: "/" },
       { name: "Dashboard", path: "/dashboard" },
     ],

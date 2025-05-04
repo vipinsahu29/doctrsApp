@@ -66,3 +66,18 @@ export const addStaffInputFields = [
   { label: "State", name: "State", type: "text", required: true },
   { label: "Country", name: "Country", type: "text", required: true },
 ];
+
+export const salaryInputFields = [
+  { label: "Name", name: "Name", type: "text", required: true },
+  { label: "Designation", name: "Designation", type: "text", required: true },
+  { label: "Basic Salary", name: "BasicSalary", type: "number", required: true },
+  { label: "Deduction", name: "Deduction", type: "number", required: true },
+  { label: "Net", name: "NetSalary", type: "number", required: true },
+
+]
+export const expensesInputFields = [
+  { label: "Date", name: "Date", type: "date", max: today, required: true },
+  { label: "Description", name: "Description", type: "text", required: true },
+  { label: "Amount", name: "Amount", type: "number", required: true },
+  { label: "Payment Mode", name: "Payment Mode", type: "select",options:['Cash', 'UPI/NB', 'Credit Card', 'Cheque'] },
+]
