@@ -83,7 +83,7 @@ const StaffList = () => {
                     {columns.map((item) => (
                       <th
                         scope="col"
-                        className="py-3 px-4 border border-gray-300"
+                        className="py-3 px-4 border border-gray-300 text-yellow-400"
                         key={item}
                       >
                         {item}

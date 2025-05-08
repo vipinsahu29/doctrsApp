@@ -97,13 +97,11 @@ const Salary = () => {
           <thead>
             <tr className="bg-gray-200">
               <th className="border p-2 border-gray-900 w-[20px]">S.No.</th>
-              <th className="border p-2 border-gray-900">Name</th>
-              <th className="border p-2 border-gray-900 w-[20px]">
-                Designation
-              </th>
-              <th className="border p-2 border-gray-900">Basic Salary</th>
-              <th className="border p-2 border-gray-900 w-[20px]">Deduction</th>
-              <th className="border p-2 border-gray-900 w-1/6">Net Salary</th>
+              {salaryInputFields.map((col) => (
+                <th key={col.name} className="border p-2 border-gray-900">
+                  {col.label}
+                </th>
+              ))}
             </tr>
           </thead>
           {salaryData.length > 0 && (

@@ -14,6 +14,8 @@ const AddPatients = () => {
     Mobile: "",
     Email: "",
     DOB: "",
+    Height:0,
+    Weight:0,
     Gender: "",
     Occupation: "",
     LastVisit: "",

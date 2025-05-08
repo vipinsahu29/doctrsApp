@@ -13,7 +13,7 @@ const commonFields = [
   { label: "First Name", name: "FirstName", type: "text", required: true },
   { label: "Last Name", name: "LastName", type: "text", required: true },
   { label: "Mobile", name: "Mobile", type: "tel", required: true },
-  { label: "Email", name: "Email", type: "email", required: true },
+  { label: "Email", name: "Email", type: "email", required: false },
   { label: "DOB", name: "DOB", type: "date", max: today, required: true },
   {
     label: "Gender",
@@ -22,6 +22,9 @@ const commonFields = [
     options: ["Male", "Female", "Other"],
     required: true,
   },
+  { label: "Height", name: "Height", type: "number", required: false },
+  { label: "Weight", name: "Weight", type: "number", required: false },
+
 ];
 export const addPatientsInputFields = [
   ...commonFields,
@@ -68,7 +71,7 @@ export const addStaffInputFields = [
 ];
 
 export const salaryInputFields = [
-  { label: "Name", name: "Name", type: "text", required: true },
+  { label: "Full Name", name: "Name", type: "text", required: true },
   { label: "Designation", name: "Designation", type: "text", required: true },
   { label: "Basic Salary", name: "BasicSalary", type: "number", required: true },
   { label: "Deduction", name: "Deduction", type: "number", required: true },
@@ -80,4 +83,11 @@ export const expensesInputFields = [
   { label: "Description", name: "Description", type: "text", required: true },
   { label: "Amount", name: "Amount", type: "number", required: true },
   { label: "Payment Mode", name: "Payment Mode", type: "select",options:['Cash', 'UPI/NB', 'Credit Card', 'Cheque'] },
+]
+export const appointmentFields = [
+  ...commonFields,
+  { label: "Appointment Date", name: "appointment_date", type: "date", max: today, required: true },
+
+
+
 ]
