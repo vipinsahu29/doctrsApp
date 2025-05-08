@@ -65,10 +65,10 @@ const AppointmentsList = ({ source }) => {
   const heading = source === "Patients" ? "Patients List" : "Appointment List";
   const pageName = source === "Patients" ? "Patients" : "Appointment";
   return (
-    <div className="min-h-screen flex items-center bg-white py-6 flex-col gap-7 ">
+    <div className="min-h-screen flex md:items-center bg-white py-6 flex-col gap-7 ">
       <AppointmentRouting pageName={pageName} />
-      <div className="flex flex-wrap w-auto py-2 flex-col gap-7 items-center justify-center">
-        <div className="w-full max-w-5xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mx-4">
+      <div className="flex flex-wrap w-auto py-2 flex-col gap-7 items-center ">
+        <div className="w-full md:max-w-5xl  bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mx-4">
           <h2 className="text-2xl font-semibold text-center text-yellow-400">
             {heading}
           </h2>
@@ -196,7 +196,7 @@ const AppointmentsList = ({ source }) => {
               </table>
             </div>
           </div>
-          <div className="w-full flex justify-end mt-4 bottom-4 right-4">
+          <div className="w-full flex justify-end mt-4 bottom-4 right-4 ml-2">
             {/*isFetching && (
           <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>
         )*/}

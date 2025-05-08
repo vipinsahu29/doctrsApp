@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { expensesInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
@@ -7,19 +7,15 @@ const Expenses = () => {
   const [addNewSalary, setAddNewSalary] = useState(false);
   // Fetching salary data from a mock API
   const [data, setData] = useState({
-    Name: "",
-    Designation: "",
-    BasicSalary: "",
-    Deduction: "",
-    NetSalary: "",
+    Date: "",
+    Description: "",
+    Amount: "",
+    PaymentMode: "",
   });
 
   const disabled =
-    !data.Name || !data.Designation || !data.BasicSalary || !data.Deduction;
-  useEffect(() => {
-    const netSalary = Number(data.BasicSalary) - Number(data.Deduction);
-    setData((prevData) => ({ ...prevData, NetSalary: String(netSalary) }));
-  }, [data.BasicSalary, data.Deduction]);
+    !data.Date || !data.Description || !data.Amount || !data.PaymentMode;
+  console.log('disabled: ',disabled,'data: ',data)
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -31,11 +27,10 @@ const Expenses = () => {
     setExpenceData([...expenceData, newData]);
     // Log the form data
     setData({
-      Name: "",
-      Designation: "",
-      BasicSalary: "",
-      Deduction: "",
-      NetSalary: "",
+      Date: "",
+      Description: "",
+      Amount: "",
+      PaymentMode: "",
     });
     setAddNewSalary(false);
     console.log("Form Submitted:", data, expenceData);
@@ -44,7 +39,7 @@ const Expenses = () => {
   return (
     <div className="min-h-screen flex items-center bg-white py-6 flex-col gap-7">
       <AppointmentRouting pageName="MoreSalary" />
-      <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
+      <div className="md:w-full sm: w-auto md:max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-yellow-400">
           Expence Page
         </h2>
@@ -56,7 +51,7 @@ const Expenses = () => {
             }`}
             disabled={addNewSalary}
           >
-            Add New Data
+            Add New Expense
           </button>
         )}
         {addNewSalary && (
@@ -108,24 +103,21 @@ const Expenses = () => {
           {expenceData.length > 0 && (
             <tbody>
               {expenceData.map((data, index) => (
-                <tr key={data.Name} className="text-center bg-gray-100">
+                <tr key={data.Description} className="text-center bg-gray-100">
                   <td className="border p-2 border-gray-900 w-[20px]">
                     {index + 1}
                   </td>
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.Name}
+                  <td className="border p-2 border-gray-900 w-[130px]">
+                    {data.Date}
                   </td>
                   <td className="border p-2 border-gray-900">
-                    {data.Designation}
+                    {data.Description}
                   </td>
                   <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.BasicSalary}
+                    {data.Amount}
                   </td>
-                  <td className="border p-2 border-gray-900 w-14">
-                    {data.Deduction}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.NetSalary}
+                  <td className="border p-2 border-gray-900 w-17">
+                    {data.PaymentMode}
                   </td>
                 </tr>
               ))}
