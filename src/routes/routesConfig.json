@@ -68,8 +68,12 @@
       "path":"/salary",
       "component":"Salary",
       "role":"all"
+    },
+    {
+      "path": "/loginRegister",
+      "component": "LoginRegister",
+      "role": "all"
     }
-
     
   ]
   
