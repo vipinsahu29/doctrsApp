@@ -1,12 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { expensesInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
+import { getExpenseData } from "../../SupaBase/Api";
+import useGetApiData from "../../hooks/useGetApiData";
+import tableNames from "../../SupaBase/tableName";
+
 const Expenses = () => {
-  const [expenceData, setExpenceData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
   const [addNewSalary, setAddNewSalary] = useState(false);
-  // Fetching salary data from a mock API
-  const [data, setData] = useState({
+  const [response, setResponse] = useState([]);
+
+  const { data, loading, error, refetch, count } = useGetApiData(
+    tableNames.Expense,
+    getExpenseData
+  );
+  console.log(
+    "response: ",
+    data,
+    "error: ",
+    error,
+    "count: ",
+    count,
+    "loading: ",
+    loading,
+    "refetch: ",refetch
+  );
+
+  useEffect(() => {
+    if (data) {
+      setResponse(data);
+    }
+  }, [data]);
+  const [tableData, setTableData] = useState({
     Date: "",
     Description: "",
     Amount: "",
@@ -14,26 +40,28 @@ const Expenses = () => {
   });
 
   const disabled =
-    !data.Date || !data.Description || !data.Amount || !data.PaymentMode;
-  console.log('disabled: ',disabled,'data: ',data)
+    !tableData.Date ||
+    !tableData.Description ||
+    !tableData.Amount ||
+    !tableData.PaymentMode;
   const handleChange = (e) => {
+    e.preventDefault(); // Prevents the default form submission
     const { name, value } = e.target;
 
-    setData({ ...data, [name]: value });
+    setTableData({ ...tableData, [name]: value });
   };
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission
-    const newData = { ...data };
-    setExpenceData([...expenceData, newData]);
+    const newData = { ...tableData };
+    setExpenseData([...expenseData, newData]);
     // Log the form data
-    setData({
+    setTableData({
       Date: "",
       Description: "",
       Amount: "",
       PaymentMode: "",
     });
     setAddNewSalary(false);
-    console.log("Form Submitted:", data, expenceData);
   };
 
   return (
@@ -63,7 +91,7 @@ const Expenses = () => {
                     label={field.label}
                     name={field.name}
                     placeholder={field.label}
-                    value={data[field.name]}
+                    value={tableData[field.name]}
                     onChange={
                       field.name === "NetSalary" ? () => {} : handleChange
                     }
@@ -100,24 +128,24 @@ const Expenses = () => {
               ))}
             </tr>
           </thead>
-          {expenceData.length > 0 && (
+          {response?.length > 0 && (
             <tbody>
-              {expenceData.map((data, index) => (
+              {response.map((data, index) => (
                 <tr key={data.Description} className="text-center bg-gray-100">
                   <td className="border p-2 border-gray-900 w-[20px]">
                     {index + 1}
                   </td>
                   <td className="border p-2 border-gray-900 w-[130px]">
-                    {data.Date}
+                    {data.expense_date}
                   </td>
                   <td className="border p-2 border-gray-900">
-                    {data.Description}
+                    {data.description}
                   </td>
                   <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.Amount}
+                    {data.amount}
                   </td>
                   <td className="border p-2 border-gray-900 w-17">
-                    {data.PaymentMode}
+                    {data.payment_mode}
                   </td>
                 </tr>
               ))}
