@@ -1,6 +1,7 @@
 // LoginRegister.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUserAuthAPI, registerUserAPI } from "../../SupaBase/Api";
 
 const Input = ({ label, type, value, onChange, placeholder = "" }) => (
   <div className="mb-4">
@@ -33,14 +34,21 @@ const Input = ({ label, type, value, onChange, placeholder = "" }) => (
 const Login = ({ onSwitch }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login:", { email, password });
-    // Dummy login success flag
-    localStorage.setItem("isAuthenticated", "true");
-    navigate("/book_appointment");
+    const result = await loginUserAuthAPI(email, password);
+
+    if (result.error) {
+      setMessage(`❌ ${result.error}`);
+      console.log("Error:", result.error);
+    } else {
+      setMessage(`✅ Welcome ${result.user.email}`);
+      console.log("Session:", result.session);
+      navigate("/book_appointment"); // You can store token if needed
+    }
   };
 
   return (
@@ -79,6 +87,7 @@ const Login = ({ onSwitch }) => {
             Register
           </span>
         </p>
+        {message && <h2 className="text-red-600 cursor-pointer hover:underline text-lg mt-4 text-center">{message}</h2>}
       </form>
     </div>
   );
@@ -94,8 +103,11 @@ const Register = ({ onSwitch }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
+    const result = await registerUserAPI(email, password, doctorName);
+    console.log("dataaaa-,", result);
     console.log("Register:", {
       clinicName,
       specialization,
