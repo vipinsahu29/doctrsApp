@@ -1,5 +1,3 @@
-const tableNames = {
-  Expense: "expense",
-};
-
-export default tableNames
+export const ExpensesTable = "expense";
+export const ClinicTable = "clinic";
+export const UserTable = "user";

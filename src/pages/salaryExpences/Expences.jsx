@@ -4,7 +4,7 @@ import { expensesInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
 import { getExpenseData } from "../../SupaBase/Api";
 import useGetApiData from "../../hooks/useGetApiData";
-import tableNames from "../../SupaBase/tableName";
+import { ExpensesTable } from "../../SupaBase/tableName";
 
 const Expenses = () => {
   const [expenseData, setExpenseData] = useState([]);
@@ -12,7 +12,7 @@ const Expenses = () => {
   const [response, setResponse] = useState([]);
 
   const { data, loading, error, refetch, count } = useGetApiData(
-    tableNames.Expense,
+    ExpensesTable,
     getExpenseData
   );
   console.log(
@@ -24,7 +24,8 @@ const Expenses = () => {
     count,
     "loading: ",
     loading,
-    "refetch: ",refetch
+    "refetch: ",
+    refetch
   );
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const Expenses = () => {
           {response?.length > 0 && (
             <tbody>
               {response.map((data, index) => (
-                <tr key={data.Description} className="text-center bg-gray-100">
+                <tr key={data.description} className="text-center bg-gray-100">
                   <td className="border p-2 border-gray-900 w-[20px]">
                     {index + 1}
                   </td>

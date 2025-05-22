@@ -1,11 +1,11 @@
 import { supabase } from "../supabaseClient";
-import tableNames from "./tableName";
+import { ExpensesTable} from "./tableName";
 
 export const getExpenseData = async () => {
   let errorMessage = null;
   try {
     const { data, error, count, status, statusText } = await supabase
-      .from(tableNames.Expense)
+      .from(ExpensesTable)
       .select("*", { count: "exact" });
     if (error) {
       errorMessage = `Error (${status} ${statusText}):, ${error.message}`;

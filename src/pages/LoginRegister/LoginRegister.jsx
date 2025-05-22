@@ -1,42 +1,83 @@
 // LoginRegister.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Input = ({ label, type, value, onChange }) => (
+const Input = ({ label, type, value, onChange, placeholder = "" }) => (
   <div className="mb-4">
     <label className="block text-white mb-2">{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-    />
+    {type === "tel" ? (
+      <input
+        type="numeric"
+        pattern="[0-9]{10}"
+        maxLength="10"
+        inputMode="numeric"
+        placeholder="Enter 10-digit mobile number"
+        value={value}
+        onChange={onChange}
+        required
+        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+      />
+    ) : (
+      <input
+        required
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+      />
+    )}
   </div>
 );
 
 const Login = ({ onSwitch }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log('Login:', { email, password });
+    console.log("Login:", { email, password });
     // Dummy login success flag
-    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem("isAuthenticated", "true");
     navigate("/book_appointment");
   };
 
   return (
     <div className="bg-gray-700 min-h-screen flex items-center justify-center bg-[url('/doctor-bg.svg')] bg-cover bg-center">
-      <form onSubmit={handleLogin} className="bg-gray-800 p-8 rounded-xl shadow-xl w-96">
-        <h2 className="text-white text-2xl mb-6 text-center">Doctor Clinic Login</h2>
-        <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit" className="bg-yellow-400 text-black w-full py-2 rounded mt-4 font-semibold hover:bg-yellow-300">Login</button>
+      <form
+        onSubmit={handleLogin}
+        className="bg-gray-800 p-8 rounded-xl shadow-xl w-96"
+      >
+        <h2 className="text-white text-2xl mb-6 text-center">
+          Doctor Clinic Login
+        </h2>
+        <Input
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="bg-yellow-400 text-black w-full py-2 rounded mt-4 font-semibold hover:bg-yellow-300"
+        >
+          Login
+        </button>
         <p className="text-white text-sm mt-4 text-center">
-          Don’t have an account?{' '}
-          <span onClick={onSwitch} className="text-yellow-400 cursor-pointer hover:underline">Register</span>
+          Don’t have an account?{" "}
+          <span
+            onClick={onSwitch}
+            className="text-yellow-400 cursor-pointer hover:underline"
+          >
+            Register
+          </span>
         </p>
       </form>
     </div>
@@ -44,17 +85,18 @@ const Login = ({ onSwitch }) => {
 };
 
 const Register = ({ onSwitch }) => {
-  const [clinicName, setClinicName] = useState('');
-  const [specialization, setSpecialization] = useState('');
-  const [doctorName, setDoctorName] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [clinicName, setClinicName] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [doctorName, setDoctorName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log('Register:', {
+    console.log("Register:", {
       clinicName,
       specialization,
       doctorName,
@@ -67,19 +109,75 @@ const Register = ({ onSwitch }) => {
 
   return (
     <div className="bg-gray-700 min-h-screen flex items-center justify-center bg-[url('/doctor-register-bg.svg')] bg-cover bg-center">
-      <form onSubmit={handleRegister} className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-lg">
-        <h2 className="text-white text-2xl mb-6 text-center">Doctor Clinic Register</h2>
-        <Input label="Clinic Name" type="text" value={clinicName} onChange={(e) => setClinicName(e.target.value)} />
-        <Input label="Specialization" type="text" value={specialization} onChange={(e) => setSpecialization(e.target.value)} />
-        <Input label="Doctor Name" type="text" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} />
-        <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <Input label="Address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
-        <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <Input label="Confirm Password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        <button type="submit" className="bg-yellow-400 text-black w-full py-2 rounded mt-4 font-semibold hover:bg-yellow-300">Register</button>
+      <form
+        onSubmit={handleRegister}
+        className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-lg"
+      >
+        <h2 className="text-white text-2xl mb-6 text-center">
+          Doctor Clinic Register
+        </h2>
+        <Input
+          label="Clinic Name"
+          type="text"
+          value={clinicName}
+          onChange={(e) => setClinicName(e.target.value)}
+        />
+        <Input
+          label="Specialization"
+          type="text"
+          value={specialization}
+          onChange={(e) => setSpecialization(e.target.value)}
+        />
+        <Input
+          label="Doctor Name"
+          type="text"
+          value={doctorName}
+          onChange={(e) => setDoctorName(e.target.value)}
+        />
+        <Input
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          label="Mobile"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <Input
+          label="Address"
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Input
+          label="Confirm Password"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="bg-yellow-400 text-black w-full py-2 rounded mt-4 font-semibold hover:bg-yellow-300"
+        >
+          Register
+        </button>
         <p className="text-white text-sm mt-4 text-center">
-          Already have an account?{' '}
-          <span onClick={onSwitch} className="text-yellow-400 cursor-pointer hover:underline">Login</span>
+          Already have an account?{" "}
+          <span
+            onClick={onSwitch}
+            className="text-yellow-400 cursor-pointer hover:underline"
+          >
+            Login
+          </span>
         </p>
       </form>
     </div>
