@@ -41,3 +41,17 @@ export const calculateExperience = (careerStartDate) => {
 
   return `${years} Y ${months} M`;
 };
+
+export const validatePasswords = (
+  password,
+  confirmPassword = "",
+  lengthCheck = false
+) => {
+  if (confirmPassword && password !== confirmPassword) {
+    return "Passwords do not match";
+  }
+  if (!!password && password.length < 8 && lengthCheck) {
+    return "Password must be at least 8 characters long";
+  }
+  return null;
+};

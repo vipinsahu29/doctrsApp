@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUserAuthAPI, registerUserAPI } from "../../SupaBase/Api";
-
-const Input = ({ label, type, value, onChange, placeholder = "" }) => (
+import useAuthStore from "../../store/authStore";
+import { validatePasswords } from "../../utility/util";
+const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
   <div className="mb-4">
-    <label className="block text-white mb-2">{label}</label>
+    <label className="block text-white mb-1">{label}</label>
     {type === "tel" ? (
       <input
         type="numeric"
@@ -28,10 +29,12 @@ const Input = ({ label, type, value, onChange, placeholder = "" }) => (
         className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
       />
     )}
+    {error && <label className="block text-red-600 mb-1">{error}</label>}
   </div>
 );
 
 const Login = ({ onSwitch }) => {
+  const { login, loading } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -39,16 +42,12 @@ const Login = ({ onSwitch }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const result = await loginUserAuthAPI(email, password);
-
-    if (result.error) {
-      setMessage(`❌ ${result.error}`);
-      console.log("Error:", result.error);
-    } else {
-      setMessage(`✅ Welcome ${result.user.email}`);
-      console.log("Session:", result.session);
-      navigate("/book_appointment"); // You can store token if needed
+    const { error } = await login(email, password);
+    if (error) {
+      setMessage(error + " Please try again.");
+      alert("Login failed!");
     }
+    navigate("/appointment_list");
   };
 
   return (
@@ -87,7 +86,11 @@ const Login = ({ onSwitch }) => {
             Register
           </span>
         </p>
-        {message && <h2 className="text-red-600 cursor-pointer hover:underline text-lg mt-4 text-center">{message}</h2>}
+        {message && (
+          <h2 className="text-red-600 cursor-pointer hover:underline text-lg mt-4 text-center">
+            {message}
+          </h2>
+        )}
       </form>
     </div>
   );
@@ -102,9 +105,18 @@ const Register = ({ onSwitch }) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    const error = validatePasswords(password, confirmPassword);
+    if (error) {
+      setErrorMessage(error);
+      return;
+    } else {
+      setErrorMessage("");
+    }
 
     const result = await registerUserAPI(email, password, doctorName);
     console.log("dataaaa-,", result);
@@ -120,14 +132,14 @@ const Register = ({ onSwitch }) => {
   };
 
   return (
-    <div className="bg-gray-700 min-h-screen flex items-center justify-center bg-[url('/doctor-register-bg.svg')] bg-cover bg-center">
+    <div className="bg-gray-700 min-h-screen flex flex-col items-center justify-center bg-[url('/doctor-register-bg.svg')] bg-cover bg-center">
+      <h2 className="text-white text-6xl my-10 text-center top-2">
+        Doctor Clinic Register
+      </h2>
       <form
         onSubmit={handleRegister}
-        className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-lg"
+        className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-[800px] md:grid md:grid-cols-2 gap-8 mb-10"
       >
-        <h2 className="text-white text-2xl mb-6 text-center">
-          Doctor Clinic Register
-        </h2>
         <Input
           label="Clinic Name"
           type="text"
@@ -169,13 +181,18 @@ const Register = ({ onSwitch }) => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={validatePasswords(password, "", true)}
         />
         <Input
           label="Confirm Password"
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          error={validatePasswords(password, confirmPassword)}
         />
+        {errorMessage && (
+          <p className="text-red-600 text-center mb-4">{errorMessage}</p>
+        )}
         <button
           type="submit"
           className="bg-yellow-400 text-black w-full py-2 rounded mt-4 font-semibold hover:bg-yellow-300"

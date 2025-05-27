@@ -1,11 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import routesConfig from "./routesConfig.json"; // Import the JSON config
-import { lazy, Suspense, createElement } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import LoginRegister from "../pages/LoginRegister/LoginRegister";
 import Navbar from "../components/headerNavbar/Navbar";
-const isAuthenticated = () => {
-  return localStorage.getItem("isAuthenticated") === "true";
-};
+import useAuthStore from "../store/authStore";
 
 const loadComponent = (componentName) => {
   const Components = {
@@ -34,15 +32,21 @@ const loadComponent = (componentName) => {
 };
 
 const PrivateRoute = ({ children }) => {
-  if (isAuthenticated()) {
-    return (
-      <>
-        <Navbar />
-        {children}
-      </>);
-  } else {
+  const { user, fetchSession } = useAuthStore();
+  useEffect(() => {
+    fetchSession(); // Load session on mount
+  }, []);
+  console.log("user: ", user);
+  if (!user) {
     return <Navigate to="/loginRegister" replace />;
   }
+
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 };
 
 export default function AppRoutes() {
@@ -51,17 +55,19 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/loginRegister" element={<LoginRegister />} />
         {routesConfig.map(({ path, component }) => {
-          const Component = createElement(loadComponent(component));
-
+          const Component = loadComponent(component); // Lazy component function
           return (
             <Route
               key={path}
               path={path}
-              element={<PrivateRoute>{Component}</PrivateRoute>}
+              element={
+                <PrivateRoute>
+                  <Component />
+                </PrivateRoute>
+              }
             />
           );
         })}
-        {/* Redirect unknown routes to login */}
         <Route path="*" element={<Navigate to="/loginRegister" replace />} />
       </Routes>
     </Suspense>
