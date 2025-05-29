@@ -11,8 +11,10 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import DropDownMenu from "../DropDownMenu/DropDownMenu";
 import { navigation } from "../../Constants/navbarOptions";
 import drLogo from "../../assets/drLogo.jpeg";
+import useAuthStore from "../../store/authStore";
 
 export default function Navbar() {
+  const {logout} = useAuthStore()
   return (
     <Disclosure as="nav" className="bg-gray-600 fixed top-0 right-0 left-0">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -91,7 +93,7 @@ export default function Navbar() {
                     Settings
                   </a>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={()=>logout()}>
                   <a
                     href="#"
                     className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"

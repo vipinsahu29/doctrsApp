@@ -1,7 +1,7 @@
 // LoginRegister.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUserAuthAPI, registerUserAPI } from "../../SupaBase/Api";
+import { registerUserAPI } from "../../SupaBase/Api";
 import useAuthStore from "../../store/authStore";
 import { validatePasswords } from "../../utility/util";
 const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
@@ -34,9 +34,9 @@ const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
 );
 
 const Login = ({ onSwitch }) => {
-  const { login, loading } = useAuthStore();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login } = useAuthStore();
+  const [email, setEmail] = useState("test@test.com");
+  const [password, setPassword] = useState("12345678");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -44,9 +44,10 @@ const Login = ({ onSwitch }) => {
     e.preventDefault();
     const { error } = await login(email, password);
     if (error) {
-      setMessage(error + " Please try again.");
-      alert("Login failed!");
+      setMessage(error + " invalid username or password.");
+      alert("invalid username or password");
     }
+
     navigate("/appointment_list");
   };
 
@@ -106,7 +107,9 @@ const Register = ({ onSwitch }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [registerFail, setRegisterFail] = useState("");
 
+  const [successMessage, setSuccessMessage] = useState("");
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -119,16 +122,23 @@ const Register = ({ onSwitch }) => {
     }
 
     const result = await registerUserAPI(email, password, doctorName);
-    console.log("dataaaa-,", result);
-    console.log("Register:", {
-      clinicName,
-      specialization,
-      doctorName,
-      email,
-      address,
-      password,
-      confirmPassword,
-    });
+    console.log("dataaaa-,", result?.uuid, result);
+    if (result?.error) {
+      setRegisterFail(result?.error);
+      return;
+    }
+    if (result?.uuid) {
+      setSuccessMessage("Registration successful! Please click on login now.");
+      setRegisterFail("");
+      setClinicName("");
+      setSpecialization("");
+      setDoctorName("");
+      setEmail("");
+      setAddress("");
+      setPhone("");
+      setPassword("");
+      setConfirmPassword("");
+    }
   };
 
   return (
@@ -193,21 +203,33 @@ const Register = ({ onSwitch }) => {
         {errorMessage && (
           <p className="text-red-600 text-center mb-4">{errorMessage}</p>
         )}
-        <button
-          type="submit"
-          className="bg-yellow-400 text-black w-full py-2 rounded mt-4 font-semibold hover:bg-yellow-300"
-        >
-          Register
-        </button>
-        <p className="text-white text-sm mt-4 text-center">
-          Already have an account?{" "}
-          <span
-            onClick={onSwitch}
-            className="text-yellow-400 cursor-pointer hover:underline"
+        {registerFail && (
+          <p className="text-red-600 text-center font-bold mb-4">
+            {registerFail}
+          </p>
+        )}
+        <div className="flex flex-col items-center justify-center col-span-2">
+          <button
+            type="submit"
+            className="bg-yellow-400 text-black w-full py-2 rounded font-semibold hover:bg-yellow-300"
           >
-            Login
-          </span>
-        </p>
+            Register
+          </button>
+          {successMessage && (
+            <h2 className="text-green-400 text-2xl my-10 text-center top-2">
+              {successMessage}
+            </h2>
+          )}
+          <p className="text-white text-sm mt-4 text-center">
+            Already have an account?{" "}
+            <span
+              onClick={onSwitch}
+              className="text-yellow-400 cursor-pointer hover:underline"
+            >
+              Login
+            </span>
+          </p>
+        </div>
       </form>
     </div>
   );
@@ -215,7 +237,6 @@ const Register = ({ onSwitch }) => {
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
-
   return isLogin ? (
     <Login onSwitch={() => setIsLogin(false)} />
   ) : (

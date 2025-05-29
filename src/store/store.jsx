@@ -1,33 +1,23 @@
 import { create } from "zustand";
-
-const Store = create((set) => ({
-  appointmentsList: [], // Store for appointments
-  addAppointment: (appointment) =>
-    set((state) => {
-      const newAppointment = {
-        ...appointment,
-        id: state.appointmentsList.length,
-      }; // Using length of the list as the id
-      return { appointmentsList: [...state.appointmentsList, newAppointment] };
-    }),
-  // Inside your Zustand store
-  removeAppointment: (id) => {
-    set((state) => ({
-      appointmentsList: state.appointmentsList.filter(
-        (appointment) => appointment.id !== id
-      ),
-    }));
-  },
-  // Inside your Zustand store
-  updateAppointment: (updatedAppointment) => {
-    set((state) => ({
-      appointmentsList: state.appointmentsList.map((appointment) =>
-        appointment.id === updatedAppointment.id
-          ? updatedAppointment
-          : appointment
-      ),
-    }));
-  },
-}));
+import { persist } from "zustand/middleware";
+const initialState = {
+  accessToken: null,
+  isAuthenticated: false,
+  setAccessToken: (_accessToken) => null,
+  setIsAuthenticated: (_isAuthenticated) => null,
+};
+const Store = create(
+  persist((set) => ({
+    ...initialState,
+    setAccessToken: (_accessToken) => set({ accessToken: _accessToken }),
+    setIsAuthenticated: (_isAuthenticated) =>
+      set({ isAuthenticated: _isAuthenticated }),
+  }),
+  {
+    name: 'auth-storage', // localStorage key
+    partialize: (state) => ({ userSession: state.userSession }), // optional but safe
+  }
+)
+);
 
 export default Store;

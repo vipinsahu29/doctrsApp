@@ -4,7 +4,7 @@ import { lazy, Suspense, useEffect } from "react";
 import LoginRegister from "../pages/LoginRegister/LoginRegister";
 import Navbar from "../components/headerNavbar/Navbar";
 import useAuthStore from "../store/authStore";
-
+import { supabase } from "../supabaseClient";
 const loadComponent = (componentName) => {
   const Components = {
     BookAppointment: lazy(() =>
@@ -32,12 +32,23 @@ const loadComponent = (componentName) => {
 };
 
 const PrivateRoute = ({ children }) => {
-  const { user, fetchSession } = useAuthStore();
+  const { user, fetchSession, session } = useAuthStore();
+  const setUserSession = useAuthStore((state) => state.setSession);
   useEffect(() => {
     fetchSession(); // Load session on mount
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          setUserSession(session);
+        }
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
-  console.log("user: ", user);
-  if (!user) {
+  if (!user && !session?.access_token) {
     return <Navigate to="/loginRegister" replace />;
   }
 
