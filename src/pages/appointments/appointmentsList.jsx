@@ -36,7 +36,7 @@ const AppointmentsList = ({ source }) => {
       : AppointmentData.filter((user) =>
           user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
         );
-  console.log(isNaN(searchValue));
+
   const navigate = useNavigate();
   const handleEditmodal = () => {
     setNewAppointment(false);

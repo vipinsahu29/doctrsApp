@@ -1,7 +1,27 @@
 import { supabase } from "../supabaseClient";
 import { ExpensesTable } from "./tableName";
 
-export const registerUserAPI = async (email, password, display_name) => {
+export const registerUserAPI = async (
+  email,
+  password,
+  drName,
+  role,
+  mobile,
+  specialization,
+  clinicName,
+  clinicAddress
+) => {
+  console.log(
+    "API reg: ",
+    email,
+    password,
+    drName,
+    role,
+    Number(mobile),
+    specialization,
+    clinicName,
+    clinicAddress
+  );
   if (!email || !password) {
     return { error: "Email and password are required." };
   }
@@ -10,23 +30,20 @@ export const registerUserAPI = async (email, password, display_name) => {
   const { data, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
-    display_name,
+    phone: String(mobile), // Ensure mobile is a string
   });
 
   if (signUpError) {
     console.error("Signup Error:", signUpError.message);
     return { error: signUpError.message };
   }
-  console.log("Signup Data:", data);
   // Supabase returns data.user in newer SDK
   const user = data?.user;
+  const uuid = user?.id;
 
   if (!user || !user.id) {
     return { error: "User ID not found after signup." };
   }
-
-  const uuid = user.id;
-
   return {
     uuid,
     message: "User registered successfully.",
@@ -56,6 +73,19 @@ export const loginUserAuthAPI = async (email, password) => {
     message: "Login successful.",
   };
 };
+
+//delete user
+
+// const deleteUser = async (userId) => {
+//   const { error } = await supabase.auth.api.deleteUser(userId);
+//   // Specify the user ID to delete
+
+//   if (error) {
+//     console.error("Error deleting user:", error);
+//   } else {
+//     console.log("User deleted successfully:");
+//   }
+// };
 export const getExpenseData = async () => {
   let errorMessage = null;
   try {
@@ -75,3 +105,21 @@ export const getExpenseData = async () => {
     return { data: [], error: "Unexpected error occurred", count: 0 };
   }
 };
+
+// const { error: rpcError } = await supabase.rpc("create_clinic_and_user", {
+//   p_user_id: uuid,
+//   p_name: drName,
+//   p_role: role,
+//   p_specialization: specialization,
+//   p_mobile: mobile,
+//   p_email: email,
+//   p_status: "active",
+//   p_clinic_name: clinicName,
+//   p_clinic_address: clinicAddress,
+// });
+
+// if (rpcError) {
+//   console.error("Registration RPC error:", rpcError.message);
+//   await supabase.auth.api.deleteUser(uuid)
+//   return;
+// }

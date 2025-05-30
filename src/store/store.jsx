@@ -3,19 +3,19 @@ import { persist } from "zustand/middleware";
 const initialState = {
   accessToken: null,
   isAuthenticated: false,
-  setAccessToken: (_accessToken) => null,
-  setIsAuthenticated: (_isAuthenticated) => null,
+  UID: (_uid) => null,
+  clinicId: (_clinicId) => null,
 };
 const Store = create(
   persist((set) => ({
     ...initialState,
-    setAccessToken: (_accessToken) => set({ accessToken: _accessToken }),
-    setIsAuthenticated: (_isAuthenticated) =>
-      set({ isAuthenticated: _isAuthenticated }),
+    setUID: (_uid) => set({ UID: _uid }),
+    setClinicId: (_clinicId) =>
+      set({ isAuthenticated: _clinicId }),
   }),
   {
-    name: 'auth-storage', // localStorage key
-    partialize: (state) => ({ userSession: state.userSession }), // optional but safe
+    name: 'local-storage', // localStorage key
+    partialize: (state) => ({ UUID: state.UUID }), // optional but safe
   }
 )
 );

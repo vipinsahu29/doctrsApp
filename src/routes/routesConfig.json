@@ -73,6 +73,11 @@
       "path": "/loginRegister",
       "component": "LoginRegister",
       "role": "all"
+    },
+    {
+      "path": "/registration",
+      "component": "Registration",
+      "role": "all"
     }
     
   ]

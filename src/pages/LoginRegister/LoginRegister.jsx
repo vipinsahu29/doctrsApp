@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { registerUserAPI } from "../../SupaBase/Api";
 import useAuthStore from "../../store/authStore";
 import { validatePasswords } from "../../utility/util";
+import { checkClinicExists } from "../../SupaBase/ClinicTableAPI";
 const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
   <div className="mb-4">
     <label className="block text-white mb-1">{label}</label>
@@ -42,13 +43,17 @@ const Login = ({ onSwitch }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { error } = await login(email, password);
+    const { error, data } = await login(email, password);
     if (error) {
       setMessage(error + " invalid username or password.");
       alert("invalid username or password");
     }
-
-    navigate("/appointment_list");
+    const isRegistered = await checkClinicExists(data?.user?.id);
+    if (isRegistered) {
+      navigate("/registration");
+    } else {
+      navigate("/appointment_list");
+    }
   };
 
   return (
@@ -98,17 +103,16 @@ const Login = ({ onSwitch }) => {
 };
 
 const Register = ({ onSwitch }) => {
-  const [clinicName, setClinicName] = useState("");
-  const [specialization, setSpecialization] = useState("");
-  const [doctorName, setDoctorName] = useState("");
+  // const [clinicName, setClinicName] = useState("");
+  // const [specialization, setSpecialization] = useState("");
+  // const [doctorName, setDoctorName] = useState("");
+  // const [address, setAddress] = useState("");
+  // const [phone, setPhone] = useState();
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [registerFail, setRegisterFail] = useState("");
-
   const [successMessage, setSuccessMessage] = useState("");
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -121,7 +125,7 @@ const Register = ({ onSwitch }) => {
       setErrorMessage("");
     }
 
-    const result = await registerUserAPI(email, password, doctorName);
+    const result = await registerUserAPI(email, password);
     console.log("dataaaa-,", result?.uuid, result);
     if (result?.error) {
       setRegisterFail(result?.error);
@@ -129,13 +133,7 @@ const Register = ({ onSwitch }) => {
     }
     if (result?.uuid) {
       setSuccessMessage("Registration successful! Please click on login now.");
-      setRegisterFail("");
-      setClinicName("");
-      setSpecialization("");
-      setDoctorName("");
       setEmail("");
-      setAddress("");
-      setPhone("");
       setPassword("");
       setConfirmPassword("");
     }
@@ -148,43 +146,13 @@ const Register = ({ onSwitch }) => {
       </h2>
       <form
         onSubmit={handleRegister}
-        className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-[800px] md:grid md:grid-cols-2 gap-8 mb-10"
+        className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-[600px]  gap-8 mb-10"
       >
-        <Input
-          label="Clinic Name"
-          type="text"
-          value={clinicName}
-          onChange={(e) => setClinicName(e.target.value)}
-        />
-        <Input
-          label="Specialization"
-          type="text"
-          value={specialization}
-          onChange={(e) => setSpecialization(e.target.value)}
-        />
-        <Input
-          label="Doctor Name"
-          type="text"
-          value={doctorName}
-          onChange={(e) => setDoctorName(e.target.value)}
-        />
         <Input
           label="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          label="Mobile"
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <Input
-          label="Address"
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
         />
         <Input
           label="Password"

@@ -5,11 +5,12 @@ import AtomInput from "../../components/Atom/AtomInput";
 import { getExpenseData } from "../../SupaBase/Api";
 import useGetApiData from "../../hooks/useGetApiData";
 import { ExpensesTable } from "../../SupaBase/tableName";
-
 const Expenses = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [addNewSalary, setAddNewSalary] = useState(false);
   const [response, setResponse] = useState([]);
+    
+  
 
   const { data, loading, error, refetch, count } = useGetApiData(
     ExpensesTable,
