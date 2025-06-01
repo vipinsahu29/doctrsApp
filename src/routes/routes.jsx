@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import routesConfig from "./routesConfig.json"; // Import the JSON config
 import { lazy, Suspense, useEffect } from "react";
 import LoginRegister from "../pages/LoginRegister/LoginRegister";
-import Navbar from "../components/headerNavbar/Navbar"; // Corrected path
+import HeaderNavbar from "../components/headerNavbar/HeaderNavbar"; // Corrected path
 import useAuthStore from "../store/authStore";
 import { supabase } from "../supabaseClient";
 const loadComponent = (componentName) => {
@@ -55,7 +55,7 @@ const PrivateRoute = ({ children }) => {
 
   return (
     <>
-      <Navbar />
+      <HeaderNavbar />
       {children}
     </>
   );
