@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 
-// import medecineData from "../../Constants/indian_medicine_data.json";
-
 import { timeOptions } from "../../Constants/constantUtil";
 const CheckInMedecine = ({ medicines, setMedicines }) => {
   const [medicineName, setMedicineName] = useState("");
   const [dose, setDose] = useState("");
   const [timeADay, setTimeADay] = useState(timeOptions[0].value);
   const [durationDays, setDurationDays] = useState("");
-  // const [medicines, setMedicines] = useState([]);
   const [remark, setRemark] = useState("");
   const disabled = !medicineName || !dose || !timeADay || !durationDays;
-  // console.log(medecineData)
   const addMedicine = () => {
     if (disabled) {
       alert("Please fill all fields before adding!");

@@ -52,8 +52,7 @@ const Login = ({ onSwitch }) => {
     }
     setUID(data?.user?.id);
     const isRegistered = await checkClinicExists(data?.user?.id);
-    console.log('data?.user?.id', data?.user?.id, 'isRegistered:',isRegistered);
-    if (!isRegistered) {
+    if (isRegistered.length === 0) {
       navigate("/registration");
     } else {
       navigate("/appointment_list");
@@ -107,11 +106,6 @@ const Login = ({ onSwitch }) => {
 };
 
 const Register = ({ onSwitch }) => {
-  // const [clinicName, setClinicName] = useState("");
-  // const [specialization, setSpecialization] = useState("");
-  // const [doctorName, setDoctorName] = useState("");
-  // const [address, setAddress] = useState("");
-  // const [phone, setPhone] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -130,7 +124,6 @@ const Register = ({ onSwitch }) => {
     }
 
     const result = await registerUserAPI(email, password);
-    console.log("dataaaa-,", result?.uuid, result);
     if (result?.error) {
       setRegisterFail(result?.error);
       return;

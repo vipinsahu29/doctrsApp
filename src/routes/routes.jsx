@@ -38,7 +38,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     fetchSession(); // Load session on mount
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (session) => {
         if (session) {
           setUserSession(session);
         }

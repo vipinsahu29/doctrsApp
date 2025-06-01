@@ -58,7 +58,6 @@ const initialValues = {
   doctor: "",
   images: null,
 };
-console.log(AppointmentData);
 const BookAppointment = () => {
   // Formik hook to handle form state
   const today = new Date().toISOString().split("T")[0];
@@ -67,7 +66,6 @@ const BookAppointment = () => {
     validationSchema,
     // Form submission handler
     onSubmit: (values, { resetForm }) => {
-      console.log("Form Data:", values);
       alert("Appointment submitted successfully!");
       resetForm();
     },

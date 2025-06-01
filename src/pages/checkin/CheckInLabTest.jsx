@@ -5,13 +5,11 @@ const CheckInLabTest = ({ selectedData, setSelectedData }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef(null);
-  console.log(suggestions);
   useEffect(() => {
     if (input.length > 0) {
       const filtered = labTestData.filter((data) =>
         data.TestName.toLowerCase().includes(input.toLowerCase())
       );
-      console.log("filtered:", filtered.map((item)=> item.TestName));
       setSuggestions(filtered.map((item)=> item.TestName));
       setHighlightedIndex(0);
     } else {
@@ -21,7 +19,6 @@ const CheckInLabTest = ({ selectedData, setSelectedData }) => {
   }, [input]);
 
   const addValueHandler = (value) => {
-    console.log(value);
     if (!value) return;
 
     // Ask for number of days (1-30)

@@ -1,5 +1,5 @@
 import { supabase } from "../supabaseClient";
-import Store from '../store/store'
+import Store from "../store/store";
 export const checkClinicExists = async (uuid) => {
   try {
     const { data, error } = await supabase
@@ -11,7 +11,9 @@ export const checkClinicExists = async (uuid) => {
       console.error("Error checking clinic existence:", error.message);
       return false;
     }
-    Store.getState().setClinicId(data[0]?.clinic_id);
+    if (data.length > 0) {
+      Store.getState().setClinicId(data[0]?.clinic_id);
+    }
     return data.length > 0; // Returns true if clinic exists, false otherwise
   } catch (err) {
     console.error("Unexpected error:", err);
@@ -42,9 +44,10 @@ export const createClinic = async (clinicData, userData) => {
         .from("clinic")
         .delete()
         .eq("clinic_id", clinic_data[0].clinic_id);
-        
-      return { error: user_error.message + deleteError | null };
+
+      return { error: (user_error.message + deleteError) | null };
     }
+    Store.getState().setClinicId(clinic_data[0]?.clinic_id);
     return { clinic_data, userc_data };
   } catch (err) {
     console.error("Unexpected error:", err);

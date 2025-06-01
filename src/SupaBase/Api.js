@@ -4,24 +4,8 @@ import { ExpensesTable } from "./tableName";
 export const registerUserAPI = async (
   email,
   password,
-  drName,
-  role,
   mobile,
-  specialization,
-  clinicName,
-  clinicAddress
 ) => {
-  console.log(
-    "API reg: ",
-    email,
-    password,
-    drName,
-    role,
-    Number(mobile),
-    specialization,
-    clinicName,
-    clinicAddress
-  );
   if (!email || !password) {
     return { error: "Email and password are required." };
   }
@@ -91,26 +75,6 @@ export const createClinicAndUser = async (
     console.error("All fields are required for creating clinic and user.");
     return "All fields are required for creating clinic and user";
   }
-  console.log("Creating clinic and user with data:", {
-    uuid,
-    ...columnData,
-  });
-  // Check if the user already exists in the clinic table
-  // const { data: existingClinic, error: checkError } = await supabase
-  //   .from("clinic")
-  //   .select("*")
-  //   .eq("UUID", columnData.uuid)
-  //   .single();
-
-  // if (checkError) {
-  //   console.error("Error checking existing clinic:", checkError.message);
-  //   return;
-  // }
-
-  // if (existingClinic) {
-  //   console.log("Clinic already exists for this user.");
-  //   return;
-  // }
   const { data, error: rpcError } = await supabase.rpc(
     "createClincUser",
     {

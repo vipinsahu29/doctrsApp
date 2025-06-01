@@ -20,7 +20,6 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const today = new Date().toISOString().split("T")[0];
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  console.log("doc", formData.CareerStartDate, formData);
   const handleChange = (e) => {
     const { name, value } = e.target;
 

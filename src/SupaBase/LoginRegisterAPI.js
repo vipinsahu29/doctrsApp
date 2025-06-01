@@ -26,8 +26,6 @@ export const registerUser = async (displayName, email, password, phone, address,
         return;
       }
   
-      console.log("User signed up successfully:", user);
-  
       // **Step 2: Store additional details in `userDetails` table**
       const { error: insertError } = await supabase.from('userDetails').insert([
         {
@@ -44,8 +42,6 @@ export const registerUser = async (displayName, email, password, phone, address,
         console.error("Error storing user details:", insertError.message);
         return;
       }
-  
-      console.log("User details stored successfully");
     } catch (err) {
       console.error("Unexpected error:", err);
     }

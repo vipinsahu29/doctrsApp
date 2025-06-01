@@ -17,7 +17,6 @@ import {
 } from "./../../SupaBase/ClinicTableAPI";
 const Registration = () => {
   const UID = Store((state) => state.UID);
-  console.log("UID", UID);
   const [open, setOpen] = useState(true);
   const [formData, setFormData] = useState({
     DrName: "",
@@ -39,7 +38,6 @@ const Registration = () => {
   useEffect(() => {
     const checkClinicExist = async () => {
       const isRegistered = await checkClinicExists(UID);
-      console.log("isRegistered", isRegistered);
       if (isRegistered) {
         setOpen(false);
         navigate("/appointment_list");
@@ -89,14 +87,6 @@ const Registration = () => {
       );
     }
   };
-  console.log(
-    "formData",
-    formData,
-    "mobileValid",
-    isMobileValid,
-    "inputError",
-    inputError
-  );
   return (
     <Dialog open={open} onClose={() => {}} className="relative z-10">
       <DialogBackdrop

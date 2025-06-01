@@ -25,7 +25,6 @@ const CheckInMiddlePart = ({
     }
   }, [input]);
   const addSymptom = (symptom) => {
-    console.log(symptom);
     if (!symptom) return;
 
     // Ask for number of days (1-30)
