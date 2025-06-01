@@ -7,6 +7,7 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
+
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import DropDownMenu from "../DropDownMenu/DropDownMenu";
 import { navigation } from "../../Constants/navbarOptions";
