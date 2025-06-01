@@ -8,20 +8,20 @@ import { supabase } from "../supabaseClient";
 const loadComponent = (componentName) => {
   const Components = {
     BookAppointment: lazy(() =>
-      import("../pages/appointments/bookAppointment")
+      import("../pages/appointments/BookAppointments")
     ),
     EditAppointment: lazy(() =>
-      import("../pages/appointments/EditAppointment")
+      import("../pages/appointments/EditAppointments")
     ),
     AppointmentsList: lazy(() =>
-      import("../pages/appointments/AppointmentsList")
+      import("../pages/appointments/AppointmentsLists")
     ),
-    AddDoctor: lazy(() => import("../pages/doctors/addDoctor")),
-    DoctrsList: lazy(() => import("../pages/doctors/DoctrsList")),
-    AddStaff: lazy(() => import("../pages/staff/AddStaff")),
-    StaffList: lazy(() => import("../pages/staff/staffList")),
+    AddDoctor: lazy(() => import("../pages/doctors/AddDoctors")),
+    DoctrsList: lazy(() => import("../pages/doctors/DoctrsLists")),
+    AddStaff: lazy(() => import("../pages/staff/AddStaffs")),
+    StaffList: lazy(() => import("../pages/staff/StaffLists")),
     CheckIn: lazy(() => import("../pages/checkin/CheckIn")),
-    PatientList: lazy(() => import("../pages/patients/PatientsList")),
+    PatientList: lazy(() => import("../pages/patients/PatientsLists")),
     AddPatients: lazy(() => import("../pages/patients/AddPatients")),
     Dashboard: lazy(() => import("../pages/doctrsDashboard/Dashboard")),
     Expences: lazy(() => import("../pages/salaryExpences/Expences")),

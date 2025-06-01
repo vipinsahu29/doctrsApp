@@ -1,5 +1,5 @@
 import React from 'react'
-import AppointmentsList from '../appointments/AppointmentsList'
+import AppointmentsList from '../appointments/AppointmentsLists'
 
 const patientsList = () => {
   return (
