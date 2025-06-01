@@ -52,7 +52,8 @@ const Login = ({ onSwitch }) => {
     }
     setUID(data?.user?.id);
     const isRegistered = await checkClinicExists(data?.user?.id);
-    if (isRegistered) {
+    console.log('data?.user?.id', data?.user?.id, 'isRegistered:',isRegistered);
+    if (!isRegistered) {
       navigate("/registration");
     } else {
       navigate("/appointment_list");

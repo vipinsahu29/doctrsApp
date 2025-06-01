@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -9,9 +9,12 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import AtomInput from "../../components/Atom/AtomInput";
 import { registrationFields } from "../../Constants/constantUtil";
 import { validateMobile } from "../../utility/util";
-import { createClinic } from "../../SupaBase/ClinicTableAPI";
 import Store from "../../store/store";
 import { useNavigate } from "react-router-dom";
+import {
+  checkClinicExists,
+  createClinic,
+} from "./../../SupaBase/ClinicTableAPI";
 const Registration = () => {
   const UID = Store((state) => state.UID);
   console.log("UID", UID);
@@ -33,35 +36,57 @@ const Registration = () => {
     !!formData.Mobile &&
     !!formData.Specialization &&
     !!formData.Address;
+  useEffect(() => {
+    const checkClinicExist = async () => {
+      const isRegistered = await checkClinicExists(UID);
+      console.log("isRegistered", isRegistered);
+      if (isRegistered) {
+        setOpen(false);
+        navigate("/appointment_list");
+      }
+    };
+    checkClinicExist();
+  }, [UID, navigate]);
   const handleChange = (e) => {
     if (e.target.name === "Mobile") {
       setIsMobileValid(validateMobile(e.target.value));
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleSaveData = async () => {
     if (!inputError || isValidForm || isMobileValid) {
-      const { clinic_data, clinic_error } = await createClinic({
-        name: formData.ClinicName,
-        specialization: formData.Specialization,
-        address: formData.Address,
-        UUID: UID,
-      },{
-        name: formData.DrName,
-        role: "doctor",
-        status: "active",
-        mobile: formData.Mobile,
-        email: "dummyMail",
-        clinic_id:null,
-        UUID: UID,
-      });
-      
+      const { clinic_data, clinic_error } = await createClinic(
+        {
+          name: formData.ClinicName,
+          specialization: formData.Specialization,
+          address: formData.Address,
+          UUID: UID,
+        },
+        {
+          name: formData.DrName,
+          role: "doctor",
+          status: "active",
+          mobile: formData.Mobile,
+          email: "dummyMail",
+          clinic_id: null,
+          UUID: UID,
+        }
+      );
+
       if (!clinic_error) {
         Store.getState().setClinicId(clinic_data[0].id);
         setOpen(false);
         navigate("/appointment_list");
       }
-      console.log("Form data saved:", clinic_data, "error", clinic_error, "UID", UID);
+      console.log(
+        "Form data saved:",
+        clinic_data,
+        "error",
+        clinic_error,
+        "UID",
+        UID
+      );
     }
   };
   console.log(

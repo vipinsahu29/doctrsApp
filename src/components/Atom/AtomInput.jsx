@@ -78,7 +78,7 @@ AtomInput.propTypes = {
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(["text", "tel", "email", "number", "date", "password"])
+  type: PropTypes.oneOf(["text", "tel", "email", "number", "date", "password","select"])
     .isRequired,
   required: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.string),
