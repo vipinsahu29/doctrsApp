@@ -73,18 +73,10 @@ const Registration = () => {
       );
 
       if (!clinic_error) {
-        Store.getState().setClinicId(clinic_data[0]?.id);
+        Store.getState().setClinicId(clinic_data[0]?.clinic_id);
         setOpen(false);
         navigate("/appointment_list");
       }
-      console.log(
-        "Form data saved:",
-        clinic_data,
-        "error",
-        clinic_error,
-        "UID",
-        UID
-      );
     }
   };
   return (

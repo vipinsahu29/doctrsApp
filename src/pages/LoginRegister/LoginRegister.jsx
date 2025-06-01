@@ -52,9 +52,10 @@ const Login = ({ onSwitch }) => {
     }
     setUID(data?.user?.id);
     const isRegistered = await checkClinicExists(data?.user?.id);
-    if (isRegistered.length === 0) {
+    if (!isRegistered) {
       navigate("/registration");
     } else {
+
       navigate("/appointment_list");
     }
   };
@@ -88,12 +89,12 @@ const Login = ({ onSwitch }) => {
         </button>
         <p className="text-white text-sm mt-4 text-center">
           Don’t have an account?{" "}
-          <span
+          <button
             onClick={onSwitch}
-            className="text-yellow-400 cursor-pointer hover:underline"
+            className="text-yellow-400 cursor-pointer hover:underline bg-transparent border-none p-0"
           >
             Register
-          </span>
+          </button>
         </p>
         {message && (
           <h2 className="text-red-600 cursor-pointer hover:underline text-lg mt-4 text-center">
