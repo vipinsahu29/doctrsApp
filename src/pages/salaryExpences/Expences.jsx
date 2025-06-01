@@ -2,31 +2,20 @@ import React, { useState, useEffect } from "react";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { expensesInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
-import { getExpenseData } from "../../SupaBase/Api";
 import useGetApiData from "../../hooks/useGetApiData";
-import { ExpensesTable } from "../../SupaBase/tableName";
+import Store from "../../store/store";
+import { createExpense, getExpenseData } from "../../SupaBase/ExpenseApi";
 const Expenses = () => {
-  const [expenseData, setExpenseData] = useState([]);
+  const clinic_id = Store((state) => state.clinicId);
+  const UID = Store((state) => state.UID);
+  const [insertError, setInsertError] = useState("");
+  const [inserted, setInserted] = useState(false);
   const [addNewSalary, setAddNewSalary] = useState(false);
   const [response, setResponse] = useState([]);
-    
-  
 
   const { data, loading, error, refetch, count } = useGetApiData(
-    ExpensesTable,
+    clinic_id,
     getExpenseData
-  );
-  console.log(
-    "response: ",
-    data,
-    "error: ",
-    error,
-    "count: ",
-    count,
-    "loading: ",
-    loading,
-    "refetch: ",
-    refetch
   );
 
   useEffect(() => {
@@ -34,6 +23,14 @@ const Expenses = () => {
       setResponse(data);
     }
   }, [data]);
+  useEffect(() => {
+    refetch();
+    if (inserted) {
+      setTimeout(() => {
+        setInserted(false);
+      }, 1500);
+    }
+  }, [inserted]);
   const [tableData, setTableData] = useState({
     Date: "",
     Description: "",
@@ -52,10 +49,28 @@ const Expenses = () => {
 
     setTableData({ ...tableData, [name]: value });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission
-    const newData = { ...tableData };
-    setExpenseData([...expenseData, newData]);
+    const newData = { user: UID, clinicId: clinic_id, ...tableData };
+
+    const { data, error } = await createExpense({
+      clinic_id: newData.clinicId,
+      user: newData.user,
+      expense_date: newData.Date,
+      description: newData.Description,
+      amount: newData.Amount,
+      payment_mode: newData.PaymentMode,
+    });
+
+    if (error) {
+      setInsertError(error.message);
+      setInserted(false);
+    }
+    if (data.length > 0) {
+      setInserted(true);
+      setInsertError("");
+    }
+
     // Log the form data
     setTableData({
       Date: "",
@@ -118,7 +133,14 @@ const Expenses = () => {
             </button>
           </>
         )}
-
+        {inserted && (
+          <p className="text-green-500 text-center">
+            Expense details added successfully!
+          </p>
+        )}
+        {insertError && (
+          <p className="text-red-500 text-center">Data not saved try again!</p>
+        )}
         <table className="w-full mt-4 border-collapse border border-gray-900 p-2">
           <thead>
             <tr className="bg-gray-200">

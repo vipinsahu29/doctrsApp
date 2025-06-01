@@ -1,7 +1,7 @@
 // src/hooks/useTableData.js
 import { useEffect,useState, useCallback } from "react";
 
-const useGetApiData = (tableName, getTableDataFn) => {
+const useGetApiData = (inputParameter,getTableDataFn) => {
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const [error, setError] = useState(null);
@@ -14,12 +14,12 @@ const useGetApiData = (tableName, getTableDataFn) => {
     }
 
     setLoading(true);
-    const { data, errorMessage, count } = await getTableDataFn(tableName);
+    const { data, errorMessage, count } = await getTableDataFn(inputParameter);
     setData(data);
     setCount(count);
     setError(errorMessage);
     setLoading(false);
-  }, [tableName, getTableDataFn]);
+  }, [inputParameter, getTableDataFn]);
 
   useEffect(() => {
     fetchData();

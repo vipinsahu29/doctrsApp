@@ -74,37 +74,6 @@ export const loginUserAuthAPI = async (email, password) => {
   };
 };
 
-//delete user
-
-// const deleteUser = async (userId) => {
-//   const { error } = await supabase.auth.api.deleteUser(userId);
-//   // Specify the user ID to delete
-
-//   if (error) {
-//     console.error("Error deleting user:", error);
-//   } else {
-//     console.log("User deleted successfully:");
-//   }
-// };
-export const getExpenseData = async () => {
-  let errorMessage = null;
-  try {
-    const { data, error, count, status, statusText } = await supabase
-      .from(ExpensesTable)
-      .select("*", { count: "exact" });
-    if (error) {
-      errorMessage = `Error (${status} ${statusText}):, ${error.message}`;
-      console.error(errorMessage);
-      return { data: [], error: errorMessage, count: 0 };
-    }
-    console.log("api: ", data);
-
-    return { data, errorMessage, count };
-  } catch (err) {
-    console.error("Unexpected error: ", err);
-    return { data: [], error: "Unexpected error occurred", count: 0 };
-  }
-};
 
 export const createClinicAndUser = async (
   {uuid,columnData}

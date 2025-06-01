@@ -1,4 +1,5 @@
 import { supabase } from "../supabaseClient";
+import Store from '../store/store'
 export const checkClinicExists = async (uuid) => {
   try {
     const { data, error } = await supabase
@@ -10,7 +11,7 @@ export const checkClinicExists = async (uuid) => {
       console.error("Error checking clinic existence:", error.message);
       return false;
     }
-    console.log("Clinic data:", data);
+    Store.getState().setClinicId(data[0].clinic_id);
     return data.length > 0; // Returns true if clinic exists, false otherwise
   } catch (err) {
     console.error("Unexpected error:", err);
