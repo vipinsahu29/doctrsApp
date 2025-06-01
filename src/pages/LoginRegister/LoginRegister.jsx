@@ -38,7 +38,7 @@ const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
 const Login = ({ onSwitch }) => {
   const setUID = Store((state) => state.setUID);
   const { login } = useAuthStore();
-  const [email, setEmail] = useState("test@test.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("12345678");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();

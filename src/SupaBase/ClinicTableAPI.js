@@ -11,7 +11,7 @@ export const checkClinicExists = async (uuid) => {
       console.error("Error checking clinic existence:", error.message);
       return false;
     }
-    Store.getState().setClinicId(data[0].clinic_id);
+    Store.getState().setClinicId(data[0]?.clinic_id);
     return data.length > 0; // Returns true if clinic exists, false otherwise
   } catch (err) {
     console.error("Unexpected error:", err);

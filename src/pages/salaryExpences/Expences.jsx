@@ -13,7 +13,7 @@ const Expenses = () => {
   const [addNewSalary, setAddNewSalary] = useState(false);
   const [response, setResponse] = useState([]);
 
-  const { data, loading, error, refetch, count } = useGetApiData(
+  const { data,refetch } = useGetApiData(
     clinic_id,
     getExpenseData
   );
