@@ -106,20 +106,61 @@ export const getExpenseData = async () => {
   }
 };
 
-// const { error: rpcError } = await supabase.rpc("create_clinic_and_user", {
-//   p_user_id: uuid,
-//   p_name: drName,
-//   p_role: role,
-//   p_specialization: specialization,
-//   p_mobile: mobile,
-//   p_email: email,
-//   p_status: "active",
-//   p_clinic_name: clinicName,
-//   p_clinic_address: clinicAddress,
-// });
+export const createClinicAndUser = async (
+  {uuid,columnData}
+) => {
+  if (
+    !uuid ||
+    !columnData.DrName ||
+    // !columnData.role ||
+    !columnData.Specialization ||
+    !columnData.Mobile ||
+    // !columnData.email ||
+    !columnData.ClinicName ||
+    !columnData.Address
+  ) {
+    console.error("All fields are required for creating clinic and user.");
+    return "All fields are required for creating clinic and user";
+  }
+  console.log("Creating clinic and user with data:", {
+    uuid,
+    ...columnData,
+  });
+  // Check if the user already exists in the clinic table
+  // const { data: existingClinic, error: checkError } = await supabase
+  //   .from("clinic")
+  //   .select("*")
+  //   .eq("UUID", columnData.uuid)
+  //   .single();
 
-// if (rpcError) {
-//   console.error("Registration RPC error:", rpcError.message);
-//   await supabase.auth.api.deleteUser(uuid)
-//   return;
-// }
+  // if (checkError) {
+  //   console.error("Error checking existing clinic:", checkError.message);
+  //   return;
+  // }
+
+  // if (existingClinic) {
+  //   console.log("Clinic already exists for this user.");
+  //   return;
+  // }
+  const { data, error: rpcError } = await supabase.rpc(
+    "createClincUser",
+    {
+      p_user_id:uuid,
+      p_name: columnData.DrName,
+      p_role: "doctor",
+      p_specialization: columnData.Specialization,
+      p_mobile: columnData.Mobile,
+      p_email: 'testEmailRPC@tt.com',//columnData.Email,
+      p_status: "active",
+      p_clinic_name: columnData.ClinicName,
+      p_clinic_address: columnData.Address,
+    }
+  );
+
+  if (rpcError) {
+    console.error("Registration RPC error:", rpcError.message);
+    return {error:rpcError.message};
+  } else {
+    return data;
+  }
+};

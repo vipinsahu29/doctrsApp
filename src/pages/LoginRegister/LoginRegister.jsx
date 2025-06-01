@@ -5,6 +5,7 @@ import { registerUserAPI } from "../../SupaBase/Api";
 import useAuthStore from "../../store/authStore";
 import { validatePasswords } from "../../utility/util";
 import { checkClinicExists } from "../../SupaBase/ClinicTableAPI";
+import Store from "../../store/store";
 const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
   <div className="mb-4">
     <label className="block text-white mb-1">{label}</label>
@@ -35,6 +36,7 @@ const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
 );
 
 const Login = ({ onSwitch }) => {
+  const setUID = Store((state) => state.setUID);
   const { login } = useAuthStore();
   const [email, setEmail] = useState("test@test.com");
   const [password, setPassword] = useState("12345678");
@@ -48,6 +50,7 @@ const Login = ({ onSwitch }) => {
       setMessage(error + " invalid username or password.");
       alert("invalid username or password");
     }
+    setUID(data?.user?.id);
     const isRegistered = await checkClinicExists(data?.user?.id);
     if (isRegistered) {
       navigate("/registration");

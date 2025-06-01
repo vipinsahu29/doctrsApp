@@ -24,7 +24,6 @@ const commonFields = [
   },
   { label: "Height", name: "Height", type: "number", required: false },
   { label: "Weight", name: "Weight", type: "number", required: false },
-
 ];
 export const addPatientsInputFields = [
   ...commonFields,
@@ -36,7 +35,13 @@ export const addPatientsInputFields = [
     type: "text",
     required: true,
   },
-  { label: "Last Visit", name: "LastVisit", type: "date", max: today, required: true },
+  {
+    label: "Last Visit",
+    name: "LastVisit",
+    type: "date",
+    max: today,
+    required: true,
+  },
   { label: "City", name: "City", type: "text", required: true },
   { label: "State", name: "State", type: "text", required: true },
   { label: "Country", name: "Country", type: "text", required: true },
@@ -73,21 +78,41 @@ export const addStaffInputFields = [
 export const salaryInputFields = [
   { label: "Full Name", name: "Name", type: "text", required: true },
   { label: "Designation", name: "Designation", type: "text", required: true },
-  { label: "Basic Salary", name: "BasicSalary", type: "number", required: true },
+  {
+    label: "Basic Salary",
+    name: "BasicSalary",
+    type: "number",
+    required: true,
+  },
   { label: "Deduction", name: "Deduction", type: "number", required: true },
   { label: "Net", name: "NetSalary", type: "number", required: true },
-
-]
+];
 export const expensesInputFields = [
   { label: "Date", name: "Date", type: "date", max: today, required: true },
   { label: "Description", name: "Description", type: "text", required: true },
   { label: "Amount", name: "Amount", type: "number", required: true },
-  { label: "Payment Mode", name: "PaymentMode", type: "select",options:['Cash', 'UPI/NB', 'Credit Card', 'Cheque'] },
-]
+  {
+    label: "Payment Mode",
+    name: "PaymentMode",
+    type: "select",
+    options: ["Cash", "UPI/NB", "Credit Card", "Cheque"],
+  },
+];
 export const appointmentFields = [
   ...commonFields,
-  { label: "Appointment Date", name: "appointment_date", type: "date", max: today, required: true },
+  {
+    label: "Appointment Date",
+    name: "appointment_date",
+    type: "date",
+    max: today,
+    required: true,
+  },
+];
 
-
-
+export const registrationFields = [
+  { label: "Clinic Name", name: "ClinicName", type: "text", required: true },
+  { label: "Specialization", name: "Specialization", type: "text", required: true },
+  { label: "Address", name: "Address", type: "text", required: true },
+  { label: "Dr Name", name: "DrName", type: "text", required: true },
+  { label: "Mobile", name: "Mobile", type: "tel", required: true },
 ]

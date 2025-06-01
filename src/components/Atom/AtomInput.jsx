@@ -11,7 +11,7 @@ const AtomInput = ({
   options,
   required = false,
   setError,
-  disableInput = false
+  disableInput = false,
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -19,6 +19,7 @@ const AtomInput = ({
     if (required && value.trim() === "") {
       setErrorMessage(`${label} is required.`);
       setError(`${label} is required.`);
+      
     } else {
       setErrorMessage("");
       setError("");
@@ -63,6 +64,7 @@ const AtomInput = ({
           required={required}
           max={today}
           disabled={disableInput}
+          maxLength={type === "tel" ? 10 : undefined}
         />
       )}
       {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
@@ -81,7 +83,7 @@ AtomInput.propTypes = {
   required: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.string),
   setError: PropTypes.func,
-  disableInput: PropTypes.bool
+  disableInput: PropTypes.bool,
 };
 
 export default AtomInput;
