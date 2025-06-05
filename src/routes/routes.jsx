@@ -85,3 +85,4 @@ export default function AppRoutes() {
     </Suspense>
   );
 }
+// This file defines the routes for the application using React Router.
