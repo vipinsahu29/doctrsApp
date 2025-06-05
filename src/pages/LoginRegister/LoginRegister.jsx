@@ -6,6 +6,7 @@ import useAuthStore from "../../store/authStore";
 import { validatePasswords } from "../../utility/util";
 import { checkClinicExists } from "../../SupaBase/ClinicTableAPI";
 import Store from "../../store/store";
+import  doctorRegisterBg from "../../assets/doctor-register-bg.svg";
 const Input = ({ label, type, value, onChange, placeholder = "", error }) => (
   <div className="mb-4">
     <label className="block text-white mb-1">{label}</label>
@@ -138,7 +139,7 @@ const Register = ({ onSwitch }) => {
   };
 
   return (
-    <div className="bg-gray-700 min-h-screen flex flex-col items-center justify-center bg-[url('/doctor-register-bg.svg')] bg-cover bg-center">
+    <div className="bg-gray-700 min-h-screen flex flex-col items-center justify-center bg-[url(doctorRegisterBg)] bg-cover bg-center">
       <h2 className="text-white text-6xl my-10 text-center top-2">
         Doctor Clinic Register
       </h2>

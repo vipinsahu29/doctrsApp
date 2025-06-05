@@ -19,7 +19,7 @@ const loadComponent = (componentName) => {
     AddDoctor: lazy(() => import("../pages/doctors/AddDoctor")),
     DoctrsList: lazy(() => import("../pages/doctors/DoctrsList")),
     AddStaff: lazy(() => import("../pages/staff/AddStaff")),
-    StaffList: lazy(() => import("../pages/staff/staffList")),
+    StaffList: lazy(() => import("../pages/staff/StaffList")),
     CheckIn: lazy(() => import("../pages/checkin/CheckIn")),
     PatientList: lazy(() => import("../pages/patients/PatientsList")),
     AddPatients: lazy(() => import("../pages/patients/AddPatients")),
