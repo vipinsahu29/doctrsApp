@@ -1,5 +1,5 @@
 
-import AppRoutes from "./routes/routes";
+import AppRoutes from "./routes/Routes";
 function App() {
   return (
     <div className="w-full h-full bg-blue text-red relative">
