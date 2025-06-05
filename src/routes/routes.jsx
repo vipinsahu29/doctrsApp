@@ -8,7 +8,7 @@ import { supabase } from "../supabaseClient";
 const loadComponent = (componentName) => {
   const Components = {
     BookAppointment: lazy(() =>
-      import("../pages/appointments/bookAppointment")
+      import("../pages/appointments/BookAppointment")
     ),
     EditAppointment: lazy(() =>
       import("../pages/appointments/EditAppointment")
@@ -16,7 +16,7 @@ const loadComponent = (componentName) => {
     AppointmentsList: lazy(() =>
       import("../pages/appointments/AppointmentsList")
     ),
-    AddDoctor: lazy(() => import("../pages/doctors/addDoctor")),
+    AddDoctor: lazy(() => import("../pages/doctors/AddDoctor")),
     DoctrsList: lazy(() => import("../pages/doctors/DoctrsList")),
     AddStaff: lazy(() => import("../pages/staff/AddStaff")),
     StaffList: lazy(() => import("../pages/staff/staffList")),
