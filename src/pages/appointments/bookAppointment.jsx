@@ -348,7 +348,7 @@ const BookAppointment = () => {
             />
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button handle*/}
           <div className="flex justify-center mt-6">
             <button
               type="submit"

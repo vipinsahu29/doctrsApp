@@ -290,7 +290,7 @@ export default function AddDoctor() {
           </div>
         ))}
 
-        {/* Submit Button */}
+        {/* Submit Button Handle*/}
         <button
           type="submit"
           onClick={handleSubmit}
