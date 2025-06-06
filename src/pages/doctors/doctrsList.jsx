@@ -34,12 +34,10 @@ const DoctrsList = () => {
       : doctorsData.filter((user) =>
           user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
         );
-  console.log(isNaN(searchValue));
   const handleEditmodal = () => {
     setIsEditOpen(false);
   };
   const handleViewDetails = (id) => {
-    console.log("view-",id)
     setViewDetails(true);
     setViewData(doctorsData.filter((value) => value.Id === id));
   };

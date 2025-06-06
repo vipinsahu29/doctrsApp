@@ -39,11 +39,8 @@ const AddStaff = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission
     if (!isMobileValid || !isValidEmail) {
-      console.log("Please fix validation errors.");
       return; // Prevent form submission if validation fails
     }
-    // Log the form data
-    console.log("Form Submitted:", formData);
   };
 
   return (

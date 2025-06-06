@@ -66,12 +66,8 @@ export default function AddDoctor() {
 
     // Validate mobile and email before submitting
     if (!isMobileValid || !isValidEmail) {
-      console.log("Please fix validation errors.");
       return; // Prevent form submission if validation fails
     }
-
-    // Log the form data to check the values
-    console.log("Form Submitted:", formData);
   };
 
   return (

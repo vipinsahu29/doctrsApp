@@ -38,7 +38,6 @@ const Salary = () => {
       NetSalary: "",
     });
     setAddNewSalary(false);
-    console.log("Form Submitted:", data, salaryData);
   };
 
   return (
