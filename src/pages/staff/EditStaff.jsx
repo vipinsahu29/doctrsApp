@@ -1,6 +1,6 @@
 import React from 'react'
 
-const editStaff = () => {
+const EditStaff = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const editStaff = () => {
   )
 }
 
-export default editStaff
+export default EditStaff

@@ -1,10 +1,10 @@
 import React from 'react'
 
-const staffProfile = () => {
+const StaffProfile = () => {
   return (
     <div>
     </div>
   )
 }
 
-export default staffProfile
+export default StaffProfile

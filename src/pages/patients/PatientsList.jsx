@@ -1,7 +1,7 @@
 import React from 'react'
 import AppointmentsList from '../appointments/AppointmentsList'
 
-const patientsList = () => {
+const PatientsList = () => {
   return (
     <div>
         <AppointmentsList source={"Patients"}/>      
@@ -9,4 +9,4 @@ const patientsList = () => {
   )
 }
 
-export default patientsList
+export default PatientsList

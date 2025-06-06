@@ -61,7 +61,7 @@ const Login = ({ onSwitch }) => {
   };
 
   return (
-    <div className="bg-gray-700 min-h-screen flex items-center justify-center bg-[url('/doctor-bg.svg')] bg-cover bg-center">
+    <div className="bg-gray-700 min-h-screen flex items-center justify-center bg-cover bg-center">
       <form
         onSubmit={handleLogin}
         className="bg-gray-800 p-8 rounded-xl shadow-xl w-96"
