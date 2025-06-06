@@ -13,7 +13,7 @@ import { navigation } from "../../Constants/navbarOptions";
 import drLogo from "../../assets/drLogo.jpeg";
 import useAuthStore from "../../store/authStore";
 
-export default function Navbar() {
+export default function HeaderNavbar() {
   const {logout} = useAuthStore()
   return (
     <Disclosure as="nav" className="bg-gray-600 fixed top-0 right-0 left-0">
