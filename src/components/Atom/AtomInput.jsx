@@ -60,6 +60,11 @@ const AtomInput = ({
           value={value}
           onChange={onChange}
           onBlur={handleBlur}
+          onInput={(e) => {
+            if (type === "tel") {
+              e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Allow only numeric values
+            }
+          }}
           className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
           required={required}
           max={today}
