@@ -14,7 +14,7 @@ export default function DropDownMenu({ options = "options", values = [] }) {
       <div className="sm: mx-5 md:mx-2">
         <MenuButton
           key={options}
-          className="inline-flex md:w-full sm: w-40  justify-center gap-x-2.5 rounded-md bg-gray-800 px-2 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-yellow-400 hover:text-gray-900 hover:font-bold"
+          className="inline-flex md:w-full sm: w-40  justify-center gap-x-2.5 rounded-md bg-gray-800 px-2 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-yellow-400 hover:text-gray-900"
         >
           {options}
           <ChevronDownIcon

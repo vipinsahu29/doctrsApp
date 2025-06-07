@@ -6,6 +6,9 @@ import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouti
 import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
 import EditPatientModal from "../../components/modal/EditPatientModal";
 import { useNavigate } from "react-router-dom";
+import Store from "../../store/store";
+import { getPatientData } from "../../SupaBase/PatientAPI";
+import useGetApiData from "../../hooks/useGetApiData";
 const columns = [
   "No.",
   "Full Name",
@@ -18,6 +21,8 @@ const columns = [
 ];
 
 const AppointmentsList = ({ source }) => {
+  const clinic_id = Store((state) => state.clinicId);
+    const UID = Store((state) => state.UID);
   const [parPage, setParPage] = useState(10);
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
@@ -28,6 +33,13 @@ const AppointmentsList = ({ source }) => {
   const filteredColums = columns.filter((col) =>
     source === "Patients" ? col !== "Payment Status" : col
   );
+  const {data, refetch,error} = useGetApiData(
+    clinic_id,
+    getPatientData)
+
+
+  // const AppointmentData = data || [];
+  console.log("AppointmentData:", data,error);
   const filteredUsers =
     searchValue && isNaN(searchValue)
       ? AppointmentData.filter((user) =>

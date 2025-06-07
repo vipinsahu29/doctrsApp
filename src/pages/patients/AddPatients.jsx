@@ -42,18 +42,22 @@ const AddPatients = () => {
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission
     if (!isMobileValid) {
       setError("Please enter valid mobile number");
       return; // Prevent form submission if validation fails
     }
-    if(formData.FirstName.length < 2 || formData.LastName.length < 2) {
+    if (formData.Email.length > 0 && !isValidEmail) {
+      setError("Please enter valid email address");
+      return;
+    }
+    if (formData.FirstName.length < 2 || formData.LastName.length < 2) {
       setError("First name and Last name should be at least 2 characters long");
       return;
     }
-    if(formData.Mobile.length < 10) {
+    if (formData.Mobile.length < 10) {
       setError("Mobile number should be at least 10 digits long");
       return;
     }
@@ -169,7 +173,7 @@ const AddPatients = () => {
               }`}
               disabled={error.length > 0 || loading}
             >
-              {loading ? "Saving...": "Save details"}
+              {loading ? "Saving..." : "Save details"}
             </button>
           </div>
           {insertedPatient && (

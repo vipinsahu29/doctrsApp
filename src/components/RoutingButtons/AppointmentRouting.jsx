@@ -24,7 +24,7 @@ const AppointmentRouting = ({ pageName }) => {
             pathname === item.path
               ? "bg-yellow-400  text-black"
               : "bg-gray-600  text-white"
-          } rounded-md hover:bg-yellow-400 md:m-10 sm: m-4     focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-gray-900`}
+          } rounded-md hover:bg-yellow-400 md:m-10 sm: m-4     focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800  border-2 border-gray-200 hover:text-gray-900`}
         >
           {item.name}
         </Link>

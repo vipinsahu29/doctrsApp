@@ -2,7 +2,6 @@ import { supabase } from "../supabaseClient";
 
 export const createPatient = async (patientData, patientDetailsData) => {
   try {
-    
     // Step 1: Check if the patient already exists
     const { data: existingPatient, error: checkError } = await supabase
       .from("patient")
@@ -63,5 +62,43 @@ export const createPatient = async (patientData, patientDetailsData) => {
   } catch (err) {
     console.error("Unexpected error:", err);
     return { error: "An unexpected error occurred." };
+  }
+};
+
+export const getPatientData = async (clinic_id) => {
+  try {
+    const { data, error } = await supabase
+      .from("patient")
+      .select(
+        `
+        patient_id,
+        fname,
+        lname,
+        mobile,
+        email,
+        gender,
+        patients_details (
+          height,
+          weight,
+          dob,
+          occupation,
+          address,
+          pan,
+          adhar
+        )
+        `
+      )
+      .eq("clinic_id", clinic_id); // Ensure the patient belongs to the correct clinic
+    if (error) {
+      console.error("Error fetching patient data:", error.message);
+      return { error: error.message, data: [] };
+    }
+    if (data.length === 0) {
+      return { error: "Patient already exists." };
+    }
+    return { data };
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return { error: "An unexpected error occurred in select patient." };
   }
 };
