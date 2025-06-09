@@ -121,17 +121,17 @@ const AppointmentsList = ({ source }) => {
             onChange={(e) => handleSearch(e)}
           />
           {errorMessage && (
-            <div className="text-red-500 text-center">{errorMessage}</div>
+            <div className="text-red-600 text-center">{errorMessage}</div>
           )}
           <div className="flex justify-center items-center">
             <div className="overflow-x-auto min-h-auto pb-5">
-              <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
-                <thead className=" text-sm text-yellow-400 uppercase">
-                  <tr>
+              <table className="w-full mt-4 border-collapse border border-gray-900 p-2">
+                <thead className=" uppercase">
+                  <tr className="bg-gray-200">
                     {filteredColums.map((items) => (
                       <th
                         scope="col"
-                        className="py-3 px-4 border border-gray-300"
+                        className="py-3 px-4 border border-gray-900"
                         key={items}
                       >
                         {source === "Patients" && items === "Appointment date"
@@ -154,50 +154,50 @@ const AppointmentsList = ({ source }) => {
               </tr>
             ) : (*/}
                   {filteredUsers.map((d, i) => (
-                    <tr key={d.patient_id}>
+                    <tr key={d.patient_id} className="text-center bg-gray-100 border border-gray-900">
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         {i + 1}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         {d.fname + " " + d.lname}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         {d.mobile}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         {d.gender}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         {d.appointment_date}
                       </td>
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         {d.appointment_time}
                       </td>
                       {source !== "Patients" && (
                         <td
                           scope="row"
-                          className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${
+                          className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-900 ${
                             d.payment_status === "Pending" || !d.payment_status
-                              ? " text-red-400 font-semibold"
-                              : " text-green-400"
+                              ? " text-red-600 font-semibold"
+                              : " text-green-700"
                           }`}
                         >
                           {d.payment_status ? d.payment_status : "N/A"}
@@ -205,7 +205,7 @@ const AppointmentsList = ({ source }) => {
                       )}
                       <td
                         scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         <div className="flex justify-start items-center gap-4">
                           <button
@@ -219,7 +219,7 @@ const AppointmentsList = ({ source }) => {
 
                           <button
                             tabIndex={-1}
-                            className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
+                            className="p-[6px] bg-red-600 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
                             onClick={() => handleViewDetails(d.patient_id)}
                           >
                             {" "}
@@ -229,7 +229,7 @@ const AppointmentsList = ({ source }) => {
                           {source !== "Patients" && (
                             <button
                               tabIndex={-1}
-                              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-300"
+                              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-900"
                               onClick={() => handleCheckinClick(d.Id)}
                             >
                               {" "}
