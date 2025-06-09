@@ -31,42 +31,42 @@ export default function EditPatientModal({
   const [isValidEmail, setIsValidEmail] = useState(true);
   const today = new Date().toISOString().split("T")[0];
   const handleFnameChange = (e) => {
-    setFormData({ ...formData, FirstName: e.target.value });
+    setFormData({ ...formData, fname: e.target.value });
   };
   const handleLnameChange = (e) => {
-    setFormData({ ...formData, LastName: e.target.value });
+    setFormData({ ...formData, lanme: e.target.value });
   };
   const handleMobileChange = (e) => {
     setIsMobileValid(validateMobile(e.target.value));
-    setFormData({ ...formData, Mobile: e.target.value });
+    setFormData({ ...formData, mobile: e.target.value });
   };
   const handleGenderChange = (e) => {
-    setFormData({ ...formData, Gender: e.target.value });
+    setFormData({ ...formData, gender: e.target.value });
   };
   const handleDateChange = (e) => {
-    setFormData({ ...formData, AppointmentDate: e.target.value });
+    setFormData({ ...formData, appointment_date: e.target.value });
   };
   const handleTimeChange = (e) => {
-    setFormData({ ...formData, Time: e.target.value });
+    setFormData({ ...formData, appointment_time: e.target.value });
   };
   const handleDobChange = (e) => {
-    setFormData({ ...formData, Dob: e.target.value });
+    setFormData({ ...formData, dob: e.target.value });
   };
   const handleEmailChange = (e) => {
     setIsValidEmail(validateEmail(e.target.value));
-    setFormData({ ...formData, Email: e.target.value });
+    setFormData({ ...formData, email: e.target.value });
   };
   const handleWeightChange = (e) => {
-    setFormData({ ...formData, Weight: e.target.value });
+    setFormData({ ...formData, weight: e.target.value });
   };
   const handleHeightChange = (e) => {
-    setFormData({ ...formData, Height: e.target.value });
+    setFormData({ ...formData, height: e.target.value });
   };
   const handleDoctorChange = (e) => {
-    setFormData({ ...formData, DoctorName: e.target.value });
+    setFormData({ ...formData, drname: e.target.value });
   };
   const handlePaymentChange = (e) => {
-    setFormData({ ...formData, Payment: e.target.value });
+    setFormData({ ...formData, payment_mode: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -208,7 +208,7 @@ export default function EditPatientModal({
                     <input
                       type="email"
                       id="email"
-                      value={formData.email}
+                      value={formData?.email}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="john.doe@company.com"
                       required
@@ -227,7 +227,7 @@ export default function EditPatientModal({
                     <input
                       type="date"
                       name="dob"
-                      value={formData?.patients_details[0].dob}
+                      value={formData?.dob}
                       max={today} // Prevent past dates
                       placeholder="mm-dd-yyyy"
                       onChange={handleDobChange}
@@ -242,7 +242,7 @@ export default function EditPatientModal({
                         <input
                           type="number"
                           name="weight"
-                          value={formData?.patients_details[0].weight}
+                          value={formData?.weight}
                           min="1"
                           max="250"
                           onChange={handleWeightChange}
@@ -260,7 +260,7 @@ export default function EditPatientModal({
                         <input
                           type="number"
                           name="height"
-                          value={formData?.patients_details[0]?.height}
+                          value={formData?.height}
                           min="1"
                           max="250"
                           onChange={handleHeightChange}
@@ -279,7 +279,7 @@ export default function EditPatientModal({
                         <select
                           name="doctor"
                           id="doctor"
-                          value={formData.DoctorName}
+                          value={formData?.drname}
                           onChange={handleDoctorChange}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
@@ -296,7 +296,7 @@ export default function EditPatientModal({
                         <select
                           name="doctor"
                           id="doctor"
-                          value={formData.Payment}
+                          value={formData?.payment_mode}
                           onChange={handlePaymentChange}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >

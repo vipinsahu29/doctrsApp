@@ -7,8 +7,7 @@ import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewD
 import EditPatientModal from "../../components/modal/EditPatientModal";
 import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
-import { getPatientData } from "../../SupaBase/PatientAPI";
-import useGetApiData from "../../hooks/useGetApiData";
+import { getPatientDetails } from "../../SupaBase/PatientAPI";
 import { fetchJoinedPatientData } from "../../SupaBase/AppointmentAPI";
 const columns = [
   "No.",
@@ -38,12 +37,19 @@ const AppointmentsList = ({ source }) => {
     source === "Patients" ? col !== "Payment Status" : col
   );
 
-  const callAPI = source === "Patients" ? getPatientData : "";
-
-  const { data, refetch, error } = useGetApiData(clinic_id, callAPI);
-
   const getAppointmentList = React.useCallback(async (clinicId) => {
     await fetchJoinedPatientData(clinicId).then((data) => {
+      if (!data || data.length === 0) {
+        setErrorMessage(
+          "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
+        );
+      }
+      setPatientData(data);
+    });
+  }, []);
+
+  const getPatientsDetails = React.useCallback(async (clinicId) => {
+    await getPatientDetails(clinicId).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
@@ -57,9 +63,12 @@ const AppointmentsList = ({ source }) => {
     if (source !== "Patients") {
       getAppointmentList(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList]);
+    else{
+      getPatientsDetails(clinic_id);
+    }
+  }, [source, clinic_id, getAppointmentList,getPatientsDetails]);
   // const AppointmentData = data || [];
-  const filteredUsers = source === "Patients" ? data : patientData;
+  const filteredUsers = patientData;
   // searchValue && isNaN(searchValue)
   //   ? data.filter((user) =>
   //       user?.fname?.toLowerCase().includes(searchValue.toLowerCase())
@@ -254,6 +263,7 @@ const AppointmentsList = ({ source }) => {
           isOpen={viewDetails}
           onClose={() => setViewDetails(false)}
           data={viewData[0]}
+          isPatient={source === "Patients"}
           onNewAppointment={() => setNewAppointment(true)}
         />
       )}
@@ -262,7 +272,7 @@ const AppointmentsList = ({ source }) => {
           isOpen={isEditOpen || newAppointment}
           patient={viewData[0]}
           onSave={""}
-          isNewAppointment={newAppointment}
+          isNewAppointment={source !== "Patients"}
           onClose={handleEditmodal}
         />
       )}

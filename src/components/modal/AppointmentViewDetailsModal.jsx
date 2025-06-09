@@ -6,13 +6,14 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import PropTypes from "prop-types";
-
+import { calculateExperience } from "../../utility/util";
 
 const AppointmentViewDetailsModal = ({
   isOpen,
   onClose,
   data,
   onNewAppointment,
+  isPatient = false,
 }) => {
   const handleBookAppointment = () => {
     onClose(false);
@@ -54,39 +55,43 @@ const AppointmentViewDetailsModal = ({
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">AppointmentDate:</h2>
-                  {data.AppointmentDate}
+                  {data.appointment_date}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Time:</h2>
-                  {data.Time}
+                  {data.appointment_time}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Email:</h2>
-                  {data.Email}
+                  {data.email}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Age:</h2>
-                  {data.Age}
+                  {calculateExperience(data?.dob)}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Weight:</h2>
-                  {data.Weight + "kg"}
+                  {(data?.weight ?? 0) + " kg"}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Height:</h2>
-                  {data.Height}
+                  {data?.height}
                 </div>
-                <div className="flex flex-col">
-                  <h2 className="font-bold">Doctor:</h2>
-                  {data.DoctorName}
-                </div>
-                <div className="flex flex-col">
-                  <h2 className="font-bold text-red-600">Payment:</h2>
-                  {data.Payment}
-                </div>
+                {!isPatient && (
+                  <>
+                    <div className="flex flex-col">
+                      <h2 className="font-bold">Doctor:</h2>
+                      {data?.drname}
+                    </div>
+                    <div className="flex flex-col">
+                      <h2 className="font-bold text-red-600">Payment:</h2>
+                      {data.payment_mode}
+                    </div>
+                  </>
+                )}
                 <div className="flex flex-col">
                   <h2 className="font-bold">Blood Group:</h2>
-                  {data.BooldGroup}
+                  {data?.blood_group}
                 </div>
               </div>
             </div>
@@ -115,8 +120,9 @@ const AppointmentViewDetailsModal = ({
 };
 export default AppointmentViewDetailsModal;
 AppointmentViewDetailsModal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func,
-    data: PropTypes.object,
-    onNewAppointment: PropTypes.func
-}
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+  data: PropTypes.object,
+  onNewAppointment: PropTypes.func,
+  isPatient: PropTypes.bool
+};

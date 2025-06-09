@@ -102,3 +102,17 @@ export const getPatientData = async (clinic_id) => {
     return { error: "An unexpected error occurred in select patient." };
   }
 };
+
+export async function getPatientDetails(clinicId) {
+    const { data, error } = await supabase.rpc("get_patientdetails_data", {
+        c_id: clinicId,
+    });
+    console.log("from rpc func", clinicId,"data:", data);
+
+  if (error) {
+    console.error("Error fetching joined patient data:", error);
+    return null;
+  }
+
+  return data;
+}
