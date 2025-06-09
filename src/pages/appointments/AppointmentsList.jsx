@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Pagination from "../../components/pagination/Paginations";
 import { AppointmentData } from "../../Constants/AppointmentData";
 import { FaEdit, FaRegEye } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 import { getPatientData } from "../../SupaBase/PatientAPI";
 import useGetApiData from "../../hooks/useGetApiData";
+import { fetchJoinedPatientData } from "../../SupaBase/AppointmentAPI";
 const columns = [
   "No.",
   "Full Name",
@@ -22,7 +23,7 @@ const columns = [
 
 const AppointmentsList = ({ source }) => {
   const clinic_id = Store((state) => state.clinicId);
-    const UID = Store((state) => state.UID);
+  // const UID = Store((state) => state.UID);
   const [parPage, setParPage] = useState(10);
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
@@ -30,24 +31,44 @@ const AppointmentsList = ({ source }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [newAppointment, setNewAppointment] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [patientData, setPatientData] = useState([]);
+  const [apiErrorMessage, setApiErrorMessage] = useState("");
   const filteredColums = columns.filter((col) =>
     source === "Patients" ? col !== "Payment Status" : col
   );
-  const {data, refetch,error} = useGetApiData(
-    clinic_id,
-    getPatientData)
 
+  const callAPI = source === "Patients" ? getPatientData : "";
 
-  // const AppointmentData = data || [];
-  console.log("AppointmentData:", data,error);
-  const filteredUsers =
-    searchValue && isNaN(searchValue)
-      ? AppointmentData.filter((user) =>
-          user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
-        )
-      : AppointmentData.filter((user) =>
-          user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
+  const { data, refetch, error } = useGetApiData(clinic_id, callAPI);
+
+  const getAppointmentList = React.useCallback(async (clinicId) => {
+    await fetchJoinedPatientData(clinicId).then((data) => {
+      if (!data || data.length === 0) {
+        setErrorMessage(
+          "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
         );
+      }
+      setPatientData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (source !== "Patients") {
+      getAppointmentList(clinic_id);
+    }
+  }, [source, clinic_id, getAppointmentList]);
+  // const AppointmentData = data || [];
+  const filteredUsers = source === "Patients" ? data : patientData;
+  // searchValue && isNaN(searchValue)
+  //   ? data.filter((user) =>
+  //       user?.fname?.toLowerCase().includes(searchValue.toLowerCase())
+  //     )
+  //   : searchValue && !isNaN(searchValue)
+  //   ? AppointmentData.filter((user) =>
+  //       user?.mobile?.toLowerCase().includes(searchValue.toLowerCase())
+  //     )
+  // : data;
 
   const navigate = useNavigate();
   const handleEditmodal = () => {
@@ -56,21 +77,21 @@ const AppointmentsList = ({ source }) => {
   };
   const handleViewDetails = (id) => {
     setViewDetails(true);
-    setViewData(AppointmentData.filter((value) => value.Id === id));
+    setViewData(filteredUsers.filter((value) => value.patient_id === id));
   };
   const handleEditDetails = (id) => {
     setNewAppointment(false);
     setIsEditOpen(true);
-    setViewData(AppointmentData.filter((value) => value.Id === id));
+
+    setViewData(filteredUsers.filter((value) => value?.patient_id === id));
   };
   const handleSearch = (e) => {
     setTimeout(() => {
       setSearchValue(e.target.value);
     }, 1000);
   };
-
   const handleCheckinClick = (id) => {
-    const checkinData = AppointmentData.filter((value) => value.Id === id);
+    const checkinData = filteredUsers.filter((value) => value.patient_id === id);
 
     navigate("/checkin", { state: checkinData });
   };
@@ -90,6 +111,9 @@ const AppointmentsList = ({ source }) => {
             placeholder="search"
             onChange={(e) => handleSearch(e)}
           />
+          {errorMessage && (
+            <div className="text-red-500 text-center">{errorMessage}</div>
+          )}
           <div className="flex justify-center items-center">
             <div className="overflow-x-auto min-h-auto pb-5">
               <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
@@ -101,8 +125,9 @@ const AppointmentsList = ({ source }) => {
                         className="py-3 px-4 border border-gray-300"
                         key={items}
                       >
-                      
-                        {source === "Patients" && items === "Appointment date" ? "Last visit Date" : items}
+                        {source === "Patients" && items === "Appointment date"
+                          ? "Last visit Date"
+                          : items}
                       </th>
                     ))}
                   </tr>
@@ -120,7 +145,7 @@ const AppointmentsList = ({ source }) => {
               </tr>
             ) : (*/}
                   {filteredUsers.map((d, i) => (
-                    <tr key={d.Mobile + d.FirstName}>
+                    <tr key={d.patient_id}>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
@@ -131,42 +156,42 @@ const AppointmentsList = ({ source }) => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.FirstName + " " + d.LastName}
+                        {d.fname + " " + d.lname}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Mobile}
+                        {d.mobile}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Gender}
+                        {d.gender}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.AppointmentDate}
+                        {d.appointment_date}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Time}
+                        {d.appointment_time}
                       </td>
                       {source !== "Patients" && (
                         <td
                           scope="row"
                           className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-300 ${
-                            d.Payment === "Pending"
-                              ? " text-red-400"
+                            d.payment_status === "Pending" || !d.payment_status
+                              ? " text-red-400 font-semibold"
                               : " text-green-400"
                           }`}
                         >
-                          {d.Payment}
+                          {d.payment_status ? d.payment_status : "N/A"}
                         </td>
                       )}
                       <td
@@ -176,7 +201,7 @@ const AppointmentsList = ({ source }) => {
                         <div className="flex justify-start items-center gap-4">
                           <button
                             tabIndex={-1}
-                            onClick={() => handleEditDetails(d.Id)}
+                            onClick={() => handleEditDetails(d?.patient_id)}
                             className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer"
                           >
                             {" "}
@@ -186,20 +211,22 @@ const AppointmentsList = ({ source }) => {
                           <button
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
-                            onClick={() => handleViewDetails(d.Id)}
+                            onClick={() => handleViewDetails(d.patient_id)}
                           >
                             {" "}
                             <FaRegEye />{" "}
                           </button>
 
-                          { source !== "Patients" && <button
-                            tabIndex={-1}
-                            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-300"
-                            onClick={() => handleCheckinClick(d.Id)}
-                          >
-                            {" "}
-                            Check-in
-                          </button>}
+                          {source !== "Patients" && (
+                            <button
+                              tabIndex={-1}
+                              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-300"
+                              onClick={() => handleCheckinClick(d.Id)}
+                            >
+                              {" "}
+                              Check-in
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

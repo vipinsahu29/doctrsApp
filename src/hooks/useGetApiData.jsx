@@ -9,7 +9,7 @@ const useGetApiData = (inputParameter,getTableDataFn) => {
 
   const fetchData = useCallback(async () => {
     if (!getTableDataFn) {
-      console.warn("getTableData function is not provided");
+      // console.warn("getTableData function is not provided");
       return;
     }
 

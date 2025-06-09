@@ -42,15 +42,15 @@ const AppointmentViewDetailsModal = ({
               <div className="grid sm: grid-cols-2 md:grid-cols-4 md:gap-4 sm: gap-2 pt-3">
                 <div className="flex flex-col">
                   <h2 className="font-bold">Name:</h2>
-                  {data.FirstName + " " + data.LastName}
+                  {data?.fname + " " + data?.lname}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Mobile:</h2>
-                  {data.Mobile}
+                  {data.mobile}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Gender:</h2>
-                  {data.Gender}
+                  {data.gender}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">AppointmentDate:</h2>

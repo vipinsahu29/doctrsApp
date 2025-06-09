@@ -105,7 +105,7 @@ export default function EditPatientModal({
                       type="text"
                       id="firstname"
                       name="firstname"
-                      value={formData.FirstName}
+                      value={formData.fname}
                       placeholder="First name"
                       onChange={handleFnameChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -120,7 +120,7 @@ export default function EditPatientModal({
                       id="lastname"
                       name="lastname"
                       placeholder="Last name"
-                      value={formData.LastName}
+                      value={formData.lname}
                       onChange={handleLnameChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
@@ -133,7 +133,7 @@ export default function EditPatientModal({
                       type="text"
                       id="mobile"
                       name="mobile"
-                      value={formData.Mobile}
+                      value={formData.mobile}
                       placeholder="XXXXXXXXXXX"
                       onChange={handleMobileChange}
                       maxLength="10"
@@ -152,7 +152,7 @@ export default function EditPatientModal({
                     <select
                       name="gender"
                       id="gender"
-                      value={formData.Gender}
+                      value={formData.gender}
                       onChange={handleGenderChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
@@ -162,7 +162,7 @@ export default function EditPatientModal({
                       <option value="Other">Other</option>
                     </select>
                   </div>
-                  <div className="flex flex-col">
+                  {/*<div className="flex flex-col">
                     <label
                       className="mb-1 text-red-800"
                       htmlFor="appointmentDate"
@@ -180,7 +180,6 @@ export default function EditPatientModal({
                     />
                   </div>
                   <div className="flex flex-col">
-                    {/*Appointment time field */}
                     <label className="mb-1" htmlFor="time">
                       Time:
                     </label>
@@ -198,7 +197,7 @@ export default function EditPatientModal({
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div>*/}
                   <div className="flex flex-col">
                     <label
                       htmlFor="email"
@@ -209,7 +208,7 @@ export default function EditPatientModal({
                     <input
                       type="email"
                       id="email"
-                      value={formData.Email}
+                      value={formData.email}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="john.doe@company.com"
                       required
@@ -228,7 +227,7 @@ export default function EditPatientModal({
                     <input
                       type="date"
                       name="dob"
-                      value={formData.Dob}
+                      value={formData?.patients_details[0].dob}
                       max={today} // Prevent past dates
                       placeholder="mm-dd-yyyy"
                       onChange={handleDobChange}
@@ -243,7 +242,7 @@ export default function EditPatientModal({
                         <input
                           type="number"
                           name="weight"
-                          value={formData.Weight}
+                          value={formData?.patients_details[0].weight}
                           min="1"
                           max="250"
                           onChange={handleWeightChange}
@@ -261,7 +260,7 @@ export default function EditPatientModal({
                         <input
                           type="number"
                           name="height"
-                          value={formData.Height}
+                          value={formData?.patients_details[0]?.height}
                           min="1"
                           max="250"
                           onChange={handleHeightChange}
@@ -271,45 +270,46 @@ export default function EditPatientModal({
                       </div>
                     </label>
                   </div>
-                  <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="doctor">
-                      Doctor:
-                    </label>
-                    <select
-                      name="doctor"
-                      id="doctor"
-                      value={formData.DoctorName}
-                      onChange={handleDoctorChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option value="">Select Doctor</option>
-                      <option value="Dr. Anderson">Dr. Anderson</option>
-                      <option value="Dr. Williams">Dr. Williams</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  {!isNewAppointment && (
-                    <div className="flex flex-col">
-                      <label className="mb-1 text-red-600" htmlFor="doctor">
-                        Payment Method:
-                      </label>
-                      <select
-                        name="doctor"
-                        id="doctor"
-                        value={formData.Payment}
-                        onChange={handlePaymentChange}
-                        className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      >
-                        <option value="">Select Option</option>
-                        <option value="Pending">Pending</option>
-                        <option value="UPI">UPI</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="No Fee">No Fee</option>
-                        <option value="Cancel">Cancel</option>
-
-                      </select>
-                    </div>
+                  {isNewAppointment && (
+                    <>
+                      <div className="flex flex-col">
+                        <label className="mb-1" htmlFor="doctor">
+                          Doctor:
+                        </label>
+                        <select
+                          name="doctor"
+                          id="doctor"
+                          value={formData.DoctorName}
+                          onChange={handleDoctorChange}
+                          className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                          <option value="">Select Doctor</option>
+                          <option value="Dr. Anderson">Dr. Anderson</option>
+                          <option value="Dr. Williams">Dr. Williams</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="mb-1 text-red-600" htmlFor="doctor">
+                          Payment Method:
+                        </label>
+                        <select
+                          name="doctor"
+                          id="doctor"
+                          value={formData.Payment}
+                          onChange={handlePaymentChange}
+                          className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                          <option value="">Select Option</option>
+                          <option value="Pending">Pending</option>
+                          <option value="UPI">UPI</option>
+                          <option value="Cash">Cash</option>
+                          <option value="Credit Card">Credit Card</option>
+                          <option value="No Fee">No Fee</option>
+                          <option value="Cancel">Cancel</option>
+                        </select>
+                      </div>
+                    </>
                   )}
                 </div>
               </form>
