@@ -109,9 +109,9 @@ const AppointmentsList = ({ source }) => {
   const heading = source === "Patients" ? "Patients List" : "Appointment List";
   const pageName = source === "Patients" ? "Patients" : "Appointment";
   return (
-    <div className="min-h-screen flex md:items-center bg-white py-6 flex-col gap-1 ">
+    <div className="min-h-screen flex md:items-center bg-white  flex-col gap-1 ">
       <AppointmentRouting pageName={pageName} />
-      <div className="flex flex-wrap w-auto py-2 flex-col gap-7 items-center ">
+      <div className="flex flex-wrap w-auto flex-col gap-7 items-center ">
         <div className="w-full md:max-w-5xl  bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mx-4">
           <h2 className="text-2xl font-semibold text-center text-yellow-400">
             {heading}

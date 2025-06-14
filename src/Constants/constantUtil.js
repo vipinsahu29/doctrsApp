@@ -27,7 +27,13 @@ const commonFields = [
 ];
 export const addPatientsInputFields = [
   ...commonFields,
-  { label: "PAN Card", name: "PANCard", type: "text", required: false },
+  {
+    label: "Blood Group",
+    name: "BloodGroup",
+    type: "select",
+    options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+    required: true,
+  },
   { label: "Adhar number", name: "Adhar", type: "text", required: false },
   {
     label: "Occupation",
@@ -111,8 +117,13 @@ export const appointmentFields = [
 
 export const registrationFields = [
   { label: "Clinic Name", name: "ClinicName", type: "text", required: true },
-  { label: "Specialization", name: "Specialization", type: "text", required: true },
+  {
+    label: "Specialization",
+    name: "Specialization",
+    type: "text",
+    required: true,
+  },
   { label: "Address", name: "Address", type: "text", required: true },
   { label: "Dr Name", name: "DrName", type: "text", required: true },
   { label: "Mobile", name: "Mobile", type: "tel", required: true },
-]
+];

@@ -15,7 +15,7 @@ const AppointmentRouting = ({ pageName }) => {
 
   const navValues = navOptions.options;
   return (
-    <div className="mt-16 flex justify-center items-center flex-wrap gap-4">
+    <div className="mt-12 flex justify-center items-center flex-wrap gap-4">
       {navValues.map((item) => (
         <Link
           key={item.name}

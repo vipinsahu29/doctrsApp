@@ -30,7 +30,6 @@ const AddPatients = () => {
     State: "",
     BloodGroup: "",
     Country: "",
-    PANCard: "",
     Adhar: "",
   });
 
@@ -85,7 +84,6 @@ const AddPatients = () => {
           state: formData.State,
           country: formData.Country,
         },
-        pan: formData.PANCard,
         adhar: formData.Adhar,
         clinic_id: clinic_id,
       }
@@ -123,7 +121,6 @@ const AddPatients = () => {
       State: "",
       BloodGroup: "",
       Country: "",
-      PANCard: "",
       Adhar: "",
     });
   };
