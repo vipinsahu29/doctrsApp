@@ -172,7 +172,7 @@ const AppointmentsList = ({ source }) => {
             ) : (*/}
                   {filteredUsers.map((d, i) => (
                     <tr
-                      key={d.patient_id}
+                      key={source === "Patients" ? d.patient_id : d.appointment_id}
                       className="text-center bg-gray-100 border border-gray-900"
                     >
                       <td
@@ -296,9 +296,9 @@ const AppointmentsList = ({ source }) => {
         <EditPatientModal
           isOpen={isEditOpen || newAppointment}
           patient={viewData[0]}
-          onSave={""}
-          isNewAppointment={source !== "Patients"}
+          isNewAppointment={newAppointment}
           onClose={handleEditmodal}
+          isPatient={source === "Patients"}
         />
       )}
     </div>

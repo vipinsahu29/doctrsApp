@@ -19,6 +19,7 @@ const AppointmentViewDetailsModal = ({
     onClose(false);
     onNewAppointment(true);
   };
+  console.log("Appointment Data:", data);
   if (!isOpen) return null;
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">

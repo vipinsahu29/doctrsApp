@@ -15,26 +15,31 @@ import {
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
   isNewAppointment: PropTypes.bool,
-  patient: PropTypes.array,
-  onSave: PropTypes.func,
+  patient: PropTypes.object,
+  // onSave: PropTypes.func,
   onClose: PropTypes.func,
+  isPatient: PropTypes.bool,
 };
 export default function EditPatientModal({
   isOpen,
   patient,
-  onSave,
   onClose,
   isNewAppointment,
+  isPatient,
 }) {
   const [formData, setFormData] = useState({ ...patient });
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
+  const [PaymentMode, setPaymentMode] = useState("pending");
+  const [fee, setFee] = useState(0);
   const today = new Date().toISOString().split("T")[0];
+
+  console.log("EditPatientModal", formData);
   const handleFnameChange = (e) => {
     setFormData({ ...formData, fname: e.target.value });
   };
   const handleLnameChange = (e) => {
-    setFormData({ ...formData, lanme: e.target.value });
+    setFormData({ ...formData, lname: e.target.value });
   };
   const handleMobileChange = (e) => {
     setIsMobileValid(validateMobile(e.target.value));
@@ -66,12 +71,21 @@ export default function EditPatientModal({
     setFormData({ ...formData, drname: e.target.value });
   };
   const handlePaymentChange = (e) => {
-    setFormData({ ...formData, payment_mode: e.target.value });
+    setFormData({
+      ...formData,
+      payment_mode:
+        e.target.value === "select_option" ? "pending" : e.target.value,
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    console.log("book appointment", formData);
   };
+  const pageTitle = isNewAppointment
+    ? "Book Appointment"
+    : isPatient
+    ? "Edit Patient Details"
+    : "Edit Appointment Details";
   if (!isOpen) return null;
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">
@@ -91,9 +105,7 @@ export default function EditPatientModal({
                 as="h3"
                 className="text-lg text-indigo-700 font-bold"
               >
-                {isNewAppointment
-                  ? "Book Appointment:"
-                  : "Edit Patient Details"}
+                {pageTitle}
               </DialogTitle>
               <form onSubmit={handleSubmit}>
                 <div className="grid sm: grid-cols-1 md:grid-cols-3 md:gap-4 sm: gap-2 pt-3">
@@ -109,6 +121,7 @@ export default function EditPatientModal({
                       placeholder="First name"
                       onChange={handleFnameChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -123,6 +136,7 @@ export default function EditPatientModal({
                       value={formData.lname}
                       onChange={handleLnameChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -138,6 +152,7 @@ export default function EditPatientModal({
                       onChange={handleMobileChange}
                       maxLength="10"
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment}
                     />
                     {!isMobileValid && (
                       <h3 className="text-red-600">
@@ -155,6 +170,7 @@ export default function EditPatientModal({
                       value={formData.gender}
                       onChange={handleGenderChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment}
                     >
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
@@ -162,64 +178,71 @@ export default function EditPatientModal({
                       <option value="Other">Other</option>
                     </select>
                   </div>
-                  {/*<div className="flex flex-col">
-                    <label
-                      className="mb-1 text-red-800"
-                      htmlFor="appointmentDate"
-                    >
-                      Appointment Date:
-                    </label>
-                    <input
-                      type="date"
-                      name="appointment_date"
-                      value={formData.AppointmentDate}
-                      min={today} // Prevent past dates
-                      placeholder="mm-dd--yyyy"
-                      onChange={handleDateChange}
-                      className="bg-gray-50 border w-[250px] border-green-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="time">
-                      Time:
-                    </label>
-                    <select
-                      name="time"
-                      id="time"
-                      value={formData.appointment_time}
-                      onChange={handleTimeChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option value="">Select Time</option>
-                      {generateTimeSlots().map((time) => (
-                        <option key={time} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
-                  </div>*/}
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Email address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData?.email}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="john.doe@company.com"
-                      required
-                      onChange={handleEmailChange}
-                    />
-                    {!isValidEmail && (
-                      <h3 className="text-red-600">
-                        Please enter valid Email.
-                      </h3>
-                    )}
-                  </div>
+                  {isNewAppointment && (
+                    <>
+                      <div className="flex flex-col">
+                        <label
+                          className="mb-1 text-red-800"
+                          htmlFor="appointmentDate"
+                        >
+                          Appointment Date:
+                        </label>
+                        <input
+                          type="date"
+                          name="appointment_date"
+                          value={formData.AppointmentDate}
+                          min={today} // Prevent past dates
+                          placeholder="mm-dd--yyyy"
+                          onChange={handleDateChange}
+                          className="bg-gray-50 border w-[250px] border-green-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="mb-1" htmlFor="time">
+                          Time:
+                        </label>
+                        <select
+                          name="time"
+                          id="time"
+                          value={formData.appointment_time}
+                          onChange={handleTimeChange}
+                          className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                          <option value="">Select Time</option>
+                          {generateTimeSlots().map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
+                        </select>
+                      </div>{" "}
+                    </>
+                  )}
+                  {!isNewAppointment && (
+                    <div className="flex flex-col">
+                      <label
+                        htmlFor="email"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Email address
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={formData?.email}
+                        className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="john.doe@company.com"
+                        required
+                        onChange={handleEmailChange}
+                        disabled={isNewAppointment}
+                      />
+                      {!isValidEmail && (
+                        <h3 className="text-red-600">
+                          Please enter valid Email.
+                        </h3>
+                      )}
+                    </div>
+                  )}
                   <div className="flex flex-col">
                     <label className="mb-1" htmlFor="dob">
                       Date of birth:
@@ -232,6 +255,7 @@ export default function EditPatientModal({
                       placeholder="mm-dd-yyyy"
                       onChange={handleDobChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -248,6 +272,7 @@ export default function EditPatientModal({
                           onChange={handleWeightChange}
                           placeholder="Enter weight"
                           className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          disabled={isNewAppointment}
                         />
                       </div>
                     </label>
@@ -266,6 +291,7 @@ export default function EditPatientModal({
                           onChange={handleHeightChange}
                           placeholder="Enter height"
                           className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          disabled={isNewAppointment}
                         />
                       </div>
                     </label>
@@ -294,13 +320,15 @@ export default function EditPatientModal({
                           Payment Method:
                         </label>
                         <select
-                          name="doctor"
-                          id="doctor"
-                          value={formData?.payment_mode}
-                          onChange={handlePaymentChange}
+                          name="payment_mode"
+                          id="payment_mode"
+                          value={PaymentMode}
+                          onChange={(e) => {
+                            setPaymentMode(e.target.value);
+                          }}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-red-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                          <option value="">Select Option</option>
+                          <option value="select_option">Select Option</option>
                           <option value="Pending">Pending</option>
                           <option value="UPI">UPI</option>
                           <option value="Cash">Cash</option>
@@ -308,6 +336,23 @@ export default function EditPatientModal({
                           <option value="No Fee">No Fee</option>
                           <option value="Cancel">Cancel</option>
                         </select>
+                      </div>
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="fee"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Total Fee
+                        </label>
+                        <input
+                          type="number"
+                          id="fee"
+                          value={fee < 0 ? 0 : fee}
+                          className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          required
+                          onChange={(e) => setFee(e.target.value < 0  ? 0 : e.target.value)}
+                          min="0"
+                        />
                       </div>
                     </>
                   )}
