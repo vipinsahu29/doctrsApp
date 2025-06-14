@@ -28,6 +28,7 @@ const AddPatients = () => {
     LastVisit: "",
     City: "",
     State: "",
+    BloodGroup: "",
     Country: "",
     PANCard: "",
     Adhar: "",
@@ -42,7 +43,7 @@ const AddPatients = () => {
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission
     if (!isMobileValid) {
@@ -73,10 +74,12 @@ const AddPatients = () => {
         clinic_id: clinic_id,
       },
       {
+        last_visit_date: formData.LastVisit,
         height: formData.Height,
         weight: formData.Weight,
         dob: formData.DOB,
         occupation: formData.Occupation,
+        blood_group: formData.BloodGroup,
         address: {
           city: formData.City,
           state: formData.State,
@@ -86,19 +89,6 @@ const AddPatients = () => {
         adhar: formData.Adhar,
         clinic_id: clinic_id,
       }
-    );
-    console.log("pageData", formData);
-    console.log(
-      "Patient:",
-      patient,
-      "  Details:",
-      patientDetails,
-      "error",
-      error,
-      "clinic_id",
-      clinic_id,
-      "UID",
-      UID
     );
     if (error) {
       setErrorMessage(error);
@@ -131,6 +121,7 @@ const AddPatients = () => {
       LastVisit: "",
       City: "",
       State: "",
+      BloodGroup: "",
       Country: "",
       PANCard: "",
       Adhar: "",
@@ -145,7 +136,7 @@ const AddPatients = () => {
           Fill patient's detail
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-4 sm: grid-cols-2 gap-4">
             {addPatientsInputFields.map((field) => (
               <div key={field.name}>
                 <AtomInput

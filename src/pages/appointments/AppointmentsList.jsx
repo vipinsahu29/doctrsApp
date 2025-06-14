@@ -17,6 +17,7 @@ const columns = [
   "Appointment date",
   "Time",
   "Payment Status",
+  "Blood Group",
   "Action",
 ];
 
@@ -34,7 +35,7 @@ const AppointmentsList = ({ source }) => {
   const [patientData, setPatientData] = useState([]);
   const [apiErrorMessage, setApiErrorMessage] = useState("");
   const filteredColums = columns.filter((col) =>
-    source === "Patients" ? col !== "Payment Status" : col
+    source === "Patients" ? col !== "Payment Status" && col !== "Time" : col
   );
 
   const getAppointmentList = React.useCallback(async (clinicId) => {
@@ -62,11 +63,10 @@ const AppointmentsList = ({ source }) => {
   useEffect(() => {
     if (source !== "Patients") {
       getAppointmentList(clinic_id);
-    }
-    else{
+    } else {
       getPatientsDetails(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList,getPatientsDetails]);
+  }, [source, clinic_id, getAppointmentList, getPatientsDetails]);
   // const AppointmentData = data || [];
   const filteredUsers = patientData;
   // searchValue && isNaN(searchValue)
@@ -100,7 +100,9 @@ const AppointmentsList = ({ source }) => {
     }, 1000);
   };
   const handleCheckinClick = (id) => {
-    const checkinData = filteredUsers.filter((value) => value.patient_id === id);
+    const checkinData = filteredUsers.filter(
+      (value) => value.patient_id === id
+    );
 
     navigate("/checkin", { state: checkinData });
   };
@@ -154,7 +156,10 @@ const AppointmentsList = ({ source }) => {
               </tr>
             ) : (*/}
                   {filteredUsers.map((d, i) => (
-                    <tr key={d.patient_id} className="text-center bg-gray-100 border border-gray-900">
+                    <tr
+                      key={d.patient_id}
+                      className="text-center bg-gray-100 border border-gray-900"
+                    >
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
@@ -179,30 +184,47 @@ const AppointmentsList = ({ source }) => {
                       >
                         {d.gender}
                       </td>
-                      <td
-                        scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
-                      >
-                        {d.appointment_date}
-                      </td>
-                      <td
-                        scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
-                      >
-                        {d.appointment_time}
-                      </td>
-                      {source !== "Patients" && (
+                      {source === "Patients" && (
                         <td
                           scope="row"
-                          className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-900 ${
-                            d.payment_status === "Pending" || !d.payment_status
-                              ? " text-red-600 font-semibold"
-                              : " text-green-700"
-                          }`}
+                          className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                         >
-                          {d.payment_status ? d.payment_status : "N/A"}
+                          {d?.last_visit_date}
                         </td>
                       )}
+                      {source !== "Patients" && (
+                        <>
+                          <td
+                            scope="row"
+                            className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
+                          >
+                            {d?.appointment_date}
+                          </td>
+                          <td
+                            scope="row"
+                            className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
+                          >
+                            {d.appointment_time}
+                          </td>
+                          <td
+                            scope="row"
+                            className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-900 ${
+                              d.payment_status === "Pending" ||
+                              !d.payment_status
+                                ? " text-red-600 font-semibold"
+                                : " text-green-700"
+                            }`}
+                          >
+                            {d.payment_status ? d.payment_status : "N/A"}
+                          </td>
+                        </>
+                      )}
+                      <td
+                        scope="row"
+                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
+                      >
+                        {d?.blood_group || "N/A"}
+                      </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
