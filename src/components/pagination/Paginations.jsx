@@ -23,45 +23,42 @@ const Pagination = ({
     startPage = 1;
   }
 
-  const createBtn = () => {
-    const btns = [];
-    for (let i = startPage; i < endPage; i++) {
-      btns.push(
-        <li
-          key={i}
-          onClick={() => setPageNumber(i)}
-          className={` ${
-            pageNumber === i
-              ? "bg-indigo-300 shadow-lg shadow-indigo-300/50 text-white"
-              : "bg-slate-600 hover:bg-indigo-400 shadow-lg hover:shadow-indigo-500/50 hover:text-white text-[#d0d2d6]"
-          } w-[33px] h-[33px] rounded-full flex justify-center items-center cursor-pointer `}
-        >
-          {i}
-        </li>
-      );
-    }
-    return btns;
-  };
-
   return (
     <ul className="flex gap-3">
-      {pageNumber > 1 && (
-        <li
+      {
+        <button
           onClick={() => setPageNumber(pageNumber - 1)}
-          className="w-[33px] h-[33px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000] cursor-pointer"
+          className={`w-[63px] h-[43px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000] ${
+            pageNumber < 2 ? "cursor-not-allowed" : "cursor-pointer"
+          } }`}
+          disabled={pageNumber < 2}
         >
           <MdOutlineKeyboardDoubleArrowLeft />
-        </li>
-      )}
-      {createBtn()}
-      {pageNumber < totalPage && (
-        <li
+        </button>
+      }
+      <input
+        className="w-[63px] h-[43px] rounded-full fix bg-slate-300 text-[#000000] cursor-pointer font-semibold text-center text-lg"
+        onChange={(e) =>
+          setPageNumber(
+            Number(e.target.value <= endPage ? e.target.value : endPage)
+          )
+        }
+        type="number"
+        value={pageNumber > 0 ? pageNumber : ""}
+      ></input>
+      {
+        <button
           onClick={() => setPageNumber(pageNumber + 1)}
-          className="w-[33px] h-[33px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000] cursor-pointer"
+          className={`w-[63px] h-[43px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000]  ${
+            pageNumber >= endPage && pageNumber > 0
+              ? "cursor-not-allowed"
+              : "cursor-pointer"
+          }`}
+          disabled={pageNumber >= endPage && pageNumber > 0}
         >
           <MdOutlineKeyboardDoubleArrowRight />
-        </li>
-      )}
+        </button>
+      }
     </ul>
   );
 };

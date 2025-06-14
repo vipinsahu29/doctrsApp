@@ -109,22 +109,37 @@ const AppointmentsList = ({ source }) => {
   const heading = source === "Patients" ? "Patients List" : "Appointment List";
   const pageName = source === "Patients" ? "Patients" : "Appointment";
   return (
-    <div className="min-h-screen flex md:items-center bg-white py-6 flex-col gap-7 ">
+    <div className="min-h-screen flex md:items-center bg-white py-6 flex-col gap-1 ">
       <AppointmentRouting pageName={pageName} />
       <div className="flex flex-wrap w-auto py-2 flex-col gap-7 items-center ">
         <div className="w-full md:max-w-5xl  bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mx-4">
           <h2 className="text-2xl font-semibold text-center text-yellow-400">
             {heading}
           </h2>
-          <input
-            className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
-            type="text"
-            placeholder="search"
-            onChange={(e) => handleSearch(e)}
-          />
+          <div className="flex justify-between items-center md:flex-row sm: flex-col">
+            <input
+              className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+              type="text"
+              placeholder="search"
+              onChange={(e) => handleSearch(e)}
+            />
+            <div className="w-full flex md:justify-end sm: justify-center mt-4 bottom-4 right-4">
+              {/*isFetching && (
+          <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>
+        )*/}
+              <Pagination
+                pageNumber={currentPage}
+                setPageNumber={setCurrentPage}
+                totalItem={filteredUsers.length}
+                parPage={parPage}
+                showItem={10}
+              />
+            </div>
+          </div>
           {errorMessage && (
             <div className="text-red-600 text-center">{errorMessage}</div>
           )}
+
           <div className="flex justify-center items-center">
             <div className="overflow-x-auto min-h-auto pb-5">
               <table className="w-full mt-4 border-collapse border border-gray-900 p-2">
@@ -265,18 +280,6 @@ const AppointmentsList = ({ source }) => {
                 </tbody>
               </table>
             </div>
-          </div>
-          <div className="w-full flex justify-end mt-4 bottom-4 right-4 ml-2">
-            {/*isFetching && (
-          <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>
-        )*/}
-            <Pagination
-              pageNumber={currentPage}
-              setPageNumber={setCurrentPage}
-              totalItem={AppointmentData.length}
-              parPage={parPage}
-              showItem={10}
-            />
           </div>
         </div>
       </div>
