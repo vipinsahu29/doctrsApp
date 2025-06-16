@@ -12,6 +12,8 @@ import {
   validateEmail,
   validateMobile,
 } from "./../../utility/util";
+import { createAppt } from "../../SupaBase/AppointmentAPI";
+import Store from "../../store/store";
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
   isNewAppointment: PropTypes.bool,
@@ -27,6 +29,7 @@ export default function EditPatientModal({
   isNewAppointment,
   isPatient,
 }) {
+  const clinic_id = Store.getState().clinicId;
   const [formData, setFormData] = useState({ ...patient });
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -34,7 +37,6 @@ export default function EditPatientModal({
   const [fee, setFee] = useState(0);
   const today = new Date().toISOString().split("T")[0];
 
-  console.log("EditPatientModal", formData);
   const handleFnameChange = (e) => {
     setFormData({ ...formData, fname: e.target.value });
   };
@@ -47,6 +49,12 @@ export default function EditPatientModal({
   };
   const handleGenderChange = (e) => {
     setFormData({ ...formData, gender: e.target.value });
+  };
+  const handleOccupationChange = (e) => {
+    setFormData({ ...formData, occupation: e.target.value });
+  };
+  const handleBloodGroupChange = (e) => {
+    setFormData({ ...formData, blood_group: e.target.value });
   };
   const handleDateChange = (e) => {
     setFormData({ ...formData, appointment_date: e.target.value });
@@ -70,16 +78,40 @@ export default function EditPatientModal({
   const handleDoctorChange = (e) => {
     setFormData({ ...formData, drname: e.target.value });
   };
-  const handlePaymentChange = (e) => {
-    setFormData({
-      ...formData,
-      payment_mode:
-        e.target.value === "select_option" ? "pending" : e.target.value,
-    });
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("book appointment", formData);
+  };
+
+  const handleSaveButton = async (e) => {
+    e.preventDefault();
+    if (
+      isNewAppointment &&
+      formData.appointment_date &&
+      formData.appointment_time &&
+      formData.drname
+    ) {
+      const { data } = await createAppt({
+        clinic_id: clinic_id,
+        patient_id: formData.patient_id,
+        appointment_date: formData.appointment_date,
+        appointment_time: formData.appointment_time,
+        payment_mode: PaymentMode,
+        fees: fee,
+        dr_name: formData.drname,
+        height: formData.height,
+        weight: formData.weight,
+      });
+      if (data) {
+        alert("Appointment booked successfully.");
+        onClose(false);
+      } else {
+        alert("Failed to book appointment. Please try again.");
+      }
+    } else if (isNewAppointment) {
+      alert("Please fill all the required fields.");
+      return;
+    }
+    // onClose(false);
   };
   const pageTitle = isNewAppointment
     ? "Book Appointment"
@@ -121,7 +153,7 @@ export default function EditPatientModal({
                       placeholder="First name"
                       onChange={handleFnameChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      disabled={isNewAppointment}
+                      disabled={isNewAppointment || !isPatient}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -136,7 +168,7 @@ export default function EditPatientModal({
                       value={formData.lname}
                       onChange={handleLnameChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      disabled={isNewAppointment}
+                      disabled={isNewAppointment || !isPatient}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -152,7 +184,7 @@ export default function EditPatientModal({
                       onChange={handleMobileChange}
                       maxLength="10"
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      disabled={isNewAppointment}
+                      disabled={isNewAppointment || !isPatient}
                     />
                     {!isMobileValid && (
                       <h3 className="text-red-600">
@@ -170,7 +202,7 @@ export default function EditPatientModal({
                       value={formData.gender}
                       onChange={handleGenderChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      disabled={isNewAppointment}
+                      disabled={isNewAppointment || !isPatient}
                     >
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
@@ -178,7 +210,23 @@ export default function EditPatientModal({
                       <option value="Other">Other</option>
                     </select>
                   </div>
-                  {isNewAppointment && (
+                  <div className="flex flex-col">
+                    <label className="mb-1" htmlFor="blood_group">
+                      Blood Group:
+                    </label>
+                    <input
+                      type="text"
+                      id="blood_group"
+                      name="blood_group"
+                      value={formData.blood_group}
+                      placeholder="Blood group"
+                      onChange={handleBloodGroupChange}
+                      maxLength="10"
+                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment || !isPatient}
+                    />
+                  </div>
+                  {(isNewAppointment || (!isPatient && !isNewAppointment)) && (
                     <>
                       <div className="flex flex-col">
                         <label
@@ -234,7 +282,7 @@ export default function EditPatientModal({
                         placeholder="john.doe@company.com"
                         required
                         onChange={handleEmailChange}
-                        disabled={isNewAppointment}
+                        disabled={isNewAppointment || !isPatient}
                       />
                       {!isValidEmail && (
                         <h3 className="text-red-600">
@@ -255,7 +303,7 @@ export default function EditPatientModal({
                       placeholder="mm-dd-yyyy"
                       onChange={handleDobChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      disabled={isNewAppointment}
+                      disabled={isNewAppointment || !isPatient}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -272,7 +320,7 @@ export default function EditPatientModal({
                           onChange={handleWeightChange}
                           placeholder="Enter weight"
                           className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          disabled={isNewAppointment}
+                          // disabled={isNewAppointment || !isPatient}
                         />
                       </div>
                     </label>
@@ -291,12 +339,27 @@ export default function EditPatientModal({
                           onChange={handleHeightChange}
                           placeholder="Enter height"
                           className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          disabled={isNewAppointment}
+                          // disabled={isNewAppointment || !isPatient}
                         />
                       </div>
                     </label>
                   </div>
-                  {isNewAppointment && (
+                  <div className="flex flex-col">
+                    <label className="mb-1" htmlFor="occupation">
+                      Occupation:
+                    </label>
+                    <input
+                      type="text"
+                      id="occupation"
+                      name="occupation"
+                      value={formData.occupation}
+                      onChange={handleOccupationChange}
+                      maxLength="10"
+                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      disabled={isNewAppointment || !isPatient}
+                    />
+                  </div>
+                  {(isNewAppointment || (!isPatient && !isNewAppointment)) && (
                     <>
                       <div className="flex flex-col">
                         <label className="mb-1" htmlFor="doctor">
@@ -350,7 +413,9 @@ export default function EditPatientModal({
                           value={fee < 0 ? 0 : fee}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           required
-                          onChange={(e) => setFee(e.target.value < 0  ? 0 : e.target.value)}
+                          onChange={(e) =>
+                            setFee(e.target.value < 0 ? 0 : e.target.value)
+                          }
                           min="0"
                         />
                       </div>
@@ -370,7 +435,7 @@ export default function EditPatientModal({
               <button
                 type="button"
                 data-autofocus
-                onClick={() => onClose(false)}
+                onClick={handleSaveButton}
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-green-700 sm:mt-0 sm:w-auto"
               >
                 Save

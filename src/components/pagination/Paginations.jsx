@@ -1,4 +1,3 @@
-import React from "react";
 import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
@@ -28,7 +27,7 @@ const Pagination = ({
       {
         <button
           onClick={() => setPageNumber(pageNumber - 1)}
-          className={`w-[63px] h-[43px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000] ${
+          className={`w-[63px] h-[23px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000] ${
             pageNumber < 2 ? "cursor-not-allowed" : "cursor-pointer"
           } }`}
           disabled={pageNumber < 2}
@@ -37,19 +36,19 @@ const Pagination = ({
         </button>
       }
       <input
-        className="w-[63px] h-[43px] rounded-full fix bg-slate-300 text-[#000000] cursor-pointer font-semibold text-center text-lg"
+        className="w-[63px] h-[23px] rounded-full fix bg-slate-300 text-[#000000] cursor-pointer font-semibold text-center text-lg"
         onChange={(e) =>
           setPageNumber(
             Number(e.target.value <= endPage ? e.target.value : endPage)
           )
         }
-        type="number"
+        type="text"
         value={pageNumber > 0 ? pageNumber : ""}
       ></input>
       {
         <button
           onClick={() => setPageNumber(pageNumber + 1)}
-          className={`w-[63px] h-[43px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000]  ${
+          className={`w-[63px] h-[23px] rounded-full flex justify-center items-center bg-slate-300 text-[#000000]  ${
             pageNumber >= endPage && pageNumber > 0
               ? "cursor-not-allowed"
               : "cursor-pointer"

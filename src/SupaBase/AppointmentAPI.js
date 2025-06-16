@@ -37,18 +37,18 @@ export async function createAppointment(appointmentData) {
     patient_id: appointmentData.patient_id,
     appointment_date: appointmentData.appointment_date,
     appointment_time: appointmentData.appointment_time,
-    payment_status: appointmentData.payment_status,
     payment_mode: appointmentData.payment_mode,
     fees: appointmentData.fees,
     dr_name: appointmentData.dr_name,
+    height: appointmentData.height,
+    weight: appointmentData.weight,
   });
 
   if (error) {
     console.error("Error inserting appointment data:", error);
-    return null;
+    return error;
   }
-
-  return data;
+  return { data, error };
 }
 
 export const createAppt = async(appointmentData) => {
@@ -57,17 +57,6 @@ export const createAppt = async(appointmentData) => {
     console.error("Error creating appointment:", error);
     return { error: error.message };
   }
-  console.log("Appointment created successfully:", data);
+  return { data };
 
-}
-
-// createAppt({
-//   clinic_id: "32",
-//   patient_id: "17",
-//   appointment_date: "2025-06-15",
-//   appointment_time: "10:00",
-//   payment_status: "waiting",
-//   payment_mode: "",
-//   fees: 0,
-//   dr_name: "Dr. Gopal"
-// });
+ }

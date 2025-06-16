@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../../components/pagination/Paginations";
-import { AppointmentData } from "../../Constants/AppointmentData";
-import { FaEdit, FaRegEye } from "react-icons/fa";
+import { FaEdit, FaRegEye, FaHistory } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
 import EditPatientModal from "../../components/modal/EditPatientModal";
@@ -9,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 import { getPatientDetails } from "../../SupaBase/PatientAPI";
 import { fetchJoinedPatientData } from "../../SupaBase/AppointmentAPI";
-const columns = [
+const appointmentColumns = [
   "No.",
   "Full Name",
   "Mobile",
@@ -17,6 +16,15 @@ const columns = [
   "Appointment date",
   "Time",
   "Payment Status",
+  "Action",
+];
+
+const patientsColumns = [
+  "No.",
+  "Full Name",
+  "Mobile",
+  "Gender",
+  "Last Visit",
   "Blood Group",
   "Action",
 ];
@@ -33,10 +41,8 @@ const AppointmentsList = ({ source }) => {
   const [newAppointment, setNewAppointment] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [patientData, setPatientData] = useState([]);
-  const [apiErrorMessage, setApiErrorMessage] = useState("");
-  const filteredColums = columns.filter((col) =>
-    source === "Patients" ? col !== "Payment Status" && col !== "Time" : col
-  );
+  const filteredColums =
+    source === "Patients" ? patientsColumns : appointmentColumns;
 
   const getAppointmentList = React.useCallback(async (clinicId) => {
     await fetchJoinedPatientData(clinicId).then((data) => {
@@ -151,9 +157,7 @@ const AppointmentsList = ({ source }) => {
                         className="py-3 px-4 border border-gray-900"
                         key={items}
                       >
-                        {source === "Patients" && items === "Appointment date"
-                          ? "Last visit Date"
-                          : items}
+                        {items}
                       </th>
                     ))}
                   </tr>
@@ -172,7 +176,9 @@ const AppointmentsList = ({ source }) => {
             ) : (*/}
                   {filteredUsers.map((d, i) => (
                     <tr
-                      key={source === "Patients" ? d.patient_id : d.appointment_id}
+                      key={
+                        source === "Patients" ? d.patient_id : d.appointment_id
+                      }
                       className="text-center bg-gray-100 border border-gray-900"
                     >
                       <td
@@ -199,14 +205,6 @@ const AppointmentsList = ({ source }) => {
                       >
                         {d.gender}
                       </td>
-                      {source === "Patients" && (
-                        <td
-                          scope="row"
-                          className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
-                        >
-                          {d?.last_visit_date}
-                        </td>
-                      )}
                       {source !== "Patients" && (
                         <>
                           <td
@@ -224,13 +222,29 @@ const AppointmentsList = ({ source }) => {
                           <td
                             scope="row"
                             className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-900 ${
-                              d.payment_status === "Pending" ||
-                              !d.payment_status
+                              d.payment_mode === "Pending" || !d.payment_mode
                                 ? " text-red-600 font-semibold"
                                 : " text-green-700"
                             }`}
                           >
-                            {d.payment_status ? d.payment_status : "N/A"}
+                            {d.payment_mode ? d.payment_mode : "N/A"}
+                          </td>
+                        </>
+                      )}
+
+                      {source === "Patients" && (
+                        <>
+                          <td
+                            scope="row"
+                            className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
+                          >
+                            {d?.last_visit_date || "N/A"}
+                          </td>
+                          <td
+                            scope="row"
+                            className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
+                          >
+                            {d?.blood_group || "N/A"}
                           </td>
                         </>
                       )}
@@ -238,31 +252,37 @@ const AppointmentsList = ({ source }) => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
-                        {d?.blood_group || "N/A"}
-                      </td>
-                      <td
-                        scope="row"
-                        className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
-                      >
                         <div className="flex justify-start items-center gap-4">
                           <button
+                            title="Edit"
                             tabIndex={-1}
                             onClick={() => handleEditDetails(d?.patient_id)}
-                            className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer"
+                            className="p-[6px] bg-yellow-300 rounded hover:shadow-lg hover:shadow-orange-500/50 cursor-pointer"
                           >
                             {" "}
                             <FaEdit color="black" />{" "}
                           </button>
 
                           <button
+                            title="View"
                             tabIndex={-1}
-                            className="p-[6px] bg-red-600 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
+                            className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
                             onClick={() => handleViewDetails(d.patient_id)}
                           >
                             {" "}
                             <FaRegEye />{" "}
                           </button>
-
+                          {source === "Patients" && (
+                            <button
+                              title="History"
+                              tabIndex={-1}
+                              className="p-[6px] bg-green-500 rounded hover:shadow-lg hover:shadow-blue-500/50 cursor-pointer"
+                              onClick={() => ""}
+                            >
+                              {" "}
+                              <FaHistory />{" "}
+                            </button>
+                          )}
                           {source !== "Patients" && (
                             <button
                               tabIndex={-1}
