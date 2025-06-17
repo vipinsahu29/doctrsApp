@@ -7,7 +7,8 @@ import EditPatientModal from "../../components/modal/EditPatientModal";
 import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 import { getPatientDetails } from "../../SupaBase/PatientAPI";
-import { fetchJoinedPatientData } from "../../SupaBase/AppointmentAPI";
+import { fetchJoinedAppointmentData } from "../../SupaBase/AppointmentAPI";
+import PropTypes from "prop-types";
 const appointmentColumns = [
   "No.",
   "Full Name",
@@ -31,8 +32,6 @@ const patientsColumns = [
 
 const AppointmentsList = ({ source }) => {
   const clinic_id = Store((state) => state.clinicId);
-  // const UID = Store((state) => state.UID);
-  const [parPage, setParPage] = useState(10);
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
   const [viewDetails, setViewDetails] = useState(false);
@@ -43,16 +42,20 @@ const AppointmentsList = ({ source }) => {
   const [patientData, setPatientData] = useState([]);
   const filteredColums =
     source === "Patients" ? patientsColumns : appointmentColumns;
-
-  const getAppointmentList = React.useCallback(async (clinicId) => {
-    await fetchJoinedPatientData(clinicId).then((data) => {
+  const [serialNumber, setSerialNumber] = useState(1);
+  const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
+    try {
+      const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
         );
       }
       setPatientData(data);
-    });
+    } catch (error) {
+      setErrorMessage("An error occurred while fetching appointments.");
+      console.error(error);
+    }
   }, []);
 
   const getPatientsDetails = React.useCallback(async (clinicId) => {
@@ -62,19 +65,28 @@ const AppointmentsList = ({ source }) => {
           "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
         );
       }
-      setPatientData(data);
+      setPatientData(data || []);
     });
   }, []);
 
   useEffect(() => {
-    if (source !== "Patients") {
-      getAppointmentList(clinic_id);
-    } else {
+    if (source !== "Patients" && currentPage) {
+      setSerialNumber(currentPage);
+      getAppointmentList(clinic_id, currentPage);
+    } else if (source === "Patients") {
       getPatientsDetails(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList, getPatientsDetails]);
-  // const AppointmentData = data || [];
-  const filteredUsers = patientData;
+  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage]);
+
+  const filteredUsers = patientData ?? [];
+  console.log(
+    "patientData:",
+    patientData,
+    "filteredUsers ",
+    filteredUsers,
+    "errorMessage",
+    errorMessage
+  );
   // searchValue && isNaN(searchValue)
   //   ? data.filter((user) =>
   //       user?.fname?.toLowerCase().includes(searchValue.toLowerCase())
@@ -136,9 +148,11 @@ const AppointmentsList = ({ source }) => {
               <Pagination
                 pageNumber={currentPage}
                 setPageNumber={setCurrentPage}
-                totalItem={filteredUsers.length}
-                parPage={parPage}
-                showItem={10}
+                total_page={
+                  filteredUsers && filteredUsers.length > 0
+                    ? filteredUsers[0].total_pages
+                    : 1
+                }
               />
             </div>
           </div>
@@ -185,7 +199,7 @@ const AppointmentsList = ({ source }) => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
-                        {i + 1}
+                        {20 * (serialNumber - 1) + (i + 1)}
                       </td>
                       <td
                         scope="row"
@@ -324,5 +338,7 @@ const AppointmentsList = ({ source }) => {
     </div>
   );
 };
-
 export default AppointmentsList;
+AppointmentsList.propTypes = {
+  source: PropTypes.string.isRequired,
+};

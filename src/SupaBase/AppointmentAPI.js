@@ -51,12 +51,30 @@ export async function createAppointment(appointmentData) {
   return { data, error };
 }
 
-export const createAppt = async(appointmentData) => {
-  const {data, error} = await createAppointment(appointmentData);
+export const createAppt = async (appointmentData) => {
+  const { data, error } = await createAppointment(appointmentData);
   if (error) {
     console.error("Error creating appointment:", error);
     return { error: error.message };
   }
   return { data };
+};
 
- }
+export async function fetchJoinedAppointmentData(
+  clinicId,
+  pageNumber = 1,
+  pageSize = 20
+) {
+  const { data, error } = await supabase.rpc("get_joined_appointment_data", {
+    c_id: clinicId,
+    page: pageNumber,
+    page_size: pageSize,
+  });
+
+  if (error) {
+    console.error("Error fetching joined patient data:", error);
+    return error;
+  }
+
+  return data;
+}
