@@ -20,7 +20,7 @@ const CheckIn = () => {
   const [diet, setDiet] = useState("");
   const [followUpDate, setFollowupDate] = useState("");
   const [selectedData, setSelectedData] = useState("");
-
+  console.log("Checkin: checkinData", checkinData);
   const printData = {
     ...checkinData,
     familyHistory: familyHistory,
@@ -29,7 +29,7 @@ const CheckIn = () => {
     advice: advice,
     diet: diet,
     followUpDate: followUpDate,
-    labTest: selectedData
+    labTest: selectedData,
   };
   const reactToPrintFn = useReactToPrint({
     contentRef: componentRef,
@@ -56,11 +56,12 @@ const CheckIn = () => {
               >
                 {" "}
                 &nbsp;
-                {items.lable === "Name:"
-                  ? checkinData[0][items.value] + " " + checkinData[0].LastName
+                {
+                  items.lable === "Name:"
+                  ? checkinData[0].fname + " " + checkinData[0].lname
                   : items.lable === "Age:"
-                  ? calculateExperience(checkinData[0][items.value])
-                  : checkinData[0][items.value]}
+                  ? calculateExperience(checkinData[0].dob)
+                  : checkinData[0]?.[items?.value]}
               </h3>
             </div>
           ))}

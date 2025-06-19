@@ -2,6 +2,7 @@ import React, { forwardRef } from "react";
 import { calculateExperience } from "../../utility/util";
 
 const PrintPrescription = forwardRef(({ data }, ref) => {
+  console.log("Checkin: data", data);
   return (
     <div
       ref={ref}
@@ -25,23 +26,23 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
               </div>
               <div>
                 <strong>Name:</strong>{" "}
-                {data[0].FirstName + " " + data[0].LastName}
+                {data[0].fname + " " + data[0].lname}
                 Doe
               </div>
               <div>
-                <strong>Gender:</strong> {data[0].Gender}
+                <strong>Gender:</strong> {data[0]?.gender}
               </div>
               <div>
-                <strong>Height:</strong> {data[0].Height}
+                <strong>Height:</strong> {data[0].height}
               </div>
               <div>
-                <strong>Weight:</strong> {data[0].Weight}
+                <strong>Weight:</strong> {data[0].weight}
               </div>
               <div>
-                <strong>Age:</strong> {calculateExperience(data[0].Dob)}
+                <strong>Age:</strong> {calculateExperience(data[0].dob)}
               </div>
               <div>
-                <strong>Appointment:</strong> {data[0].AppointmentDate}
+                <strong>Appointment:</strong> {data[0]?.AppointmentDate}
               </div>
             </div>
             <hr className="border-gray-500 dark:border-neutral-500 my-4" />
@@ -49,7 +50,7 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
             <div className="mb-3">
               <strong>Symptoms/History:</strong>
               <div className="border p-2 mt-1 min-h-[40px]">
-                {data.selectedSymptoms}
+                {data?.selectedSymptoms}
               </div>
             </div>
 

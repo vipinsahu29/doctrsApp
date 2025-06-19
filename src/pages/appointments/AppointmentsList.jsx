@@ -30,7 +30,7 @@ const patientsColumns = [
   "Action",
 ];
 
-const AppointmentsList = ({ source }) => {
+const AppointmentsList = ({ source = "" }) => {
   const clinic_id = Store((state) => state.clinicId);
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
@@ -121,7 +121,13 @@ const AppointmentsList = ({ source }) => {
     const checkinData = filteredUsers.filter(
       (value) => value.patient_id === id
     );
-
+    console.log(
+      "Checkin: checkinData before nav",
+      checkinData,
+      "id:",
+      id,
+      filteredUsers
+    );
     navigate("/checkin", { state: checkinData });
   };
   const heading = source === "Patients" ? "Patients List" : "Appointment List";
@@ -301,7 +307,7 @@ const AppointmentsList = ({ source }) => {
                             <button
                               tabIndex={-1}
                               className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-900"
-                              onClick={() => handleCheckinClick(d.Id)}
+                              onClick={() => handleCheckinClick(d?.patient_id)}
                             >
                               {" "}
                               Check-in
