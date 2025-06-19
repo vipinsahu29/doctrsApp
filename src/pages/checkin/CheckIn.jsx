@@ -20,7 +20,6 @@ const CheckIn = () => {
   const [diet, setDiet] = useState("");
   const [followUpDate, setFollowupDate] = useState("");
   const [selectedData, setSelectedData] = useState("");
-  console.log("Checkin: checkinData", checkinData);
   const printData = {
     ...checkinData,
     familyHistory: familyHistory,

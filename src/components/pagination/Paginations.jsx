@@ -5,7 +5,6 @@ import {
 import PropTypes from "prop-types";
 
 const Pagination = ({ pageNumber, setPageNumber, total_page }) => {
-  console.log("pagination",pageNumber, total_page);
   return (
     <ul className="flex gap-3">
       {

@@ -79,14 +79,6 @@ const AppointmentsList = ({ source = "" }) => {
   }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage]);
 
   const filteredUsers = patientData ?? [];
-  console.log(
-    "patientData:",
-    patientData,
-    "filteredUsers ",
-    filteredUsers,
-    "errorMessage",
-    errorMessage
-  );
   // searchValue && isNaN(searchValue)
   //   ? data.filter((user) =>
   //       user?.fname?.toLowerCase().includes(searchValue.toLowerCase())
@@ -120,13 +112,6 @@ const AppointmentsList = ({ source = "" }) => {
   const handleCheckinClick = (id) => {
     const checkinData = filteredUsers.filter(
       (value) => value.patient_id === id
-    );
-    console.log(
-      "Checkin: checkinData before nav",
-      checkinData,
-      "id:",
-      id,
-      filteredUsers
     );
     navigate("/checkin", { state: checkinData });
   };
