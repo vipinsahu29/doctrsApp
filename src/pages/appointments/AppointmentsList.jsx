@@ -48,7 +48,7 @@ const AppointmentsList = ({ source = "" }) => {
       const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
       if (!data || data.length === 0) {
         setErrorMessage(
-          "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
+                    "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
         );
       }
       setPatientData(data);
@@ -62,7 +62,7 @@ const AppointmentsList = ({ source = "" }) => {
     await getPatientDetails(clinicId).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
-          "No data found for the selected clinic. Please check the clinic ID or ensure that there are appointments available."
+          "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."
         );
       }
       setPatientData(data || []);
@@ -148,7 +148,7 @@ const AppointmentsList = ({ source = "" }) => {
             </div>
           </div>
           {errorMessage && (
-            <div className="text-red-600 text-center">{errorMessage}</div>
+            <div className="text-red-600 text-center bg-yellow-200 ">{errorMessage}</div>
           )}
 
           <div className="flex justify-center items-center">

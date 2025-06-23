@@ -39,7 +39,7 @@ const AppointmentViewDetailsModal = ({
                 as="h3"
                 className="text-lg text-indigo-700 font-bold"
               >
-                Patient Details
+                {isPatient? "Patient Details" : "Appointment Details"}
               </DialogTitle>
               <div className="grid sm: grid-cols-2 md:grid-cols-4 md:gap-4 sm: gap-2 pt-3">
                 <div className="flex flex-col">
@@ -86,7 +86,7 @@ const AppointmentViewDetailsModal = ({
                     </div>
                     <div className="flex flex-col">
                       <h2 className="font-bold text-red-600">Payment:</h2>
-                      {data.payment_mode}
+                      <span className="font-bold text-blue-700">{data?.payment_mode} : {data?.fees ? data.fees : 0 }</span>
                     </div>
                   </>
                 )}

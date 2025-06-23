@@ -78,7 +78,7 @@ const BookAppointment = () => {
           Appointment Form
         </h2>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* 1. FirstName and LastName Field  */}
             <div>
               <label
@@ -121,10 +121,7 @@ const BookAppointment = () => {
                 <p className="text-red-500 text-xs">{formik.errors.lastName}</p>
               ) : null}
             </div>
-          </div>
 
-          {/* 2.Email and Mobile Number Field */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="mobile"
@@ -164,10 +161,6 @@ const BookAppointment = () => {
                 <p className="text-red-500 text-xs">{formik.errors.email}</p>
               ) : null}
             </div>
-          </div>
-
-          {/* 3.Age, Height */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1 text-white" htmlFor="dob">
                 Date of birth:
@@ -205,10 +198,6 @@ const BookAppointment = () => {
                 <p className="text-red-500 text-xs">{formik.errors.height}</p>
               ) : null}
             </div>
-          </div>
-
-          {/* Weight ,Gender,Address,Appointment Date */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="weight"
@@ -251,27 +240,24 @@ const BookAppointment = () => {
                 <p className="text-red-500 text-xs">{formik.errors.gender}</p>
               ) : null}
             </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="address"
-              className="block text-sm font-medium text-white"
-            >
-              Address
-            </label>
-            <textarea
-              id="address"
-              name="address"
-              value={formik.values.address}
-              onChange={formik.handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-            {formik.touched.address && formik.errors.address ? (
-              <p className="text-red-500 text-xs">{formik.errors.address}</p>
-            ) : null}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-white"
+              >
+                Address
+              </label>
+              <textarea
+                id="address"
+                name="address"
+                value={formik.values.address}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              {formik.touched.address && formik.errors.address ? (
+                <p className="text-red-500 text-xs">{formik.errors.address}</p>
+              ) : null}
+            </div>
             <div>
               <label
                 htmlFor="appointmentDate"
@@ -294,7 +280,6 @@ const BookAppointment = () => {
                 </p>
               ) : null}
             </div>
-
             <div>
               <label
                 htmlFor="appointmentTime"
@@ -311,47 +296,29 @@ const BookAppointment = () => {
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
               />
             </div>
-          </div>
-          <div>
-            <label
-              htmlFor="doctor"
-              className="block text-sm font-medium text-white"
-            >
-              Doctor
-            </label>
-            <input
-              type="text"
-              id="doctor"
-              name="doctor"
-              value={formik.values.doctor}
-              onChange={formik.handleChange}
-              className="mt-1 block w-[300px] px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="images"
-              className="block text-sm font-medium text-white"
-            >
-              Photo
-            </label>
-            <input
-              type="file"
-              id="images"
-              name="images"
-              onChange={(e) =>
-                formik.setFieldValue("images", e.target.files[0])
-              }
-              className="mt-1 block w-full text-sm text-gray-500"
-            />
+            <div>
+              <label
+                htmlFor="doctor"
+                className="block text-sm font-medium text-white"
+              >
+                Doctor
+              </label>
+              <input
+                type="text"
+                id="doctor"
+                name="doctor"
+                value={formik.values.doctor}
+                onChange={formik.handleChange}
+                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
           </div>
 
           {/* Submit Button handle*/}
           <div className="flex justify-center mt-6">
             <button
               type="submit"
-              className="px-6 py-2 font-semibold bg-yellow-300 text-gray-900 rounded-md hover:bg-yellow-600 hover:text-gray-50 hover:font-bold border-2 border-gray-200"
+              className="px-6 py-2 mt-10 font-semibold bg-yellow-300 text-gray-900 rounded-md hover:bg-yellow-600 hover:text-gray-50 hover:font-bold border-2 border-gray-200"
             >
               Submit Appointment
             </button>
