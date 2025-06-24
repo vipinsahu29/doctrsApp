@@ -86,7 +86,7 @@ const CheckInMiddlePart = ({
         />
         {/* Display suggestions */}
         {suggestions.length > 0 && (
-          <ul className="border p-2 bg-white shadow mt-1 h-[200px] overflow-auto">
+          <ul className="border p-2 bg-white shadow mt-1 h-max-[200px] h-auto h-min-[20px] overflow-auto">
             {suggestions.map((symptom, index) => (
               <button
                 key={symptom}

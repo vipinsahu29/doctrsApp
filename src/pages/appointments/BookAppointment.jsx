@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
+import { fetchFilteredPatientData } from "../../SupaBase/AppointmentAPI";
+import Store from "../../Store/Store";
 // Validation schema for the form
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -59,6 +61,11 @@ const initialValues = {
 };
 const BookAppointment = () => {
   // Formik hook to handle form state
+  const clinic_id = Store.getState().clinicId;
+  const [searchValue, setSearchValue] = React.useState("");
+  const [patientData, setPatientData] = React.useState([]);
+  const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
+  const inputRef = useRef(null); 
   const today = new Date().toISOString().split("T")[0];
   const formik = useFormik({
     initialValues,
@@ -69,14 +76,114 @@ const BookAppointment = () => {
       resetForm();
     },
   });
+  
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
+  };
 
+  useEffect(() => {
+    const getFilteredData = async (searchValue) => {
+      if (!searchValue || searchValue.length <= 3) {
+        setPatientData([]);
+        setHighlightedIndex(-1);
+        return;
+      }
+      if (searchValue.length > 3) {
+        const isMobile = searchValue.match(/^\d{10}$/);
+        console.log(
+          "book Apt:",
+          isMobile,
+          searchValue,
+          "clinic_id:",
+          clinic_id
+        );
+        const { data, error } = await fetchFilteredPatientData(
+          clinic_id,
+          isMobile ? null : searchValue,
+          isMobile ? Number(searchValue) : null
+        );
+        if (error) {
+          console.error("Error fetching filtered data:", error);
+        }
+        if (data && data.length > 0) {
+          setPatientData(data);
+        }
+        if (!data || data.length === 0) {
+          setPatientData([]);
+        }
+      }
+    };
+    getFilteredData(searchValue);
+  }, [searchValue, clinic_id]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowDown") {
+      // Move selection down
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < patientData.length - 1 ? prevIndex + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      // Move selection up
+      setHighlightedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : patientData.length - 1
+      );
+    } else if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission
+      // if (highlightedIndex >= 0 && patientData.length > 0) {
+      //   addSymptom(patientData[highlightedIndex]);
+      // }
+    }
+  };
+  const handleSelecedSearch = (item) => {
+    formik.setFieldValue("firstName", item.fname);
+    formik.setFieldValue("lastName", item.lname);
+    formik.setFieldValue("mobile", item.mobile);
+    formik.setFieldValue("email", item.email);
+    formik.setFieldValue("dob", item.dob);
+    formik.setFieldValue("gender", item.gender);
+    formik.setFieldValue("address", item.address.city+", "+item.address.state +", "+item.address.country);
+
+    setSearchValue("");
+    setPatientData([]);
+    setHighlightedIndex(-1);
+    inputRef.current?.focus(); // Keep focus on the input field
+  };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-7">
+    <div className="min-h-screen flex items-center justify-center bg-white py-6 flex-col gap-1">
       <AppointmentRouting pageName="Appointment" />
       <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-yellow-400">
           Appointment Form
         </h2>
+        <input
+          className="px-4 mx-1 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+          type="text"
+          value={searchValue}
+          placeholder="search by name/mobile"
+          onChange={(e) => handleSearch(e)}
+          onKeyDown={handleKeyDown} // Handle Enter key
+          autoFocus
+        />
+        {patientData.length > 0 && (
+          <ul className="border p-2 bg-white shadow mt-1 h-[200px] overflow-auto">
+            {patientData.map((items, index) => (
+              <button
+                key={items.patient_id}
+                className={`cursor-pointer p-1 flex w-full ${
+                  highlightedIndex === index
+                    ? "bg-blue-200"
+                    : "hover:bg-gray-200"
+                }`}
+                tabIndex={0}
+                onClick={() => handleSelecedSearch(items)}
+                onMouseEnter={() => setHighlightedIndex(index)}
+                onKeyDown={(e) => e.key === "Enter" && handleSelecedSearch(items)}
+                >
+                {items.fname + " " + items.lname + " - " + items.mobile}
+              </button>
+            ))}
+          </ul>
+        )}
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* 1. FirstName and LastName Field  */}
@@ -232,9 +339,9 @@ const BookAppointment = () => {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               >
                 <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
               {formik.touched.gender && formik.errors.gender ? (
                 <p className="text-red-500 text-xs">{formik.errors.gender}</p>

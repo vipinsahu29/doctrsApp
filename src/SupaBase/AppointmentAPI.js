@@ -78,3 +78,31 @@ export async function fetchJoinedAppointmentData(
 
   return data;
 }
+
+export async function fetchFilteredPatientData(
+  clinicId,
+  fnameFilter = null,
+  mobile_filter = null
+) {
+  const { data, error } = await supabase.rpc("get_patient_details_by_filter", {
+    c_id: clinicId,
+    fname_filter: fnameFilter,
+    mobile_filter: mobile_filter,
+  });
+
+  if (error) {
+    console.error("Error fetching filtered patient data:", error);
+    return { error };
+  }
+  if (!data || data.length === 0) {
+    console.warn("No data found for the given filters.");
+    return [];
+  }
+  return { data };
+}
+
+// console.log("filter:",fetchFilteredPatientData(32,"raju", null).then(data => {
+//   console.log("Filtered Data:", data);
+// }).catch(error => {
+//   console.error("Error:", error);
+// }));
