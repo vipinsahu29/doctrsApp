@@ -2,8 +2,11 @@ import React, { useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
-import { fetchFilteredPatientData } from "../../SupaBase/AppointmentAPI";
-import Store from "../../Store/Store";
+import {
+  createAppt,
+  fetchFilteredPatientData,
+} from "../../SupaBase/AppointmentAPI";
+import Store from "../../store/store";
 // Validation schema for the form
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -20,14 +23,10 @@ const validationSchema = Yup.object({
       "Mobile number must be in the format: +XX1234567890 or 1234567890"
     )
     .required("Mobile number is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
   dob: Yup.string().required("DOB is required"),
-  height: Yup.string().required("Height is required"),
-  weight: Yup.string().required("Weight is required"),
   gender: Yup.string().required("Gender is required"),
   address: Yup.string().required("Address is required"),
+  appointmentTime: Yup.string().required("Appointment Time is required"),
   appointmentDate: Yup.string()
     .required("Appointment Date is required")
     .test(
@@ -64,19 +63,54 @@ const BookAppointment = () => {
   const clinic_id = Store.getState().clinicId;
   const [searchValue, setSearchValue] = React.useState("");
   const [patientData, setPatientData] = React.useState([]);
+  const [patientId, setPatientId] = React.useState(null);
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
-  const inputRef = useRef(null); 
+  const [error, setError] = React.useState(null);
+  const inputRef = useRef(null);
   const today = new Date().toISOString().split("T")[0];
   const formik = useFormik({
     initialValues,
     validationSchema,
     // Form submission handler
-    onSubmit: (values, { resetForm }) => {
-      alert("Appointment submitted successfully!");
-      resetForm();
+    onSubmit: async (values, { resetForm }) => {
+      const result = await bookAppointmentPostData();
+      if (result.success) {
+        resetForm();
+        alert("Appointment submitted successfully!");
+      } else {
+        alert("Error: " + result.error);
+        setError(null);
+      }
     },
   });
-  
+  const bookAppointmentPostData = async () => {
+    try {
+      const { data } = await createAppt({
+        clinic_id: clinic_id,
+        patient_id: patientId,
+        appointment_date: formik.values.appointmentDate,
+        appointment_time: formik.values.appointmentTime,
+        payment_mode: "No fee",
+        fees: 0,
+        dr_name: formik.values.doctor,
+        height: formik.values.height || 0,
+        weight: formik.values.weight || 0,
+      });
+      if (data) {
+        return { success: true };
+      } else {
+        setError(error?.message || "Error creating appointment");
+        return {
+          success: false,
+          error: error?.message || "Error creating appointment",
+        };
+      }
+    } catch (err) {
+      setError("Error creating appointment");
+      return { success: false, error: "Error creating appointment" };
+    }
+  };
+
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
   };
@@ -141,8 +175,16 @@ const BookAppointment = () => {
     formik.setFieldValue("email", item.email);
     formik.setFieldValue("dob", item.dob);
     formik.setFieldValue("gender", item.gender);
-    formik.setFieldValue("address", item.address.city+", "+item.address.state +", "+item.address.country);
 
+    formik.setFieldValue(
+      "address",
+      item.address.city +
+        ", " +
+        item.address.state +
+        ", " +
+        item.address.country
+    );
+    setPatientId(item?.patient_id);
     setSearchValue("");
     setPatientData([]);
     setHighlightedIndex(-1);
@@ -177,8 +219,10 @@ const BookAppointment = () => {
                 tabIndex={0}
                 onClick={() => handleSelecedSearch(items)}
                 onMouseEnter={() => setHighlightedIndex(index)}
-                onKeyDown={(e) => e.key === "Enter" && handleSelecedSearch(items)}
-                >
+                onKeyDown={(e) =>
+                  e.key === "Enter" && handleSelecedSearch(items)
+                }
+              >
                 {items.fname + " " + items.lname + " - " + items.mobile}
               </button>
             ))}
@@ -200,7 +244,8 @@ const BookAppointment = () => {
                 name="firstName"
                 value={formik.values.firstName}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-white font-medium"
+                disabled
               />
               {/* Showing Error If User touched Field and not filled*/}
               {formik.touched.firstName && formik.errors.firstName ? (
@@ -222,7 +267,8 @@ const BookAppointment = () => {
                 name="lastName"
                 value={formik.values.lastName}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-white font-medium"
+                disabled
               />
               {formik.touched.lastName && formik.errors.lastName ? (
                 <p className="text-red-500 text-xs">{formik.errors.lastName}</p>
@@ -243,7 +289,8 @@ const BookAppointment = () => {
                 value={formik.values.mobile}
                 onChange={formik.handleChange}
                 maxLength="10"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-white font-medium"
+                disabled
               />
               {formik.touched.mobile && formik.errors.mobile ? (
                 <p className="text-red-500 text-xs">{formik.errors.mobile}</p>
@@ -262,7 +309,8 @@ const BookAppointment = () => {
                 name="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-white font-medium"
+                disabled
               />
               {formik.touched.email && formik.errors.email ? (
                 <p className="text-red-500 text-xs">{formik.errors.email}</p>
@@ -279,7 +327,8 @@ const BookAppointment = () => {
                 max={today} // Prevent past dates
                 placeholder="mm-dd--yyyy"
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-white font-medium"
+                disabled
               />
 
               {formik.touched.dob && formik.errors.dob ? (
@@ -336,7 +385,8 @@ const BookAppointment = () => {
                 name="gender"
                 value={formik.values.gender}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md font-medium"
+                disabled
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -359,7 +409,8 @@ const BookAppointment = () => {
                 name="address"
                 value={formik.values.address}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-white font-medium "
+                disabled
               />
               {formik.touched.address && formik.errors.address ? (
                 <p className="text-red-500 text-xs">{formik.errors.address}</p>
@@ -376,6 +427,7 @@ const BookAppointment = () => {
                 type="date"
                 id="appointmentDate"
                 name="appointmentDate"
+                min={today} // Prevent past dates
                 value={formik.values.appointmentDate}
                 onChange={formik.handleChange}
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
@@ -402,6 +454,12 @@ const BookAppointment = () => {
                 onChange={formik.handleChange}
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
               />
+              {formik.touched.appointmentTime &&
+              formik.errors.appointmentTime ? (
+                <p className="text-red-500 text-xs">
+                  {formik.errors.appointmentTime}
+                </p>
+              ) : null}
             </div>
             <div>
               <label
