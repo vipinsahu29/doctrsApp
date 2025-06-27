@@ -63,6 +63,8 @@ const BookAppointment = () => {
   const clinic_id = Store.getState().clinicId;
   const [searchValue, setSearchValue] = React.useState("");
   const [patientData, setPatientData] = React.useState([]);
+  const [PaymentMode, setPaymentMode] = React.useState("pending");
+  const [fee, setFee] = React.useState(0);
   const [patientId, setPatientId] = React.useState(null);
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
   const [error, setError] = React.useState(null);
@@ -90,13 +92,15 @@ const BookAppointment = () => {
         patient_id: patientId,
         appointment_date: formik.values.appointmentDate,
         appointment_time: formik.values.appointmentTime,
-        payment_mode: "No fee",
-        fees: 0,
+        payment_mode: PaymentMode,
+        fees: fee || 0,
         dr_name: formik.values.doctor,
         height: formik.values.height || 0,
         weight: formik.values.weight || 0,
       });
       if (data) {
+        setPaymentMode("pending");
+        setFee(0);
         return { success: true };
       } else {
         setError(error?.message || "Error creating appointment");
@@ -106,8 +110,9 @@ const BookAppointment = () => {
         };
       }
     } catch (err) {
-      setError("Error creating appointment");
-      return { success: false, error: "Error creating appointment" };
+      console.error("Error creating appointment:", err);
+      setError(err?.message || "Error creating appointment");
+      return { success: false, error: err?.message || "Error creating appointment" };
     }
   };
 
@@ -124,13 +129,6 @@ const BookAppointment = () => {
       }
       if (searchValue.length > 3) {
         const isMobile = searchValue.match(/^\d{10}$/);
-        console.log(
-          "book Apt:",
-          isMobile,
-          searchValue,
-          "clinic_id:",
-          clinic_id
-        );
         const { data, error } = await fetchFilteredPatientData(
           clinic_id,
           isMobile ? null : searchValue,
@@ -477,6 +475,47 @@ const BookAppointment = () => {
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
               />
             </div>
+            <div className="flex flex-col">
+              <label className="mb-1 pl-1 text-red-600 font-bold bg-yellow-300 w-[150px]" htmlFor="doctor">
+                Payment Method:
+              </label>
+              <select
+                name="payment_mode"
+                id="payment_mode"
+                value={PaymentMode}
+                onChange={(e) => {
+                  setPaymentMode(e.target.value);
+                }}
+                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="select_option">Select Option</option>
+                <option value="Pending">Pending</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="No Fee">No Fee</option>
+                <option value="Cancel">Cancel</option>
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="fee"
+                className="mb-1 pl-1 text-red-600 font-bold bg-yellow-300 w-[80px]"
+              >
+                Total Fee:
+              </label>
+              <input
+                type="number"
+                id="fee"
+                value={fee < 0 ? 0 : fee}
+                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
+                required
+                onChange={(e) =>
+                  setFee(e.target.value < 0 ? 0 : e.target.value)
+                }
+                min="0"
+              />
+            </div>
           </div>
 
           {/* Submit Button handle*/}
@@ -484,6 +523,7 @@ const BookAppointment = () => {
             <button
               type="submit"
               className="px-6 py-2 mt-10 font-semibold bg-yellow-300 text-gray-900 rounded-md hover:bg-yellow-600 hover:text-gray-50 hover:font-bold border-2 border-gray-200"
+              disabled={!formik.isValid || formik.isSubmitting}
             >
               Submit Appointment
             </button>

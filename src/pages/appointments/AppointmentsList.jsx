@@ -40,15 +40,15 @@ const AppointmentsList = ({ source = "" }) => {
   const [newAppointment, setNewAppointment] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [patientData, setPatientData] = useState([]);
-  const filteredColums =
-    source === "Patients" ? patientsColumns : appointmentColumns;
+  const isPatient = source === "Patients";
+  const filteredColums = isPatient ? patientsColumns : appointmentColumns;
   const [serialNumber, setSerialNumber] = useState(1);
   const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
     try {
       const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
       if (!data || data.length === 0) {
         setErrorMessage(
-                    "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
+          "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
         );
       }
       setPatientData(data);
@@ -73,12 +73,16 @@ const AppointmentsList = ({ source = "" }) => {
     if (source !== "Patients" && currentPage) {
       setSerialNumber(currentPage);
       getAppointmentList(clinic_id, currentPage);
-    } else if (source === "Patients") {
+    } else if (isPatient) {
       getPatientsDetails(clinic_id);
     }
   }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage]);
 
   const filteredUsers = patientData ?? [];
+  const totalPages =
+    filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
+      ? filteredUsers[0].total_pages
+      : 1;
   // searchValue && isNaN(searchValue)
   //   ? data.filter((user) =>
   //       user?.fname?.toLowerCase().includes(searchValue.toLowerCase())
@@ -94,9 +98,15 @@ const AppointmentsList = ({ source = "" }) => {
     setNewAppointment(false);
     setIsEditOpen(false);
   };
-  const handleViewDetails = (id) => {
+  const handleViewDetails = (patientId, appointmentId) => {
     setViewDetails(true);
-    setViewData(filteredUsers.filter((value) => value.patient_id === id));
+    setViewData(
+      filteredUsers.filter(
+        (value) =>
+          value.patient_id === patientId &&
+          value.appointment_id === appointmentId
+      )
+    );
   };
   const handleEditDetails = (id) => {
     setNewAppointment(false);
@@ -115,8 +125,8 @@ const AppointmentsList = ({ source = "" }) => {
     );
     navigate("/checkin", { state: checkinData });
   };
-  const heading = source === "Patients" ? "Patients List" : "Appointment List";
-  const pageName = source === "Patients" ? "Patients" : "Appointment";
+  const heading = isPatient ? "Patients List" : "Appointment List";
+  const pageName = isPatient ? "Patients" : "Appointment";
   return (
     <div className="min-h-screen flex md:items-center bg-white  flex-col gap-1 ">
       <AppointmentRouting pageName={pageName} />
@@ -139,16 +149,14 @@ const AppointmentsList = ({ source = "" }) => {
               <Pagination
                 pageNumber={currentPage}
                 setPageNumber={setCurrentPage}
-                total_page={
-                  filteredUsers && filteredUsers.length > 0
-                    ? filteredUsers[0].total_pages
-                    : 1
-                }
+                total_page={totalPages}
               />
             </div>
           </div>
           {errorMessage && (
-            <div className="text-red-600 text-center bg-yellow-200 ">{errorMessage}</div>
+            <div className="text-red-600 text-center bg-yellow-200 ">
+              {errorMessage}
+            </div>
           )}
 
           <div className="flex justify-center items-center">
@@ -181,9 +189,7 @@ const AppointmentsList = ({ source = "" }) => {
             ) : (*/}
                   {filteredUsers.map((d, i) => (
                     <tr
-                      key={
-                        source === "Patients" ? d.patient_id : d.appointment_id
-                      }
+                      key={isPatient ? d.patient_id : d.appointment_id}
                       className="text-center bg-gray-100 border border-gray-900"
                     >
                       <td
@@ -237,7 +243,7 @@ const AppointmentsList = ({ source = "" }) => {
                         </>
                       )}
 
-                      {source === "Patients" && (
+                      {isPatient && (
                         <>
                           <td
                             scope="row"
@@ -272,12 +278,14 @@ const AppointmentsList = ({ source = "" }) => {
                             title="View"
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
-                            onClick={() => handleViewDetails(d.patient_id)}
+                            onClick={() =>
+                              handleViewDetails(d.patient_id, d.appointment_id)
+                            }
                           >
                             {" "}
                             <FaRegEye />{" "}
                           </button>
-                          {source === "Patients" && (
+                          {isPatient && (
                             <button
                               title="History"
                               tabIndex={-1}
@@ -313,7 +321,7 @@ const AppointmentsList = ({ source = "" }) => {
           isOpen={viewDetails}
           onClose={() => setViewDetails(false)}
           data={viewData[0]}
-          isPatient={source === "Patients"}
+          isPatient={isPatient}
           onNewAppointment={() => setNewAppointment(true)}
         />
       )}
@@ -323,7 +331,7 @@ const AppointmentsList = ({ source = "" }) => {
           patient={viewData[0]}
           isNewAppointment={newAppointment}
           onClose={handleEditmodal}
-          isPatient={source === "Patients"}
+          isPatient={isPatient}
         />
       )}
     </div>
