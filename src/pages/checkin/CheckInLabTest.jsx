@@ -65,8 +65,7 @@ const CheckInLabTest = ({ selectedData, setSelectedData }) => {
           placeholder="Search test Name..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown} // Handle Enter key
-          autoFocus
+          onKeyDown={handleKeyDown}
         />
         {/* Display suggestions */}
         {suggestions.length > 0 && (

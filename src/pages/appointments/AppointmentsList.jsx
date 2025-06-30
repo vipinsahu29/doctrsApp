@@ -70,28 +70,19 @@ const AppointmentsList = ({ source = "" }) => {
   }, []);
 
   useEffect(() => {
-    if (source !== "Patients" && currentPage) {
+    if (!isPatient && currentPage) {
       setSerialNumber(currentPage);
       getAppointmentList(clinic_id, currentPage);
     } else if (isPatient) {
       getPatientsDetails(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage]);
+  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage, isPatient]);
 
   const filteredUsers = patientData ?? [];
   const totalPages =
     filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
       ? filteredUsers[0].total_pages
       : 1;
-  // searchValue && isNaN(searchValue)
-  //   ? data.filter((user) =>
-  //       user?.fname?.toLowerCase().includes(searchValue.toLowerCase())
-  //     )
-  //   : searchValue && !isNaN(searchValue)
-  //   ? AppointmentData.filter((user) =>
-  //       user?.mobile?.toLowerCase().includes(searchValue.toLowerCase())
-  //     )
-  // : data;
 
   const navigate = useNavigate();
   const handleEditmodal = () => {
@@ -216,7 +207,7 @@ const AppointmentsList = ({ source = "" }) => {
                       >
                         {d.gender}
                       </td>
-                      {source !== "Patients" && (
+                      {!isPatient && (
                         <>
                           <td
                             scope="row"
@@ -296,7 +287,7 @@ const AppointmentsList = ({ source = "" }) => {
                               <FaHistory />{" "}
                             </button>
                           )}
-                          {source !== "Patients" && (
+                          {!isPatient && (
                             <button
                               tabIndex={-1}
                               className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-900"

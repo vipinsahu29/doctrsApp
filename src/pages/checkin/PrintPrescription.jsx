@@ -1,15 +1,15 @@
 import React, { forwardRef } from "react";
+import PropTypes from "prop-types";
 import { calculateExperience } from "../../utility/util";
 
 const PrintPrescription = forwardRef(({ data }, ref) => {
-  console.log("Checkin: data", data);
   return (
     <div
       ref={ref}
       className="p-4 bg-gray-100 text-black print:text-black print:bg-white"
     >
       {/* Printable Area */}
-      <div className="max-w-[794px] mx-auto text-xs  bg-white p-6 border border-gray-300 shadow-md print:shadow-none print:border-none print:p-0">
+      <div className="mx-auto text-xs  bg-white p-6 border border-gray-300 shadow-md print:shadow-none print:border-none print:p-0">
         <hr className="border-t border-gray-500 dark:border-neutral-500 mt-[160px] mb-4 w-full" />
         <div className="flex">
           <div>
@@ -133,5 +133,33 @@ const PrintPrescription = forwardRef(({ data }, ref) => {
     </div>
   );
 });
+PrintPrescription.propTypes = {
+  data: PropTypes.shape({
+    0: PropTypes.shape({
+      fname: PropTypes.string,
+      lname: PropTypes.string,
+      gender: PropTypes.string,
+      height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      dob: PropTypes.string,
+      AppointmentDate: PropTypes.string,
+    }),
+    selectedSymptoms: PropTypes.string,
+    familyHistory: PropTypes.string,
+    medicines: PropTypes.arrayOf(
+      PropTypes.shape({
+        medicineName: PropTypes.string.isRequired,
+        dose: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        timeADay: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        durationDays: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        remark: PropTypes.string,
+      })
+    ),
+    labTest: PropTypes.string,
+    advice: PropTypes.string,
+    diet: PropTypes.string,
+    followUpDate: PropTypes.string,
+  }).isRequired,
+};
 
 export default PrintPrescription;
