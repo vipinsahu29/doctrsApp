@@ -26,14 +26,10 @@ export const validateMobile = (mobile) => {
 };
 
 export const calculateExperience = (careerStartDate) => {
-  const [day, month, year] = careerStartDate.split("-").map(Number);
-  const startDate = new Date(year, month - 1, day); // Convert to Date object
+  const [year, month, day] = careerStartDate.split("-").map(Number); // Convert to Date object
   const today = new Date();
-
-  let years = today.getFullYear() - startDate.getFullYear();
-  let months = today.getMonth() - startDate.getMonth();
-
-  // Adjust if the current month is before the start month
+  let years = today.getFullYear() - year;
+  let months = today.getMonth() - (month - 1);
   if (months < 0) {
     years--;
     months += 12;
