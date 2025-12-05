@@ -33,8 +33,8 @@ export default function EditPatientModal({
   const [formData, setFormData] = useState({ ...patient });
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
-  const [PaymentMode, setPaymentMode] = useState("pending");
-  const [fee, setFee] = useState(0);
+  const [PaymentMode, setPaymentMode] = useState(formData?.payment_mode);
+  const [fee, setFee] = useState(formData?.fees);
   const today = new Date().toISOString().split("T")[0];
 
   const handleFnameChange = (e) => {
@@ -119,6 +119,7 @@ export default function EditPatientModal({
     ? "Edit Patient Details"
     : "Edit Appointment Details";
   if (!isOpen) return null;
+  console.log("formData:", formData);
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">
       <DialogBackdrop
@@ -238,7 +239,7 @@ export default function EditPatientModal({
                         <input
                           type="date"
                           name="appointment_date"
-                          value={formData.AppointmentDate}
+                          value={formData.appointment_date}
                           min={today} // Prevent past dates
                           placeholder="mm-dd--yyyy"
                           onChange={handleDateChange}
@@ -252,7 +253,7 @@ export default function EditPatientModal({
                         <select
                           name="time"
                           id="time"
-                          value={formData.appointment_time}
+                          value={formData.appointment_time.substring(0, 5)}
                           onChange={handleTimeChange}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
@@ -365,18 +366,16 @@ export default function EditPatientModal({
                         <label className="mb-1" htmlFor="doctor">
                           Doctor:
                         </label>
-                        <select
-                          name="doctor"
+                        <input
+                          type="text"
                           id="doctor"
+                          name="doctorName"
                           value={formData?.drname}
                           onChange={handleDoctorChange}
+                          maxLength="10"
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        >
-                          <option value="">Select Doctor</option>
-                          <option value="Dr. Anderson">Dr. Anderson</option>
-                          <option value="Dr. Williams">Dr. Williams</option>
-                          <option value="Other">Other</option>
-                        </select>
+                          disabled={isNewAppointment || !isPatient}
+                        />
                       </div>
                       <div className="flex flex-col">
                         <label className="mb-1 text-red-600" htmlFor="doctor">

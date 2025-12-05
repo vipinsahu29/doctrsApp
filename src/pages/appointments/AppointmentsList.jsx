@@ -90,6 +90,7 @@ const AppointmentsList = ({ source = "" }) => {
     setIsEditOpen(false);
   };
   const handleViewDetails = (patientId, appointmentId) => {
+    console.log("patientId:", patientId, "appointmentId:", appointmentId, 'filteredUsers-', filteredUsers);
     setViewDetails(true);
     setViewData(
       filteredUsers.filter(
@@ -99,11 +100,12 @@ const AppointmentsList = ({ source = "" }) => {
       )
     );
   };
-  const handleEditDetails = (id) => {
+  const handleEditDetails = (patientId, appointmentId) => {
     setNewAppointment(false);
     setIsEditOpen(true);
 
-    setViewData(filteredUsers.filter((value) => value?.patient_id === id));
+    setViewData(filteredUsers.filter((value) =>value.patient_id === patientId &&
+          value.appointment_id === appointmentId));
   };
   const handleSearch = (e) => {
     setTimeout(() => {
@@ -258,7 +260,7 @@ const AppointmentsList = ({ source = "" }) => {
                           <button
                             title="Edit"
                             tabIndex={-1}
-                            onClick={() => handleEditDetails(d?.patient_id)}
+                            onClick={() => handleEditDetails(d.patient_id, d.appointment_id)}
                             className="p-[6px] bg-yellow-300 rounded hover:shadow-lg hover:shadow-orange-500/50 cursor-pointer"
                           >
                             {" "}

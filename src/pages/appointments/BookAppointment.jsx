@@ -7,6 +7,7 @@ import {
   fetchFilteredPatientData,
 } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
+import { generateTimeSlots } from "../../utility/util";
 // Validation schema for the form
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -17,12 +18,12 @@ const validationSchema = Yup.object({
     .min(2, "Last Name must be at least 2 characters")
     .matches(/^[A-Za-z]+$/, "Last Name should contain only alphabets")
     .required("Last Name is required"),
-  mobile: Yup.string()
-    .matches(
-      /^\+(\d{2})\d{10}$|^\d{10}$/,
-      "Mobile number must be in the format: +XX1234567890 or 1234567890"
-    )
-    .required("Mobile number is required"),
+  // mobile: Yup.string()
+  //   .matches(
+  //     /^\d{10}$/,
+  //     "Mobile number must be in the format: +XX1234567890 or 1234567890"
+  //   )
+  //   .required("Mobile number is required"),
   dob: Yup.string().required("DOB is required"),
   gender: Yup.string().required("Gender is required"),
   address: Yup.string().required("Address is required"),
@@ -112,7 +113,10 @@ const BookAppointment = () => {
     } catch (err) {
       console.error("Error creating appointment:", err);
       setError(err?.message || "Error creating appointment");
-      return { success: false, error: err?.message || "Error creating appointment" };
+      return {
+        success: false,
+        error: err?.message || "Error creating appointment",
+      };
     }
   };
 
@@ -444,14 +448,21 @@ const BookAppointment = () => {
               >
                 Appointment Time
               </label>
-              <input
-                type="time"
-                id="appointmentTime"
+              <select
                 name="appointmentTime"
+                id="appointmentTime"
                 value={formik.values.appointmentTime}
                 onChange={formik.handleChange}
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
-              />
+              >
+                <option value="">Select Time</option>
+                {generateTimeSlots().map((time) => (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+              
               {formik.touched.appointmentTime &&
               formik.errors.appointmentTime ? (
                 <p className="text-red-500 text-xs">
@@ -476,7 +487,10 @@ const BookAppointment = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-1 pl-1 text-red-600 font-bold bg-yellow-300 w-[150px]" htmlFor="doctor">
+              <label
+                className="mb-1 pl-1 text-red-600 font-bold bg-yellow-300 w-[150px]"
+                htmlFor="doctor"
+              >
                 Payment Method:
               </label>
               <select
@@ -523,7 +537,7 @@ const BookAppointment = () => {
             <button
               type="submit"
               className="px-6 py-2 mt-10 font-semibold bg-yellow-300 text-gray-900 rounded-md hover:bg-yellow-600 hover:text-gray-50 hover:font-bold border-2 border-gray-200"
-              disabled={!formik.isValid || formik.isSubmitting}
+              // disabled={!formik.isValid || formik.isSubmitting}
             >
               Submit Appointment
             </button>

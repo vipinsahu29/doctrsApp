@@ -29,7 +29,7 @@ const AddPatients = () => {
     City: "",
     State: "",
     BloodGroup: "",
-    Country: "",
+    Country: "India",
     Adhar: "",
   });
 
@@ -120,7 +120,7 @@ const AddPatients = () => {
       City: "",
       State: "",
       BloodGroup: "",
-      Country: "",
+      Country: "India",
       Adhar: "",
     });
   };

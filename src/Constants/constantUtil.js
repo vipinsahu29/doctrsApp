@@ -38,7 +38,8 @@ export const addPatientsInputFields = [
   {
     label: "Occupation",
     name: "Occupation",
-    type: "text",
+    type: "select",
+    options: ["Farmer", "Business", "Private Job","Gov Job", "Student", "Other","House wife"],
     required: true,
   },
   {
