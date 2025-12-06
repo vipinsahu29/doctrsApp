@@ -42,6 +42,7 @@ const AppointmentsList = ({ source = "" }) => {
   const [patientData, setPatientData] = useState([]);
   const isPatient = source === "Patients";
   const filteredColums = isPatient ? patientsColumns : appointmentColumns;
+  const [isPatentUpdated, setIsPatientUpdated] = useState(false)
   const [serialNumber, setSerialNumber] = useState(1);
   const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
     try {
@@ -76,7 +77,7 @@ const AppointmentsList = ({ source = "" }) => {
     } else if (isPatient) {
       getPatientsDetails(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage, isPatient]);
+  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage, isPatient,isPatentUpdated]);
 
   const filteredUsers = patientData ?? [];
   const totalPages =
@@ -89,6 +90,7 @@ const AppointmentsList = ({ source = "" }) => {
     setNewAppointment(false);
     setIsEditOpen(false);
   };
+
   const handleViewDetails = (patientId, appointmentId) => {
     console.log("patientId:", patientId, "appointmentId:", appointmentId, 'filteredUsers-', filteredUsers);
     setViewDetails(true);
@@ -103,7 +105,7 @@ const AppointmentsList = ({ source = "" }) => {
   const handleEditDetails = (patientId, appointmentId) => {
     setNewAppointment(false);
     setIsEditOpen(true);
-
+    setIsPatientUpdated(false)
     setViewData(filteredUsers.filter((value) =>value.patient_id === patientId &&
           value.appointment_id === appointmentId));
   };
@@ -112,9 +114,10 @@ const AppointmentsList = ({ source = "" }) => {
       setSearchValue(e.target.value);
     }, 1000);
   };
-  const handleCheckinClick = (id) => {
+  const handleCheckinClick = (patientId, appointmentId) => {
     const checkinData = filteredUsers.filter(
-      (value) => value.patient_id === id
+      (value) =>value.patient_id === patientId &&
+          value.appointment_id === appointmentId
     );
     navigate("/checkin", { state: checkinData });
   };
@@ -293,7 +296,7 @@ const AppointmentsList = ({ source = "" }) => {
                             <button
                               tabIndex={-1}
                               className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-900"
-                              onClick={() => handleCheckinClick(d?.patient_id)}
+                              onClick={() => handleCheckinClick(d.patient_id, d.appointment_id)}
                             >
                               {" "}
                               Check-in
@@ -313,7 +316,7 @@ const AppointmentsList = ({ source = "" }) => {
         <AppointmentViewDetailsModal
           isOpen={viewDetails}
           onClose={() => setViewDetails(false)}
-          data={viewData[0]}
+          data={viewData.length > 0 ? viewData[0] : []}
           isPatient={isPatient}
           onNewAppointment={() => setNewAppointment(true)}
         />
@@ -325,6 +328,7 @@ const AppointmentsList = ({ source = "" }) => {
           isNewAppointment={newAppointment}
           onClose={handleEditmodal}
           isPatient={isPatient}
+          onSave={() => setIsPatientUpdated(true)}
         />
       )}
     </div>

@@ -106,3 +106,30 @@ export async function fetchFilteredPatientData(
 // }).catch(error => {
 //   console.error("Error:", error);
 // }));
+
+export async function updateAppointment({
+  clinicId,
+  appointmentId = 0,
+  patientId = 0,
+  changes = {}}
+) {
+  // if(!!clinicId || appointmentId === null || patientId === null){
+  //   console.log("Invalid parameters for updating appointment.",clinicId);
+  // }
+  const { data, error } = await supabase.rpc("update_appointment_partial", {
+    p_appointment_id: appointmentId,
+    p_clinic_id: clinicId,
+    p_patient_id: patientId,
+    p_changes: changes,
+  });
+
+  if (error) {
+    console.error("Error while update appointment:", error);
+    return { error };
+  }
+  if (!data || data.length === 0) {
+    console.warn("Update fail.");
+    return [];
+  }
+  return { data, error };
+}

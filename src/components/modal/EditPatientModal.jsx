@@ -12,7 +12,7 @@ import {
   validateEmail,
   validateMobile,
 } from "./../../utility/util";
-import { createAppt } from "../../SupaBase/AppointmentAPI";
+import { createAppt, updateAppointment } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
@@ -21,6 +21,7 @@ EditPatientModal.propTypes = {
   // onSave: PropTypes.func,
   onClose: PropTypes.func,
   isPatient: PropTypes.bool,
+  onSave: PropTypes.func,
 };
 export default function EditPatientModal({
   isOpen,
@@ -28,6 +29,7 @@ export default function EditPatientModal({
   onClose,
   isNewAppointment,
   isPatient,
+  onSave,
 }) {
   const clinic_id = Store.getState().clinicId;
   const [formData, setFormData] = useState({ ...patient });
@@ -107,8 +109,29 @@ export default function EditPatientModal({
       } else {
         alert("Failed to book appointment. Please try again.");
       }
-    } else if (isNewAppointment) {
-      alert("Please fill all the required fields.");
+    } else if (!isNewAppointment) {
+      console.log("after update->", formData);
+      const { data, error } = await updateAppointment({
+        appointmentId: formData.appointment_id,
+        clinicId: clinic_id,
+        patientId: formData.patient_id,
+        changes: {
+          appointment_date: formData.appointment_date,
+          appointment_time: formData.appointment_time,
+          payment_mode: PaymentMode,
+          fees: fee,
+          dr_name: formData.drname,
+          height: formData.height,
+          weight: formData.weight,
+        },
+      });
+      if (error) {
+        console.alert("Error on update");
+      }
+      if (data) {
+        onSave();
+        onClose(false);
+      }
       return;
     }
     // onClose(false);
@@ -119,7 +142,6 @@ export default function EditPatientModal({
     ? "Edit Patient Details"
     : "Edit Appointment Details";
   if (!isOpen) return null;
-  console.log("formData:", formData);
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">
       <DialogBackdrop
@@ -413,7 +435,7 @@ export default function EditPatientModal({
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           required
                           onChange={(e) =>
-                            setFee(e.target.value < 0 ? 0 : e.target.value)
+                            setFee(Math.max(0, Number(e.target.value)))
                           }
                           min="0"
                         />
