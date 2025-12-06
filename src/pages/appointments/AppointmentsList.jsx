@@ -42,7 +42,7 @@ const AppointmentsList = ({ source = "" }) => {
   const [patientData, setPatientData] = useState([]);
   const isPatient = source === "Patients";
   const filteredColums = isPatient ? patientsColumns : appointmentColumns;
-  const [isPatentUpdated, setIsPatientUpdated] = useState(false)
+  const [isPatientUpdated, setIsPatientUpdated] = useState(false)
   const [serialNumber, setSerialNumber] = useState(1);
   const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
     try {
@@ -77,9 +77,14 @@ const AppointmentsList = ({ source = "" }) => {
     } else if (isPatient) {
       getPatientsDetails(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage, isPatient,isPatentUpdated]);
+  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage, isPatient,isPatientUpdated]);
 
-  const filteredUsers = patientData ?? [];
+  const filteredUsers = searchValue ?  patientData.filter((item) => {
+        const fullName = `${item.fname} ${item.lname}`.toLowerCase();
+        return (
+          fullName.includes(searchValue.toLowerCase()) ||
+            ((item.mobile).toString()).includes(searchValue)
+        ) } ) : patientData;
   const totalPages =
     filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
       ? filteredUsers[0].total_pages

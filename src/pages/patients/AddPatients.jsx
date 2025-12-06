@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { validateEmail, validateMobile } from "../../utility/util";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import AtomInput from "../../components/Atom/AtomInput";
@@ -32,6 +32,17 @@ const AddPatients = () => {
     Country: "India",
     Adhar: "",
   });
+
+  useEffect(() => {
+    if (insertedPatient || errorMessage.length > 0) {
+      const timerId = setTimeout(() => {
+        setInsertedPatient(false);
+        setErrorMessage("");
+      }, 10000); // 20 seconds
+
+      return () => clearTimeout(timerId);
+    }
+  }, [insertedPatient, errorMessage]);
 
   const handleChange = (e) => {
     if (e.target.name === "mobile") {
@@ -152,20 +163,22 @@ const AddPatients = () => {
           </div>
           {/* Other fields */}
           {/* Submit Button */}
-          <div className="flex justify-center mt-6">
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className={`w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 ${
-                error.length > 0 && "cursor-not-allowed"
-              }`}
-              disabled={error.length > 0 || loading}
-            >
-              {loading ? "Saving..." : "Save details"}
-            </button>
-          </div>
+          {!insertedPatient && (
+            <div className="flex justify-center mt-6">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className={`w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 ${
+                  error.length > 0 && "cursor-not-allowed"
+                }`}
+                disabled={error.length > 0 || loading}
+              >
+                {loading ? "Saving..." : "Save details"}
+              </button>
+            </div>
+          )}
           {insertedPatient && (
-            <h2 className="text-green-400 text-2xl my-10 text-center top-2">
+            <h2 className="text-green-400 text-2xl my-10 text-center">
               Patient details added successfully!
             </h2>
           )}
