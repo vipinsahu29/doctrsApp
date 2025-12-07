@@ -1,20 +1,28 @@
 import { useState } from "react";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { validateEmail, validateMobile } from "../../utility/util";
+import Store from "../../store/store";
 
+import { insertDoctor } from "../../SupaBase/DoctorsApi";
 export default function AddDoctor() {
+  const clinic_id = Store.getState().clinicId;
+
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [formData, setFormData] = useState({
     FirstName: "",
     LastName: "",
-    Mobile: "",
+    Mobile1: "",
+    Mobile2: "",
     Email: "",
     DOB: "",
     Qualification: "",
+    Collage: "",
+    Univercity: "",
+    CareerStartDate: "",
+    GraduatedDate: "",
     Gender: "",
     Specialization: "",
-    CareerStartDate: "",
     Shifts: [
       { Days: [], StartTime: "", EndTime: "" },
       { Days: [], StartTime: "", EndTime: "" },
@@ -24,15 +32,15 @@ export default function AddDoctor() {
 
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const today = new Date().toISOString().split("T")[0];
-
+  console.log("Docters data-->", formData);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     // Handle mobile and email validation separately
-    if (name === "mobile") {
+    if (name === "Mobile1" || name === "Mobile2") {
       setIsMobileValid(validateMobile(value));
     }
-    if (name === "email") {
+    if (name === "Email") {
       setIsValidEmail(validateEmail(value));
     }
 
@@ -41,7 +49,33 @@ export default function AddDoctor() {
       [name]: value,
     }));
   };
-
+  const insertDocterData = async () => {
+    try {
+      const { data, error } = await insertDoctor({
+        clinicId: clinic_id,
+        name: formData.FirstName + " " + formData.LastName,
+        mobile1: formData.Mobile1,
+        mobile2: formData.Mobile2,
+        email: formData.Email,
+        dob: formData.DOB,
+        qualification: formData.Qualification,
+        collage: formData.Collage,
+        univercity: formData.Univercity,
+        careerstartdate: formData.CareerStartDate,
+        graduateddate: formData.GraduatedDate,
+        shift: formData.Shifts,
+        gender: formData.Gender,
+      });
+      if (error) {
+        console.log("Not able to insert Record");
+      }
+      if (data) {
+        console.log("Insert successful.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleShiftChange = (shiftIndex, field, value) => {
     const updatedShifts = [...formData.Shifts];
     updatedShifts[shiftIndex][field] = value;
@@ -63,7 +97,7 @@ export default function AddDoctor() {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission
-
+    insertDocterData();
     // Validate mobile and email before submitting
     if (!isMobileValid || !isValidEmail) {
       return; // Prevent form submission if validation fails
@@ -109,23 +143,44 @@ export default function AddDoctor() {
               placeholder="Last Name"
               value={formData.LastName}
               onChange={handleChange}
-              
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
           </div>
           {/* Mobile */}
           <div>
             <label
-              htmlFor="Mobile"
+              htmlFor="Mobile1"
               className="block text-sm font-medium text-white"
             >
-              Mobile
+              Primary mobile
             </label>
             <input
               type="tel"
-              name="Mobile"
+              name="Mobile1"
               placeholder="Mobile"
-              value={formData.Mobile}
+              value={formData.Mobile1}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+              maxLength="10"
+            />
+            {!isMobileValid && (
+              <h3 className="text-red-600">
+                Please enter a valid mobile number.
+              </h3>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="Mobile2"
+              className="block text-sm font-medium text-white"
+            >
+              Secondary mobile
+            </label>
+            <input
+              type="tel"
+              name="Mobile2"
+              placeholder="Mobile"
+              value={formData.Mobile2}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
               maxLength="10"
@@ -207,6 +262,40 @@ export default function AddDoctor() {
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />
           </div>
+          {/* Univercity */}
+          <div>
+            <label
+              htmlFor="Univercity"
+              className="block text-sm font-medium text-white"
+            >
+              Univercity
+            </label>
+            <input
+              type="text"
+              name="Univercity"
+              placeholder="Univercity"
+              value={formData?.Univercity}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+            />
+          </div>
+          {/* College */}
+          <div>
+            <label
+              htmlFor="Collage"
+              className="block text-sm font-medium text-white"
+            >
+              College
+            </label>
+            <input
+              type="text"
+              name="Collage"
+              placeholder="Collage"
+              value={formData?.Collage}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+            />
+          </div>
           {/* Career Start Date */}
           <div>
             <label
@@ -219,6 +308,21 @@ export default function AddDoctor() {
               type="date"
               name="CareerStartDate"
               value={formData.CareerStartDate}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="GraduatedDate"
+              className="block text-sm font-medium text-white"
+            >
+              Graduation End Date
+            </label>
+            <input
+              type="date"
+              name="GraduatedDate"
+              value={formData.GraduatedDate}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
             />

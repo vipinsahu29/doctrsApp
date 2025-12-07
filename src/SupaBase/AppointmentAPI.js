@@ -113,9 +113,6 @@ export async function updateAppointment({
   patientId = 0,
   changes = {}}
 ) {
-  // if(!!clinicId || appointmentId === null || patientId === null){
-  //   console.log("Invalid parameters for updating appointment.",clinicId);
-  // }
   const { data, error } = await supabase.rpc("update_appointment_partial", {
     p_appointment_id: appointmentId,
     p_clinic_id: clinicId,
