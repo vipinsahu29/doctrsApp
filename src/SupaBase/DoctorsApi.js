@@ -40,3 +40,21 @@ export async function insertDoctor({
   }
   return { data, error };
 }
+
+export async function fetchDocters(
+  clinicId,
+) {
+  const { data, error } = await supabase.rpc("get_doctors", {
+    p_clinic_id: clinicId
+  });
+  console.log(data, error, 'clinicId->', clinicId);
+  if (error) {
+    console.error("Error fetching doctors data:", error);
+    return { error };
+  }
+  if (!data || data.length === 0) {
+    console.warn("No data found for the given clinicID.");
+    return [];
+  }
+  return { data };
+}

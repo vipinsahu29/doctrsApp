@@ -37,35 +37,51 @@ const DoctorsViewDetails = ({ isOpen, onClose, data, onNewAppointment }) => {
               <div className="grid sm: grid-cols-2 md:grid-cols-4 md:gap-4 sm: gap-2 pt-3">
                 <div className="flex flex-col">
                   <h2 className="font-bold">Name:</h2>
-                  {data.FirstName + " " + data.LastName}
+                  {data.name}
                 </div>
                 <div className="flex flex-col">
-                  <h2 className="font-bold">Mobile:</h2>
-                  {data.Mobile}
+                  <h2 className="font-bold">Mobile1:</h2>
+                  {data.mobile1}
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="font-bold">Mobile2:</h2>
+                  {data.mobile2}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">DOB:</h2>
-                  {data.DOB}
+                  {data.dob}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Qualification:</h2>
-                  {data.Qualification}
+                  {data.qualification}
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="font-bold">University:</h2>
+                  {data.univercity}
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="font-bold">Collage:</h2>
+                  {data.college}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Specialization:</h2>
-                  {data.Specialization}
+                  {data?.specialization}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Email:</h2>
-                  {data.Email}
+                  {data.email}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Age:</h2>
-                  {calculateExperience(data.DOB)}
+                  {calculateExperience(data.dob)}
+                </div>
+                 <div className="flex flex-col">
+                  <h2 className="font-bold">Total Exp:</h2>
+                  {calculateExperience(data.careerStartDate)}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Gender:</h2>
-                  {data.Gender}
+                  {data.gender}
                 </div>
                 <div className="flex flex-col">
                   <h2 className="font-bold">Shift-1:</h2>
@@ -79,12 +95,12 @@ const DoctorsViewDetails = ({ isOpen, onClose, data, onNewAppointment }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.Shifts[0].Days.map((days) => (
+                      {data.shift[0].Days.map((days) => (
                         <tr key={days} className="bg-gray-100">
                           <td className="border border-gray-600 p-1">{days}</td>
                           <td className="border border-gray-600 p-1">
-                            {data.Shifts[0].StartTime} to{" "}
-                            {data.Shifts[0].EndTime}
+                            {data.shift[0].StartTime} to{" "}
+                            {data.shift[0].EndTime}
                           </td>
                         </tr>
                       ))}
@@ -103,12 +119,12 @@ const DoctorsViewDetails = ({ isOpen, onClose, data, onNewAppointment }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.Shifts[1].Days.map((days) => (
+                      {data.shift[1].Days.map((days) => (
                         <tr key={days} className="bg-gray-100">
                           <td className="border border-gray-600 p-1">{days}</td>
                           <td className="border border-gray-600 p-1">
-                            {data.Shifts[1].StartTime} to{" "}
-                            {data.Shifts[1].EndTime}
+                            {data.shift[1].StartTime} to{" "}
+                            {data.shift[1].EndTime}
                           </td>
                         </tr>
                       ))}
@@ -117,7 +133,7 @@ const DoctorsViewDetails = ({ isOpen, onClose, data, onNewAppointment }) => {
                 </div>
                 <div className="flex flex-col">
                 <h2 className="font-bold">Shift-3:</h2>
-                  {data.Shifts[2].length > 0 ? (
+                  {data.shift[2].length > 0 ? (
                       <table>
                         <thead>
                           <tr className="bg-gray-300">
@@ -128,14 +144,14 @@ const DoctorsViewDetails = ({ isOpen, onClose, data, onNewAppointment }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {data.Shifts[2].Days.map((days) => (
+                          {data.shift[2].Days.map((days) => (
                             <tr key={days} className="bg-gray-100">
                               <td className="border border-gray-600 p-1">
                                 {days}
                               </td>
                               <td className="border border-gray-600 p-1">
-                                {data.Shifts[2].StartTime} to{" "}
-                                {data.Shifts[2].EndTime}
+                                {data.shift[2].StartTime} to{" "}
+                                {data.shift[2].EndTime}
                               </td>
                             </tr>
                           ))}

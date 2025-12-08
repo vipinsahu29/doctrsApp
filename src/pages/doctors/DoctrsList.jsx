@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEdit, FaRegEye } from "react-icons/fa";
 import Pagination from "../../components/pagination/Paginations";
 
@@ -7,6 +7,8 @@ import { doctorsData } from "../../Constants/doctorsListData";
 import { calculateExperience } from "../../utility/util";
 import DoctorsViewDetails from "../../components/modal/DoctorsViewDetails";
 import EditDoctorsModal from "../../components/modal/EditDoctorsModal";
+import { fetchDocters } from "../../SupaBase/DoctorsApi";
+import Store from "../../store/store";
 
 const columns = [
   "No.",
@@ -20,7 +22,9 @@ const columns = [
   "Action",
 ];
 const DoctrsList = () => {
+  const clinic_id = Store((state) => state.clinicId);
   const [parPage, setParPage] = useState(10);
+  const [doctors, setDoctors] = useState([]);
   const [viewData, setViewData] = useState();
   const [searchValue, setSearchValue] = useState("");
   const [viewDetails, setViewDetails] = useState(false);
@@ -28,33 +32,50 @@ const DoctrsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const filteredUsers =
     searchValue && isNaN(searchValue)
-      ? doctorsData.filter((user) =>
-          user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
+      ? doctors?.filter((user) =>
+          user.name.toLowerCase().includes(searchValue.toLowerCase())
         )
-      : doctorsData.filter((user) =>
-          user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
-        );
+      : searchValue && !isNaN(searchValue)
+      ? doctors?.filter((user) =>
+          user.mobile1.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      : doctors;
   const handleEditmodal = () => {
     setIsEditOpen(false);
   };
   const handleViewDetails = (id) => {
     setViewDetails(true);
-    setViewData(doctorsData.filter((value) => value.Id === id));
+    setViewData(doctors.filter((value) => value.id === id));
   };
-  const handleCloseView = ()=>{
-    setViewDetails(false)
-    setIsEditOpen(false)
-    setViewData("")
-  }
+  const handleCloseView = () => {
+    setViewDetails(false);
+    setIsEditOpen(false);
+    setViewData("");
+  };
   const handleEditDetails = (id) => {
     setIsEditOpen(true);
-    setViewData(doctorsData.filter((value) => value.Id === id));
+    setViewData(doctors.filter((value) => value.id === id));
   };
   const handleSearch = (e) => {
     setTimeout(() => {
       setSearchValue(e.target.value);
     }, 1000);
   };
+  useEffect(() => {
+    const getDoctorsData = async () => {
+    try {
+      const response = await fetchDocters(clinic_id); // Pass the clinicId as needed
+      if (response.error) {
+        console.error("Error fetching doctors data:", response.error);
+        return;
+      }
+      setDoctors(response.data);
+    } catch (error) {
+      console.error("Error fetching doctors data:", error);
+    }
+  };
+    getDoctorsData();
+  }, [clinic_id]);
   return (
     <div className="min-h-screen flex items-center bg-white flex-col gap-7 mt-7">
       <AppointmentRouting pageName="Doctors" />
@@ -97,8 +118,8 @@ const DoctrsList = () => {
                 <td>No response from server..</td>
               </tr>
             ) : (*/}
-                  {filteredUsers.map((d, i) => (
-                    <tr key={d.Mobile + d.FirstName}>
+                  {filteredUsers?.map((d, i) => (
+                    <tr key={d.id}>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
@@ -109,31 +130,31 @@ const DoctrsList = () => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.FirstName + " " + d.LastName}
+                        {d.name}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Specialization}
+                        {d?.specialization}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {calculateExperience(d.CareerStartDate)}
+                        {calculateExperience(d.careerStartDate)}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Qualification}
+                        {d.qualification}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Shifts[0].StartTime + " - " + d.Shifts[0].EndTime}
+                        {d?.shift[0].StartTime + " - " + d.shift[0].EndTime}
                       </td>
                       <td
                         scope="row"
@@ -141,8 +162,8 @@ const DoctrsList = () => {
                           "py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                         }
                       >
-                        {d.Shifts[1].Days.length > 0
-                          ? d.Shifts[1].StartTime + " - " + d.Shifts[1].EndTime
+                        {d.shift[1].Days.length > 0
+                          ? d.shift[1].StartTime + " - " + d.shift[1].EndTime
                           : "N.A."}
                       </td>
                       <td
@@ -151,8 +172,8 @@ const DoctrsList = () => {
                           "py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                         }
                       >
-                        {d.Shifts[2].Days.length > 0
-                          ? d.Shifts[2].StartTime + " - " + d.Shifts[2].EndTime
+                        {d.shift[2].Days.length > 0
+                          ? d.shift[2].StartTime + " - " + d.shift[2].EndTime
                           : "N.A."}
                       </td>
                       <td
@@ -162,7 +183,7 @@ const DoctrsList = () => {
                         <div className="flex justify-start items-center gap-4">
                           <button
                             tabIndex={-1}
-                            onClick={() => handleEditDetails(d.Id)}
+                            onClick={() => handleEditDetails(d.id)}
                             className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer"
                           >
                             {" "}
@@ -172,7 +193,7 @@ const DoctrsList = () => {
                           <button
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
-                            onClick={() => handleViewDetails(d.Id)}
+                            onClick={() => handleViewDetails(d.id)}
                           >
                             {" "}
                             <FaRegEye />{" "}
@@ -207,7 +228,7 @@ const DoctrsList = () => {
           onNewAppointment={() => {}}
         />
       )}
-      {(isEditOpen) && (
+      {isEditOpen && (
         <EditDoctorsModal
           isOpen={isEditOpen}
           doctor={viewData[0]}

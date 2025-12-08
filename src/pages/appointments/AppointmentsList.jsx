@@ -60,7 +60,7 @@ const AppointmentsList = ({ source = "" }) => {
   }, []);
 
   const getPatientsDetails = React.useCallback(async (clinicId) => {
-    await getPatientDetails(clinicId).then((data) => {
+    await                                                                                                                                                                                                                     (clinicId).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."

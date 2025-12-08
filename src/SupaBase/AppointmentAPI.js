@@ -101,12 +101,6 @@ export async function fetchFilteredPatientData(
   return { data };
 }
 
-// console.log("filter:",fetchFilteredPatientData(32,"raju", null).then(data => {
-//   console.log("Filtered Data:", data);
-// }).catch(error => {
-//   console.error("Error:", error);
-// }));
-
 export async function updateAppointment({
   clinicId,
   appointmentId = 0,
