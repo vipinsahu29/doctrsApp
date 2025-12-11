@@ -74,6 +74,7 @@ const Registration = () => {
 
       if (!clinic_error) {
         Store.getState().setClinicId(clinic_data[0]?.clinic_id);
+        Store.getState().setUserData(clinic_data[0]);
         setOpen(false);
         navigate("/appointment_list");
       }

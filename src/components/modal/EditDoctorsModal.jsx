@@ -15,7 +15,7 @@ EditDoctorsModal.propTypes = {
   onClose: PropTypes.func,
 };
 export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
-  const [formData, setFormData] = useState({ ...doctor });
+  const [formData, setFormData] = useState(doctor);
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const today = new Date().toISOString().split("T")[0];
@@ -37,13 +37,13 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
     }));
   };
   const handleShiftChange = (shiftIndex, field, value) => {
-    const updatedShifts = [...formData.Shifts];
+    const updatedShifts = [...formData.shift];
     updatedShifts[shiftIndex][field] = value;
-    setFormData((prevData) => ({ ...prevData, Shifts: updatedShifts }));
+    setFormData((prevData) => ({ ...prevData, shift: updatedShifts }));
   };
 
   const handleDayToggle = (shiftIndex, day) => {
-    const updatedShifts = [...formData.Shifts];
+    const updatedShifts = [...formData.shift];
     const dayExists = updatedShifts[shiftIndex].Days.includes(day);
     if (dayExists) {
       updatedShifts[shiftIndex].Days = updatedShifts[shiftIndex].Days.filter(
@@ -52,7 +52,7 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
     } else {
       updatedShifts[shiftIndex].Days.push(day);
     }
-    setFormData((prevData) => ({ ...prevData, Shifts: updatedShifts }));
+    setFormData((prevData) => ({ ...prevData, shift: updatedShifts }));
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -93,35 +93,41 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                       type="text"
                       id="firstname"
                       name="firstname"
-                      value={formData.FirstName}
-                      placeholder="First name"
+                      value={formData.name}
+                      placeholder="Full name"
                       onChange={handleChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="firstname">
-                      Last Name:
-                    </label>
-                    <input
-                      type="text"
-                      id="lastname"
-                      name="lastname"
-                      placeholder="Last name"
-                      value={formData.LastName}
-                      onChange={handleChange}
-                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="mb-1" htmlFor="mobile">
+                    <label className="mb-1" htmlFor="mobile1">
                       Mobile:
                     </label>
                     <input
                       type="text"
-                      id="mobile"
-                      name="mobile"
-                      value={formData.Mobile}
+                      id="mobile1"
+                      name="mobile1"
+                      value={formData.mobile1}
+                      placeholder="XXXXXXXXXXX"
+                      onChange={handleChange}
+                      maxLength="10"
+                      className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                    {!isMobileValid && (
+                      <h3 className="text-red-600">
+                        Please enter valid mobile no.
+                      </h3>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="mb-1" htmlFor="mobile2">
+                      Mobile2:
+                    </label>
+                    <input
+                      type="text"
+                      id="mobile2"
+                      name="mobile2"
+                      value={formData.mobile2}
                       placeholder="XXXXXXXXXXX"
                       onChange={handleChange}
                       maxLength="10"
@@ -140,7 +146,7 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                     <select
                       name="gender"
                       id="gender"
-                      value={formData.Gender}
+                      value={formData.gender}
                       onChange={handleChange}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
@@ -161,7 +167,7 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                     <input
                       type="email"
                       id="email"
-                      value={formData.Email}
+                      value={formData.email}
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="john.doe@company.com"
                       required
@@ -181,7 +187,7 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                       id="DOB"
                       type="date"
                       name="DOB"
-                      value={formData.DOB}
+                      value={formData.dob}
                       max={today} // Prevent past dates
                       placeholder="mm-dd-yyyy"
                       onChange={handleChange}
@@ -200,7 +206,7 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                       type="text"
                       name="Qualification"
                       placeholder="Qualification"
-                      value={formData.Qualification}
+                      value={formData.qualification}
                       onChange={handleChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
                     />
@@ -217,7 +223,7 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                       type="text"
                       name="Specialization"
                       placeholder="Specialization"
-                      value={formData.Specialization}
+                      value={formData.specialization}
                       onChange={handleChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
                     />
@@ -234,12 +240,12 @@ export default function EditDoctorsModal({ isOpen, doctor, onSave, onClose }) {
                       type="date"
                       name="CareerStartDate"
                     //   placeholder="mm-dd-yyyy"
-                      value={formData.CareerStartDate}
+                      value={formData.careerStartDate}
                     //   onChange={handleChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
                     />
                   </div>
-                  {formData.Shifts.map((shift, index) => (
+                  {formData.shift.map((shift, index) => (
                     <div
                       key={index}
                       className="mt-4 p-4 border rounded bg-gray-800"

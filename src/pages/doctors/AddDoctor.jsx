@@ -9,6 +9,8 @@ export default function AddDoctor() {
 
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     FirstName: "",
     LastName: "",
@@ -32,7 +34,6 @@ export default function AddDoctor() {
 
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const today = new Date().toISOString().split("T")[0];
-  console.log("Docters data-->", formData);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -51,6 +52,7 @@ export default function AddDoctor() {
   };
   const insertDocterData = async () => {
     try {
+      setIsSubmitting(true);
       const { data, error } = await insertDoctor({
         clinicId: clinic_id,
         name: formData.FirstName + " " + formData.LastName,
@@ -65,15 +67,42 @@ export default function AddDoctor() {
         graduateddate: formData.GraduatedDate,
         shift: formData.Shifts,
         gender: formData.Gender,
+        specialization: formData.Specialization
       });
       if (error) {
         console.log("Not able to insert Record");
+        setIsSubmitting(false);
+        setError(error.message, "Failed to insert data");
       }
       if (data) {
-        console.log("Insert successful.");
+        setFormData({
+          FirstName: "",
+          LastName: "",
+          Mobile1: "",
+          Mobile2: "",
+          Email: "",
+          DOB: "",
+          Qualification: "",
+          Collage: "",
+          Univercity: "",
+          CareerStartDate: "",
+          GraduatedDate: "",
+          Gender: "",
+          Specialization: "",
+          Shifts: [
+            { Days: [], StartTime: "", EndTime: "" },
+            { Days: [], StartTime: "", EndTime: "" },
+            { Days: [], StartTime: "", EndTime: "" },
+          ],
+        });
+        setIsSubmitting(false);
+        setError(null);
+        alert("Doctor details inserted successfully!");
       }
     } catch (error) {
       console.log(error);
+      setError(error.message, "Failed to insert data");
+      setIsSubmitting(false);
     }
   };
   const handleShiftChange = (shiftIndex, field, value) => {
@@ -389,12 +418,14 @@ export default function AddDoctor() {
             </div>
           </div>
         ))}
-
-        {/* Submit Button Handle*/}
+        {isSubmitting && (<p className="text-white">Submitting...</p>)}
+        {error && (<p className="text-red-600">Error: {error}</p>)}
+        {/* Submit Button Handle*/}        
         <button
           type="submit"
           onClick={handleSubmit}
           className="w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          disabled={isSubmitting}
         >
           Save details
         </button>

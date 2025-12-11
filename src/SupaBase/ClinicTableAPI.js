@@ -13,6 +13,7 @@ export const checkClinicExists = async (uuid) => {
     }
     if (data.length > 0) {
       Store.getState().setClinicId(data[0]?.clinic_id);
+      Store.getState().setUserData(data[0]);
     }
     return data.length > 0; // Returns true if clinic exists, false otherwise
   } catch (err) {

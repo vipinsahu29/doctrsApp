@@ -7,12 +7,13 @@ const Store = create(
       isAuthenticated: false,
       UID: null,
       clinicId: null,
-
+      userData: null,
       // Setters
       setUID: (uid) => set({ UID: uid }),
       setClinicId: (clinicId) => set({ clinicId }),
       setAuthenticated: (status) => set({ isAuthenticated: status }),
       setAccessToken: (token) => set({ accessToken: token }),
+      setUserData: (data) => set({ userData: data }),
     }),
     {
       name: 'local-store', // Key in localStorage

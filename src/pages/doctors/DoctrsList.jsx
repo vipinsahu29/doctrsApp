@@ -30,6 +30,7 @@ const DoctrsList = () => {
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setIsLoading] = useState(true);
   const filteredUsers =
     searchValue && isNaN(searchValue)
       ? doctors?.filter((user) =>
@@ -69,6 +70,7 @@ const DoctrsList = () => {
         console.error("Error fetching doctors data:", response.error);
         return;
       }
+      setIsLoading(false);
       setDoctors(response.data);
     } catch (error) {
       console.error("Error fetching doctors data:", error);
@@ -76,6 +78,12 @@ const DoctrsList = () => {
   };
     getDoctorsData();
   }, [clinic_id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">Loading...</div>
+    );
+  }
   return (
     <div className="min-h-screen flex items-center bg-white flex-col gap-7 mt-7">
       <AppointmentRouting pageName="Doctors" />
@@ -231,7 +239,7 @@ const DoctrsList = () => {
       {isEditOpen && (
         <EditDoctorsModal
           isOpen={isEditOpen}
-          doctor={viewData[0]}
+          doctor={viewData[0] || []}
           onSave={""}
           onClose={handleEditmodal}
         />

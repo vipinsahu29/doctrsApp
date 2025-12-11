@@ -12,7 +12,8 @@ export async function insertDoctor({
   careerstartdate,
   graduateddate,
   shift = [],
-  gender
+  gender,
+  specialization
 }) {
   const { data, error } = await supabase.rpc("insert_doctor", {
     p_name: name,
@@ -27,7 +28,8 @@ export async function insertDoctor({
     p_careerstartdate: careerstartdate,
     p_graduateddate: graduateddate,
     p_shift: shift,
-    p_gender: gender
+    p_gender: gender,
+    p_specialization: specialization
   });
 
   if (error) {
@@ -47,7 +49,6 @@ export async function fetchDocters(
   const { data, error } = await supabase.rpc("get_doctors", {
     p_clinic_id: clinicId
   });
-  console.log(data, error, 'clinicId->', clinicId);
   if (error) {
     console.error("Error fetching doctors data:", error);
     return { error };

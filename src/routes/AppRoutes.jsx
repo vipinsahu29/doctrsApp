@@ -44,11 +44,10 @@ const PrivateRoute = ({ children }) => {
         }
       }
     );
-
     return () => {
       listener.subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchSession, setUserSession]);
   if (!user && !session?.access_token) {
     return <Navigate to="/loginRegister" replace />;
   }

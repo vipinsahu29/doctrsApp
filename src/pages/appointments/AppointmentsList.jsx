@@ -52,7 +52,10 @@ const AppointmentsList = ({ source = "" }) => {
           "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
         );
       }
-      setPatientData(data);
+      if (data || data.length > 0){
+        setErrorMessage("")
+      }
+      setPatientData(data || []);
     } catch (error) {
       setErrorMessage("An error occurred while fetching appointments.");
       console.error(error);
@@ -60,11 +63,14 @@ const AppointmentsList = ({ source = "" }) => {
   }, []);
 
   const getPatientsDetails = React.useCallback(async (clinicId) => {
-    await                                                                                                                                                                                                                     (clinicId).then((data) => {
+    await (getPatientDetails(clinicId)).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."
         );
+      }
+      if (data || data.length > 0){
+        setErrorMessage("")
       }
       setPatientData(data || []);
     });
@@ -97,7 +103,6 @@ const AppointmentsList = ({ source = "" }) => {
   };
 
   const handleViewDetails = (patientId, appointmentId) => {
-    console.log("patientId:", patientId, "appointmentId:", appointmentId, 'filteredUsers-', filteredUsers);
     setViewDetails(true);
     setViewData(
       filteredUsers.filter(
