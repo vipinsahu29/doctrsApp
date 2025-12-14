@@ -31,7 +31,7 @@ export default function HeaderNavbar() {
   return (
     <Disclosure as="nav" className="bg-gray-600 fixed top-0 right-0 left-0">
       <div className="mx-auto px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
+        <div className="relative flex h-13 mt-3 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}
             <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
@@ -131,6 +131,7 @@ export default function HeaderNavbar() {
           ))}
         </div>
       </DisclosurePanel>
+      <h3 className="text-xl flex justify-center mb-1 font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300 animate-pulse">{userData?.name}</h3>
     </Disclosure>
   );
 }
