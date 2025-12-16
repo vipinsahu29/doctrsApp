@@ -32,13 +32,20 @@ export default function EditPatientModal({
   onSave,
 }) {
   const clinic_id = Store.getState().clinicId;
+  const doctorsNameList = Store.getState().doctorsNameList;
+  const missingFields = {appointment_time: "00:00", appointment_date: "", payment_mode: "select payment", fee: 0, dr_name: ""};
+  const data = isNewAppointment && isPatient && {...patient, ...missingFields} 
+  console.log('isNewAppointment',isNewAppointment, 'Data->', data)
+
   const [formData, setFormData] = useState({ ...patient });
   const [isMobileValid, setIsMobileValid] = useState(true);
+  
+  const [selectDoctor, setSelectDoctor] = useState(formData?.drname);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [PaymentMode, setPaymentMode] = useState(formData?.payment_mode);
   const [fee, setFee] = useState(formData?.fees);
   const today = new Date().toISOString().split("T")[0];
-
+  console.log('Edit Appointmet ->',isNewAppointment,'formData->',formData)
   const handleFnameChange = (e) => {
     setFormData({ ...formData, fname: e.target.value });
   };
@@ -77,9 +84,6 @@ export default function EditPatientModal({
   const handleHeightChange = (e) => {
     setFormData({ ...formData, height: e.target.value });
   };
-  const handleDoctorChange = (e) => {
-    setFormData({ ...formData, drname: e.target.value });
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -99,7 +103,7 @@ export default function EditPatientModal({
         appointment_time: formData.appointment_time,
         payment_mode: PaymentMode,
         fees: fee,
-        dr_name: formData.drname,
+        dr_name: selectDoctor,
         height: formData.height,
         weight: formData.weight,
       });
@@ -110,7 +114,6 @@ export default function EditPatientModal({
         alert("Failed to book appointment. Please try again.");
       }
     } else if (!isNewAppointment) {
-      console.log("after update->", formData);
       const { data, error } = await updateAppointment({
         appointmentId: formData.appointment_id,
         clinicId: clinic_id,
@@ -275,7 +278,7 @@ export default function EditPatientModal({
                         <select
                           name="time"
                           id="time"
-                          value={formData.appointment_time.substring(0, 5)}
+                          value={formData?.appointment_time}
                           onChange={handleTimeChange}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
@@ -388,16 +391,22 @@ export default function EditPatientModal({
                         <label className="mb-1" htmlFor="doctor">
                           Doctor:
                         </label>
-                        <input
-                          type="text"
+                        <select
+                          name="doctor"
                           id="doctor"
-                          name="doctorName"
-                          value={formData?.drname}
-                          onChange={handleDoctorChange}
-                          maxLength="10"
+                          value={selectDoctor}
+                          onChange={(e) => {
+                            setSelectDoctor(e.target.value);
+                          }}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          disabled={isNewAppointment || !isPatient}
-                        />
+                        >
+                          <option value="select_option">Select Option</option>
+                          {doctorsNameList.map((doctor) => (
+                            <option key={doctor} value={doctor}>
+                              {doctor}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <div className="flex flex-col">
                         <label className="mb-1 text-red-600" htmlFor="doctor">

@@ -8,6 +8,7 @@ import {
 } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
 import { generateTimeSlots } from "../../utility/util";
+import { fetchDocters } from "../../SupaBase/DoctorsApi";
 // Validation schema for the form
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -65,6 +66,8 @@ const BookAppointment = () => {
   const [searchValue, setSearchValue] = React.useState("");
   const [patientData, setPatientData] = React.useState([]);
   const [PaymentMode, setPaymentMode] = React.useState("pending");
+  const [selectDoctor, setSelectDoctor] = React.useState("");
+  const [doctorsList, setDoctorsList] = React.useState([])
   const [fee, setFee] = React.useState(0);
   const [patientId, setPatientId] = React.useState(null);
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
@@ -95,15 +98,18 @@ const BookAppointment = () => {
         appointment_time: formik.values.appointmentTime,
         payment_mode: PaymentMode,
         fees: fee || 0,
-        dr_name: formik.values.doctor,
+        dr_name: selectDoctor,
         height: formik.values.height || 0,
         weight: formik.values.weight || 0,
       });
       if (data) {
         setPaymentMode("pending");
         setFee(0);
+        setSelectDoctor("");
         return { success: true };
       } else {
+
+
         setError(error?.message || "Error creating appointment");
         return {
           success: false,
@@ -151,7 +157,14 @@ const BookAppointment = () => {
     };
     getFilteredData(searchValue);
   }, [searchValue, clinic_id]);
-
+  useEffect(()=>{
+    const getDoctors = async()=>{
+      const {data} = await fetchDocters(clinic_id)
+      setDoctorsList(data.map((doc)=> doc.name))
+      Store.getState().setDoctorsNameList(data.map((doc)=> doc.name))
+    }
+    getDoctors();
+  },[clinic_id])
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       // Move selection down
@@ -189,6 +202,7 @@ const BookAppointment = () => {
     setPatientId(item?.patient_id);
     setSearchValue("");
     setPatientData([]);
+    setSelectDoctor("");
     setHighlightedIndex(-1);
     inputRef.current?.focus(); // Keep focus on the input field
   };
@@ -477,14 +491,22 @@ const BookAppointment = () => {
               >
                 Doctor
               </label>
-              <input
-                type="text"
-                id="doctor"
+              <select
                 name="doctor"
-                value={formik.values.doctor}
-                onChange={formik.handleChange}
+                id="doctor"
+                value={selectDoctor}
+                onChange={(e) => {
+                  setSelectDoctor(e.target.value);
+                }}
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
-              />
+              >
+                <option value="select_option">Select Option</option>
+                {doctorsList.map((doctor) => (
+                  <option key={doctor} value={doctor}>
+                    {doctor}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex flex-col">
               <label
