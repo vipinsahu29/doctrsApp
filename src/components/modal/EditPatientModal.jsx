@@ -45,7 +45,6 @@ export default function EditPatientModal({
   const [PaymentMode, setPaymentMode] = useState(formData?.payment_mode);
   const [fee, setFee] = useState(formData?.fees);
   const today = new Date().toISOString().split("T")[0];
-  console.log('Edit Appointmet ->',isNewAppointment,'formData->',formData)
   const handleFnameChange = (e) => {
     setFormData({ ...formData, fname: e.target.value });
   };
@@ -123,7 +122,7 @@ export default function EditPatientModal({
           appointment_time: formData.appointment_time,
           payment_mode: PaymentMode,
           fees: fee,
-          dr_name: formData.drname,
+          dr_name: selectDoctor,
           height: formData.height,
           weight: formData.weight,
         },

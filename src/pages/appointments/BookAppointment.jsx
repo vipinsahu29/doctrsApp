@@ -7,7 +7,7 @@ import {
   fetchFilteredPatientData,
 } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
-import { generateTimeSlots } from "../../utility/util";
+import { generateTimeSlots, generateTimeSlotsV2 } from "../../utility/util";
 import { fetchDocters } from "../../SupaBase/DoctorsApi";
 // Validation schema for the form
 const validationSchema = Yup.object({
@@ -67,8 +67,18 @@ const BookAppointment = () => {
   const [patientData, setPatientData] = React.useState([]);
   const [PaymentMode, setPaymentMode] = React.useState("pending");
   const [selectDoctor, setSelectDoctor] = React.useState("");
-  const [doctorsList, setDoctorsList] = React.useState([])
+  const [doctorsList, setDoctorsList] = React.useState([]);
   const [fee, setFee] = React.useState(0);
+  const [time, setTime] = React.useState([]);
+  // React.useState({startTime1: "00:00", endTime1: "00:00", startTime2: "00:00", endTime2: "00:00", startTime3: "00:00", endTime3: "00:00"})
+  const [startTime, setStartTime] = React.useState(
+    doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]?.StartTime ||
+      480
+  );
+  const [endTime, setEndTime] = React.useState(
+    doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]?.EndTime ||
+      1320
+  );
   const [patientId, setPatientId] = React.useState(null);
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
   const [error, setError] = React.useState(null);
@@ -108,8 +118,6 @@ const BookAppointment = () => {
         setSelectDoctor("");
         return { success: true };
       } else {
-
-
         setError(error?.message || "Error creating appointment");
         return {
           success: false,
@@ -157,14 +165,35 @@ const BookAppointment = () => {
     };
     getFilteredData(searchValue);
   }, [searchValue, clinic_id]);
-  useEffect(()=>{
-    const getDoctors = async()=>{
-      const {data} = await fetchDocters(clinic_id)
-      setDoctorsList(data.map((doc)=> doc.name))
-      Store.getState().setDoctorsNameList(data.map((doc)=> doc.name))
-    }
+  useEffect(() => {
+    const getDoctors = async () => {
+      const { data } = await fetchDocters(clinic_id);
+      setDoctorsList(data); //(data.map((doc)=> doc.name))
+      Store.getState().setDoctorsNameList(data.map((doc) => doc.name));
+    };
     getDoctors();
-  },[clinic_id])
+  }, [clinic_id]);
+
+  useEffect(() => {
+    if (selectDoctor) {
+      setStartTime(
+        doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]
+          ?.StartTime || 480
+      );
+      setEndTime(
+        doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]
+          ?.EndTime || 1320
+      );
+      const timeSlots =
+        doctorsList
+          ?.find((doc) => doc.name === selectDoctor)
+          ?.shift?.map((item) => ({
+            startTime: item.StartTime,
+            endTime: item.EndTime,
+          })) || [];
+      setTime(timeSlots);
+    }
+  }, [selectDoctor, doctorsList]);
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       // Move selection down
@@ -432,6 +461,31 @@ const BookAppointment = () => {
                 <p className="text-red-500 text-xs">{formik.errors.address}</p>
               ) : null}
             </div>
+
+            <div>
+              <label
+                htmlFor="doctor"
+                className="block text-sm font-medium text-white"
+              >
+                Doctor
+              </label>
+              <select
+                name="doctor"
+                id="doctor"
+                value={selectDoctor}
+                onChange={(e) => {
+                  setSelectDoctor(e.target.value);
+                }}
+                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="select_option">Select Option</option>
+                {doctorsList.map((doctor) => (
+                  <option key={doctor.id} value={doctor.name}>
+                    {doctor.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <label
                 htmlFor="appointmentDate"
@@ -468,15 +522,17 @@ const BookAppointment = () => {
                 value={formik.values.appointmentTime}
                 onChange={formik.handleChange}
                 className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
+                disabled={!selectDoctor}
               >
                 <option value="">Select Time</option>
-                {generateTimeSlots().map((time) => (
-                  <option key={time} value={time}>
+                {generateTimeSlotsV2(time).map((time) => (
+                  <option key={time} value={time} className={`${time.includes('Shift') ? 'font-bold bg-yellow-200' : ''}`}>
                     {time}
                   </option>
                 ))}
               </select>
-              
+                {!selectDoctor && (<option className="text-red-500">Select Doctor to see time slots</option>
+                )}
               {formik.touched.appointmentTime &&
               formik.errors.appointmentTime ? (
                 <p className="text-red-500 text-xs">
@@ -484,34 +540,10 @@ const BookAppointment = () => {
                 </p>
               ) : null}
             </div>
-            <div>
-              <label
-                htmlFor="doctor"
-                className="block text-sm font-medium text-white"
-              >
-                Doctor
-              </label>
-              <select
-                name="doctor"
-                id="doctor"
-                value={selectDoctor}
-                onChange={(e) => {
-                  setSelectDoctor(e.target.value);
-                }}
-                className="mt-1 block w-[200px] px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="select_option">Select Option</option>
-                {doctorsList.map((doctor) => (
-                  <option key={doctor} value={doctor}>
-                    {doctor}
-                  </option>
-                ))}
-              </select>
-            </div>
             <div className="flex flex-col">
               <label
                 className="mb-1 pl-1 text-red-600 font-bold bg-yellow-300 w-[150px]"
-                htmlFor="doctor"
+                htmlFor="payment_mode"
               >
                 Payment Method:
               </label>

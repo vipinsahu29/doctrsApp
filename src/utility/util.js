@@ -15,6 +15,25 @@ export const generateTimeSlots = () => {
 
   return timeSlots;
 };
+
+export const generateTimeSlotsV2 = (time) => {
+  const timeSlots = ['Shift 1'];
+  time?.map((slot, i) => {
+    const [start] = String(slot.startTime).split(":").map(Number);
+    const [end] = String(slot.endTime).split(":").map(Number);
+
+    for (let minutes = start * 60; minutes <= end * 60; minutes += 10) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+
+      timeSlots.push(
+        `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`
+      );
+    }
+    if (i + 1 < time.length) timeSlots.push(`Shift ${i + 2}`);
+  });
+  return timeSlots;
+};
 export const validateEmail = (email) => {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   return emailRegex.test(email);
