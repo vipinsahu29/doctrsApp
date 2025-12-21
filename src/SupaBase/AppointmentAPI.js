@@ -60,6 +60,27 @@ export const createAppt = async (appointmentData) => {
   return { data };
 };
 
+export async function fetchAppointmentDataByDate(
+  clinicId,
+  pageNumber = 1,
+  pageSize = 20,
+  appointmentDate = new Date().toISOString().split("T")[0]
+) {
+  const { data, error } = await supabase.rpc("get_appointment_data_byDate", {
+    c_id: clinicId,
+    page: pageNumber,
+    page_size: pageSize,
+    appointmentdate: appointmentDate,
+  });
+
+  if (error) {
+    console.error("Error fetching joined patient data:", error);
+    return error;
+  }
+
+  return data;
+}
+
 export async function fetchJoinedAppointmentData(
   clinicId,
   pageNumber = 1,

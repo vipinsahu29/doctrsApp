@@ -7,7 +7,7 @@ import {
   fetchFilteredPatientData,
 } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
-import { generateTimeSlots, generateTimeSlotsV2 } from "../../utility/util";
+import { generateTimeSlotsV2 } from "../../utility/util";
 import { fetchDocters } from "../../SupaBase/DoctorsApi";
 // Validation schema for the form
 const validationSchema = Yup.object({
@@ -71,14 +71,6 @@ const BookAppointment = () => {
   const [fee, setFee] = React.useState(0);
   const [time, setTime] = React.useState([]);
   // React.useState({startTime1: "00:00", endTime1: "00:00", startTime2: "00:00", endTime2: "00:00", startTime3: "00:00", endTime3: "00:00"})
-  const [startTime, setStartTime] = React.useState(
-    doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]?.StartTime ||
-      480
-  );
-  const [endTime, setEndTime] = React.useState(
-    doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]?.EndTime ||
-      1320
-  );
   const [patientId, setPatientId] = React.useState(null);
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
   const [error, setError] = React.useState(null);
@@ -176,14 +168,6 @@ const BookAppointment = () => {
 
   useEffect(() => {
     if (selectDoctor) {
-      setStartTime(
-        doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]
-          ?.StartTime || 480
-      );
-      setEndTime(
-        doctorsList.find((doc) => doc.name === selectDoctor)?.shift[0]
-          ?.EndTime || 1320
-      );
       const timeSlots =
         doctorsList
           ?.find((doc) => doc.name === selectDoctor)
@@ -526,13 +510,25 @@ const BookAppointment = () => {
               >
                 <option value="">Select Time</option>
                 {generateTimeSlotsV2(time).map((time) => (
-                  <option key={time} value={time} className={`${time.includes('Shift') ? 'font-bold bg-yellow-200' : ''}`}>
+                  <option
+                    key={time}
+                    value={time}
+                    className={`${
+                      time.includes("Shift")
+                        ? "font-bold bg-yellow-200 cursor-not-allowed"
+                        : ""
+                    }`}
+                    disabled={time.includes("Shift") || time === "00:00"}
+                  >
                     {time}
                   </option>
                 ))}
               </select>
-                {!selectDoctor && (<option className="text-red-500">Select Doctor to see time slots</option>
-                )}
+              {!selectDoctor && (
+                <option className="text-red-500">
+                  Select Doctor to see time slots
+                </option>
+              )}
               {formik.touched.appointmentTime &&
               formik.errors.appointmentTime ? (
                 <p className="text-red-500 text-xs">

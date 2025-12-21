@@ -7,7 +7,10 @@ import EditPatientModal from "../../components/modal/EditPatientModal";
 import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 import { getPatientDetails } from "../../SupaBase/PatientAPI";
-import { fetchJoinedAppointmentData } from "../../SupaBase/AppointmentAPI";
+import {
+  fetchJoinedAppointmentData,
+  fetchAppointmentDataByDate,
+} from "../../SupaBase/AppointmentAPI";
 import PropTypes from "prop-types";
 const appointmentColumns = [
   "No.",
@@ -42,35 +45,55 @@ const AppointmentsList = ({ source = "" }) => {
   const [patientData, setPatientData] = useState([]);
   const isPatient = source === "Patients";
   const filteredColums = isPatient ? patientsColumns : appointmentColumns;
-  const [isPatientUpdated, setIsPatientUpdated] = useState(false)
+  const [isPatientUpdated, setIsPatientUpdated] = useState(false);
   const [serialNumber, setSerialNumber] = useState(1);
-  const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
-    try {
-      const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
-      if (!data || data.length === 0) {
-        setErrorMessage(
-          "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
-        );
-      }
-      if (data || data.length > 0){
-        setErrorMessage("")
-      }
-      setPatientData(data || []);
-    } catch (error) {
-      setErrorMessage("An error occurred while fetching appointments.");
-      console.error(error);
-    }
-  }, []);
+  // const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
+  //   try {
+  //     const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
+  //     if (!data || data.length === 0) {
+  //       setErrorMessage(
+  //         "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
+  //       );
+  //     }
+  //     if (data || data.length > 0){
+  //       setErrorMessage("")
+  //     }
+  //     setPatientData(data || []);
+  //   } catch (error) {
+  //     setErrorMessage("An error occurred while fetching appointments.");
+  //     console.error(error);
+  //   }
+  // }, []);
 
+  const getAppointmentListByDate = React.useCallback(
+    async (clinicId, pageNumber) => {
+      try {
+        const data = await fetchAppointmentDataByDate(clinicId, pageNumber);
+        if (!data || data.length === 0) {
+          setErrorMessage(
+            "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
+          );
+        }
+        if (data || data.length > 0) {
+          setErrorMessage("");
+        }
+        setPatientData(data || []);
+      } catch (error) {
+        setErrorMessage("An error occurred while fetching appointments.");
+        console.error(error);
+      }
+    },
+    []
+  );
   const getPatientsDetails = React.useCallback(async (clinicId) => {
-    await (getPatientDetails(clinicId)).then((data) => {
+    await getPatientDetails(clinicId).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."
         );
       }
-      if (data || data.length > 0){
-        setErrorMessage("")
+      if (data || data.length > 0) {
+        setErrorMessage("");
       }
       setPatientData(data || []);
     });
@@ -79,18 +102,30 @@ const AppointmentsList = ({ source = "" }) => {
   useEffect(() => {
     if (!isPatient && currentPage) {
       setSerialNumber(currentPage);
-      getAppointmentList(clinic_id, currentPage);
+      // getAppointmentList(clinic_id, currentPage);
+      getAppointmentListByDate(clinic_id, currentPage);
     } else if (isPatient) {
       getPatientsDetails(clinic_id);
     }
-  }, [source, clinic_id, getAppointmentList, getPatientsDetails, currentPage, isPatient,isPatientUpdated]);
+  }, [
+    source,
+    clinic_id,
+    getPatientsDetails,
+    currentPage,
+    isPatient,
+    isPatientUpdated,
+    getAppointmentListByDate,
+  ]);
 
-  const filteredUsers = searchValue ?  patientData.filter((item) => {
+  const filteredUsers = searchValue
+    ? patientData.filter((item) => {
         const fullName = `${item.fname} ${item.lname}`.toLowerCase();
         return (
           fullName.includes(searchValue.toLowerCase()) ||
-            ((item.mobile).toString()).includes(searchValue)
-        ) } ) : patientData;
+          item.mobile.toString().includes(searchValue)
+        );
+      })
+    : patientData;
   const totalPages =
     filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
       ? filteredUsers[0].total_pages
@@ -115,9 +150,14 @@ const AppointmentsList = ({ source = "" }) => {
   const handleEditDetails = (patientId, appointmentId) => {
     setNewAppointment(false);
     setIsEditOpen(true);
-    setIsPatientUpdated(false)
-    setViewData(filteredUsers.filter((value) =>value.patient_id === patientId &&
-          value.appointment_id === appointmentId));
+    setIsPatientUpdated(false);
+    setViewData(
+      filteredUsers.filter(
+        (value) =>
+          value.patient_id === patientId &&
+          value.appointment_id === appointmentId
+      )
+    );
   };
   const handleSearch = (e) => {
     setTimeout(() => {
@@ -126,8 +166,8 @@ const AppointmentsList = ({ source = "" }) => {
   };
   const handleCheckinClick = (patientId, appointmentId) => {
     const checkinData = filteredUsers.filter(
-      (value) =>value.patient_id === patientId &&
-          value.appointment_id === appointmentId
+      (value) =>
+        value.patient_id === patientId && value.appointment_id === appointmentId
     );
     navigate("/checkin", { state: checkinData });
   };
@@ -183,16 +223,16 @@ const AppointmentsList = ({ source = "" }) => {
                 </thead>
 
                 <tbody>
-                  {/*isLoadingProducts && (
-              <tr>
-                <td>Loading...</td>
-              </tr>
-            )*/}
-                  {/*productDataError ? (
-              <tr>
-                <td>No response from server..</td>
-              </tr>
-            ) : (*/}
+                  {filteredUsers.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={filteredColums.length}
+                        className="text-center py-4 bg-slate-50"
+                      >
+                        No data found for date
+                      </td>
+                    </tr>
+                  )}
                   {filteredUsers.map((d, i) => (
                     <tr
                       key={isPatient ? d.patient_id : d.appointment_id}
@@ -273,7 +313,9 @@ const AppointmentsList = ({ source = "" }) => {
                           <button
                             title="Edit"
                             tabIndex={-1}
-                            onClick={() => handleEditDetails(d.patient_id, d.appointment_id)}
+                            onClick={() =>
+                              handleEditDetails(d.patient_id, d.appointment_id)
+                            }
                             className="p-[6px] bg-yellow-300 rounded hover:shadow-lg hover:shadow-orange-500/50 cursor-pointer"
                           >
                             {" "}
@@ -306,7 +348,12 @@ const AppointmentsList = ({ source = "" }) => {
                             <button
                               tabIndex={-1}
                               className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-900"
-                              onClick={() => handleCheckinClick(d.patient_id, d.appointment_id)}
+                              onClick={() =>
+                                handleCheckinClick(
+                                  d.patient_id,
+                                  d.appointment_id
+                                )
+                              }
                             >
                               {" "}
                               Check-in
