@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
+import { useLocation } from "react-router-dom";
+import { fetchAppointmentDataByDate } from "../../SupaBase/AppointmentAPI";
 import {
   createAppt,
   fetchFilteredPatientData,
@@ -64,7 +66,6 @@ const BookAppointment = () => {
   // Formik hook to handle form state
   const clinic_id = Store.getState().clinicId;
   const [searchValue, setSearchValue] = React.useState("");
-  const [patientData, setPatientData] = React.useState([]);
   const [PaymentMode, setPaymentMode] = React.useState("pending");
   const [selectDoctor, setSelectDoctor] = React.useState("");
   const [doctorsList, setDoctorsList] = React.useState([]);
@@ -76,6 +77,12 @@ const BookAppointment = () => {
   const [error, setError] = React.useState(null);
   const inputRef = useRef(null);
   const today = new Date().toISOString().split("T")[0];
+  const location = useLocation();
+  const apoointmentData = useMemo(() => location.state || {}, [location.state]);
+  const [patientData, setPatientData] = React.useState(
+    [apoointmentData].length > 0 ? [apoointmentData] : []
+  );
+  const [appointmentListData, setAppointmentListData] = React.useState([]);
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -91,6 +98,44 @@ const BookAppointment = () => {
       }
     },
   });
+
+  const getAppointmentListByDate = React.useCallback(
+    async (clinicId) => {
+      try {
+        const data = await fetchAppointmentDataByDate(
+          clinicId,
+          1,
+          50,
+          formik.values.appointmentDate
+        );
+        if (!data || data.length === 0) {
+          setError(
+            "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
+          );
+        }
+        if (data || data.length > 0) {
+          setError("");
+        }
+        setAppointmentListData(data || []);
+      } catch (error) {
+        setError("An error occurred while fetching appointments.");
+        console.error(error);
+      }
+    },
+    [formik.values.appointmentDate]
+  );
+
+  const bookedAppointmentTime = useMemo(() => {
+    if (!selectDoctor) return null;
+    return appointmentListData
+      ?.filter((appt) => appt.drname === selectDoctor)
+      .map((appt) => appt?.appointment_time.split(":").slice(0, 2).join(":"));
+  }, [appointmentListData, selectDoctor]);
+  useEffect(() => {
+    if (formik.values.appointmentDate) {
+      getAppointmentListByDate(clinic_id);
+    }
+  }, [formik.values.appointmentDate, clinic_id, getAppointmentListByDate]);
   const bookAppointmentPostData = async () => {
     try {
       const { data } = await createAppt({
@@ -132,12 +177,12 @@ const BookAppointment = () => {
 
   useEffect(() => {
     const getFilteredData = async (searchValue) => {
-      if (!searchValue || searchValue.length <= 3) {
+      if (!searchValue || searchValue.length <= 2) {
         setPatientData([]);
         setHighlightedIndex(-1);
         return;
       }
-      if (searchValue.length > 3) {
+      if (searchValue.length > 2) {
         const isMobile = searchValue.match(/^\d{10}$/);
         const { data, error } = await fetchFilteredPatientData(
           clinic_id,
@@ -178,6 +223,12 @@ const BookAppointment = () => {
       setTime(timeSlots);
     }
   }, [selectDoctor, doctorsList]);
+
+  useEffect(() => {
+    if (apoointmentData && Object.keys(apoointmentData).length > 0) {
+      setPatientData([apoointmentData]);
+    }
+  }, [apoointmentData]);
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       // Move selection down
@@ -517,8 +568,17 @@ const BookAppointment = () => {
                       time.includes("Shift")
                         ? "font-bold bg-yellow-200 cursor-not-allowed"
                         : ""
+                    } ${
+                      bookedAppointmentTime?.includes(time)
+                        ? "bg-red-400 text-white cursor-not-allowed"
+                        : !time.includes("Shift") &&
+                          "bg-green-200 cursor-pointer"
                     }`}
-                    disabled={time.includes("Shift") || time === "00:00"}
+                    disabled={
+                      time.includes("Shift") ||
+                      time === "00:00" ||
+                      bookedAppointmentTime?.includes(time)
+                    }
                   >
                     {time}
                   </option>

@@ -7,6 +7,7 @@ import {
 } from "@headlessui/react";
 import PropTypes from "prop-types";
 import { calculateExperience } from "../../utility/util";
+import { useNavigate } from "react-router-dom";
 
 const AppointmentViewDetailsModal = ({
   isOpen,
@@ -17,9 +18,10 @@ const AppointmentViewDetailsModal = ({
 }) => {
   const handleBookAppointment = () => {
     onClose(false);
-    onNewAppointment(true);
+    onNewAppointment(false);
+    navigate("/book_appointment", { state: data });
   };
-  console.log("Appointment Data:", data);
+  const navigate = useNavigate();
   if (!isOpen) return null;
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">

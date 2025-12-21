@@ -9,10 +9,10 @@ import PrintPrescription from "./PrintPrescription";
 import { useReactToPrint } from "react-to-print";
 import CheckInLabTest from "./CheckInLabTest";
 import { createCheckin } from "../../SupaBase/CheckinAPI";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 const CheckIn = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const clinic_id = Store.getState().clinicId;
   const location = useLocation();
   const checkinData = location.state || {};

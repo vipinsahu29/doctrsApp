@@ -10,7 +10,7 @@ export const generateTimeSlots = () => {
       minutes
     ).padStart(2, "0")}`;
     timeSlots.push(formattedTime);
-    startTime += 15; // Increment by 15 minutes
+    startTime += 10; // Increment by 15 minutes
   }
 
   return timeSlots;

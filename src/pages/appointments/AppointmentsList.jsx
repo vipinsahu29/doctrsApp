@@ -7,10 +7,7 @@ import EditPatientModal from "../../components/modal/EditPatientModal";
 import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 import { getPatientDetails } from "../../SupaBase/PatientAPI";
-import {
-  fetchJoinedAppointmentData,
-  fetchAppointmentDataByDate,
-} from "../../SupaBase/AppointmentAPI";
+import { fetchAppointmentDataByDate } from "../../SupaBase/AppointmentAPI";
 import PropTypes from "prop-types";
 const appointmentColumns = [
   "No.",
@@ -47,6 +44,7 @@ const AppointmentsList = ({ source = "" }) => {
   const filteredColums = isPatient ? patientsColumns : appointmentColumns;
   const [isPatientUpdated, setIsPatientUpdated] = useState(false);
   const [serialNumber, setSerialNumber] = useState(1);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   // const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
   //   try {
   //     const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
@@ -68,7 +66,12 @@ const AppointmentsList = ({ source = "" }) => {
   const getAppointmentListByDate = React.useCallback(
     async (clinicId, pageNumber) => {
       try {
-        const data = await fetchAppointmentDataByDate(clinicId, pageNumber);
+        const data = await fetchAppointmentDataByDate(
+          clinicId,
+          pageNumber,
+          20,
+          date
+        );
         if (!data || data.length === 0) {
           setErrorMessage(
             "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
@@ -83,7 +86,7 @@ const AppointmentsList = ({ source = "" }) => {
         console.error(error);
       }
     },
-    []
+    [date]
   );
   const getPatientsDetails = React.useCallback(async (clinicId) => {
     await getPatientDetails(clinicId).then((data) => {
@@ -188,6 +191,15 @@ const AppointmentsList = ({ source = "" }) => {
               placeholder="search"
               onChange={(e) => handleSearch(e)}
             />
+            <input
+              type="date"
+              id="appointmentDate"
+              name="appointmentDate" // Prevent past dates
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+            />
+            {!date && <p className="text-red-500">Date is required</p>}
             <div className="w-full flex md:justify-end sm: justify-center mt-4 bottom-4 right-4">
               {/*isFetching && (
           <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>

@@ -29,7 +29,7 @@ const Expenses = () => {
         setInserted(false);
       }, 1500);
     }
-  }, [inserted]);
+  }, [inserted, refetch]);
   const [tableData, setTableData] = useState({
     Date: "",
     Description: "",
