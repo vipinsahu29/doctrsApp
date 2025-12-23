@@ -34,22 +34,20 @@ export const createPatient = async (patientData, patientDetailsData) => {
     // Step 3: Insert into the `patient_details` table
     const patientId = patient[0].patient_id; // Get the inserted patient ID
     const patientDetails = { ...patientDetailsData, patient_id: patientId };
-    console.log("Patient Details:", patientDetails);
     const { data: patientDetailsDataResult, error: patientDetailsError } =
       await supabase.from("patients_details").insert(patientDetails).select();
-    console.log("Patient Details Result:", patientDetailsDataResult);
     if (patientDetailsError || !patientDetailsDataResult) {
       console.error(
         "Error inserting patient details:",
         patientDetailsError.message
       );
-
       // Rollback: Delete the inserted record from the `patient` table
-      const { error: rollbackError } = await supabase
-        .from("patient")
-        .delete()
-        .eq("patient_id", patientId);
-
+      const { error: rollbackError, data: rollbackData } = await supabase
+      .from("patient")
+      .delete()
+      .eq("patient_id", patientId);
+      
+      console.log("Rolling back patient insertion...", rollbackData);
       if (rollbackError) {
         console.error("Error during rollback:", rollbackError.message);
       }
@@ -107,7 +105,6 @@ export async function getPatientDetails(clinicId) {
     const { data, error } = await supabase.rpc("get_patientdetails_data", {
         c_id: clinicId,
     });
-    console.log("from rpc func", clinicId,"data:", data);
 
   if (error) {
     console.error("Error fetching joined patient data:", error);
