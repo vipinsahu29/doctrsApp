@@ -242,6 +242,10 @@ const BookAppointment = () => {
       );
     } else if (e.key === "Enter") {
       e.preventDefault(); // Prevent form submission
+      if (highlightedIndex >= 0 && patientData.length > 0) {
+        handleSelecedSearch(patientData[highlightedIndex]);
+      }
+      // setSearchValue(e.target.value);
       // if (highlightedIndex >= 0 && patientData.length > 0) {
       //   addSymptom(patientData[highlightedIndex]);
       // }

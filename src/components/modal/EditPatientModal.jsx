@@ -86,7 +86,6 @@ export default function EditPatientModal({
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
   const handleSaveButton = async (e) => {
     e.preventDefault();
     if (
@@ -125,6 +124,8 @@ export default function EditPatientModal({
           dr_name: selectDoctor,
           height: formData.height,
           weight: formData.weight,
+          fname: formData.fname,
+          lname: formData.lname,
         },
       });
       if (error) {

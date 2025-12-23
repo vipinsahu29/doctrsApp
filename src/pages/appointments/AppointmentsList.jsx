@@ -44,7 +44,10 @@ const AppointmentsList = ({ source = "" }) => {
   const filteredColums = isPatient ? patientsColumns : appointmentColumns;
   const [isPatientUpdated, setIsPatientUpdated] = useState(false);
   const [serialNumber, setSerialNumber] = useState(1);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [hidePaidAppointments, setHidePaidAppointments] = useState(false);
+  const [date, setDate] = useState(
+    isPatient ? "" : new Date().toISOString().split("T")[0]
+  );
   // const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
   //   try {
   //     const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
@@ -80,7 +83,18 @@ const AppointmentsList = ({ source = "" }) => {
         if (data || data.length > 0) {
           setErrorMessage("");
         }
-        setPatientData(data || []);
+        setPatientData(
+          data?.sort((a, b) => {
+            const toSeconds = (time) => {
+              const [h, m, s] = time.split(":").map(Number);
+              return h * 3600 + m * 60 + s;
+            };
+
+            return (
+              toSeconds(a.appointment_time) - toSeconds(b.appointment_time)
+            );
+          }) || []
+        );
       } catch (error) {
         setErrorMessage("An error occurred while fetching appointments.");
         console.error(error);
@@ -101,7 +115,6 @@ const AppointmentsList = ({ source = "" }) => {
       setPatientData(data || []);
     });
   }, []);
-
   useEffect(() => {
     if (!isPatient && currentPage) {
       setSerialNumber(currentPage);
@@ -128,7 +141,10 @@ const AppointmentsList = ({ source = "" }) => {
           item.mobile.toString().includes(searchValue)
         );
       })
+    : hidePaidAppointments && !isPatient
+    ? patientData?.filter((item) => item.payment_mode === "Pending")
     : patientData;
+
   const totalPages =
     filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
       ? filteredUsers[0].total_pages
@@ -191,15 +207,30 @@ const AppointmentsList = ({ source = "" }) => {
               placeholder="search"
               onChange={(e) => handleSearch(e)}
             />
-            <input
-              type="date"
-              id="appointmentDate"
-              name="appointmentDate" // Prevent past dates
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
-            />
-            {!date && <p className="text-red-500">Date is required</p>}
+            {!isPatient && (
+              <input
+                type="date"
+                id="appointmentDate"
+                name="appointmentDate" // Prevent past dates
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
+              />
+            )}
+            {!date && !isPatient && (
+              <p className="text-red-500">Date is required</p>
+            )}
+            {!isPatient && (
+              <label className="flex items-center text-white">
+                <input
+                  type="checkbox"
+                  checked={hidePaidAppointments}
+                  onChange={(e) => setHidePaidAppointments(e.target.checked)}
+                  className="mr-1 w-8 h-8"
+                />
+                Hide Paid Appointments
+              </label>
+            )}
             <div className="w-full flex md:justify-end sm: justify-center mt-4 bottom-4 right-4">
               {/*isFetching && (
           <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>

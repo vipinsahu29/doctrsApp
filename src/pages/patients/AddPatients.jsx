@@ -84,7 +84,7 @@ const AddPatients = () => {
         clinic_id: clinic_id,
       },
       {
-        last_visit_date: formData.LastVisit,
+        last_visit_date: formData.LastVisit || null,
         height: formData.Height,
         weight: formData.Weight,
         dob: formData.DOB,

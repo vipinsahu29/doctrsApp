@@ -47,7 +47,7 @@ export const addPatientsInputFields = [
     name: "LastVisit",
     type: "date",
     max: today,
-    required: true,
+    required: false,
   },
   { label: "City", name: "City", type: "text", required: true },
   { label: "State", name: "State", type: "text", required: true },
