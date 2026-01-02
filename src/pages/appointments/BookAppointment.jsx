@@ -3,8 +3,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { useLocation } from "react-router-dom";
-import { fetchAppointmentDataByDate } from "../../SupaBase/AppointmentAPI";
 import {
+  fetchAppointmentDataByDate,
   createAppt,
   fetchFilteredPatientData,
 } from "../../SupaBase/AppointmentAPI";

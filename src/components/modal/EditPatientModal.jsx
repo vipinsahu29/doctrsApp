@@ -14,6 +14,8 @@ import {
 } from "./../../utility/util";
 import { createAppt, updateAppointment } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
+import { updatePatient } from "./../../SupaBase/PatientAPI";
+import { add } from "date-fns";
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
   isNewAppointment: PropTypes.bool,
@@ -33,36 +35,76 @@ export default function EditPatientModal({
 }) {
   const clinic_id = Store.getState().clinicId;
   const doctorsNameList = Store.getState().doctorsNameList;
-  const missingFields = {appointment_time: "00:00", appointment_date: "", payment_mode: "select payment", fee: 0, dr_name: ""};
-  const data = isNewAppointment && isPatient && {...patient, ...missingFields} 
-  console.log('isNewAppointment',isNewAppointment, 'Data->', data)
+  const missingFields = {
+    appointment_time: "00:00",
+    appointment_date: "",
+    payment_mode: "select payment",
+    fee: 0,
+    dr_name: "",
+  };
+  const data = isNewAppointment &&
+    isPatient && { ...patient, ...missingFields };
 
   const [formData, setFormData] = useState({ ...patient });
-  const [isMobileValid, setIsMobileValid] = useState(true);
-  
+
   const [selectDoctor, setSelectDoctor] = useState(formData?.drname);
-  const [isValidEmail, setIsValidEmail] = useState(true);
   const [PaymentMode, setPaymentMode] = useState(formData?.payment_mode);
   const [fee, setFee] = useState(formData?.fees);
+  const [fieldErrors, setFieldErrors] = useState({});
   const today = new Date().toISOString().split("T")[0];
+  const disable =
+    fieldErrors.fname ||
+    fieldErrors.lname ||
+    fieldErrors.mobile ||
+    fieldErrors.email ||
+    fieldErrors.weight ||
+    fieldErrors.height;
   const handleFnameChange = (e) => {
-    setFormData({ ...formData, fname: e.target.value });
+    const value = e.target.value;
+    if (!value.trim()) {
+      setFieldErrors({ ...fieldErrors, fname: "First name is required" });
+      setFormData({ ...formData, fname: value });
+    } else if (!value.match(/^[a-zA-Z\s]*$/)) {
+      setFieldErrors({ ...fieldErrors, fname: "First name is not valid" });
+    } else {
+      setFormData({ ...formData, fname: value });
+      setFieldErrors({ ...fieldErrors, fname: null });
+    }
   };
   const handleLnameChange = (e) => {
-    setFormData({ ...formData, lname: e.target.value });
+    const value = e.target.value;
+    if (!value.trim()) {
+      setFieldErrors({ ...fieldErrors, lname: "Last name is required" });
+      setFormData({ ...formData, lname: e.target.value });
+    } else if (!value.match(/^[a-zA-Z\s]*$/)) {
+      setFieldErrors({ ...fieldErrors, lname: "Last name is not valid" });
+    } else {
+      setFieldErrors({ ...fieldErrors, lname: null });
+      setFormData({ ...formData, lname: e.target.value });
+    }
   };
   const handleMobileChange = (e) => {
-    setIsMobileValid(validateMobile(e.target.value));
-    setFormData({ ...formData, mobile: e.target.value });
+    const value = e.target.value;
+    setFormData({ ...formData, mobile: value });
+    if (!value.trim()) {
+      setFieldErrors({ ...fieldErrors, mobile: "Mobile is required" });
+    } else if (!validateMobile(value)) {
+      setFieldErrors({
+        ...fieldErrors,
+        mobile: "Please enter valid mobile no.",
+      });
+    } else {
+      setFieldErrors({ ...fieldErrors, mobile: null });
+    }
   };
   const handleGenderChange = (e) => {
-    setFormData({ ...formData, gender: e.target.value });
+    e.target.value && setFormData({ ...formData, gender: e.target.value });
   };
   const handleOccupationChange = (e) => {
     setFormData({ ...formData, occupation: e.target.value });
   };
   const handleBloodGroupChange = (e) => {
-    setFormData({ ...formData, blood_group: e.target.value });
+    e.target.value && setFormData({ ...formData, blood_group: e.target.value });
   };
   const handleDateChange = (e) => {
     setFormData({ ...formData, appointment_date: e.target.value });
@@ -74,14 +116,39 @@ export default function EditPatientModal({
     setFormData({ ...formData, dob: e.target.value });
   };
   const handleEmailChange = (e) => {
-    setIsValidEmail(validateEmail(e.target.value));
-    setFormData({ ...formData, email: e.target.value });
+    const value = e.target.value;
+    if (!value.trim()) {
+      setFieldErrors({ ...fieldErrors, email: "Email is required" });
+    } else if (!validateEmail(value)) {
+      setFieldErrors({ ...fieldErrors, email: "Please enter valid Email." });
+    } else {
+      setFieldErrors({ ...fieldErrors, email: null });
+      setFormData({ ...formData, email: value });
+    }
   };
   const handleWeightChange = (e) => {
-    setFormData({ ...formData, weight: e.target.value });
+    const value = e.target.value;
+    if (!value.trim()) {
+      setFieldErrors({ ...fieldErrors, weight: "Weight is required" });
+      setFormData({ ...formData, weight: value });
+    } else if (isNaN(value) || value <= 0 || value > 250) {
+      setFieldErrors({ ...fieldErrors, weight: "Please enter valid Weight." });
+    } else {
+      setFieldErrors({ ...fieldErrors, weight: null });
+      setFormData({ ...formData, weight: value });
+    }
   };
   const handleHeightChange = (e) => {
-    setFormData({ ...formData, height: e.target.value });
+    const value = e.target.value;
+    if (!value.trim()) {
+      setFieldErrors({ ...fieldErrors, height: "Height is required" });
+      setFormData({ ...formData, height: value });
+    } else if (isNaN(value) || value <= 0 || value > 250) {
+      setFieldErrors({ ...fieldErrors, height: "Please enter valid Height." });
+    } else {
+      setFieldErrors({ ...fieldErrors, height: null });
+      setFormData({ ...formData, height: value });
+    }
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -111,7 +178,7 @@ export default function EditPatientModal({
       } else {
         alert("Failed to book appointment. Please try again.");
       }
-    } else if (!isNewAppointment) {
+    } else if (!isNewAppointment && !isPatient) {
       const { data, error } = await updateAppointment({
         appointmentId: formData.appointment_id,
         clinicId: clinic_id,
@@ -124,8 +191,6 @@ export default function EditPatientModal({
           dr_name: selectDoctor,
           height: formData.height,
           weight: formData.weight,
-          fname: formData.fname,
-          lname: formData.lname,
         },
       });
       if (error) {
@@ -136,14 +201,52 @@ export default function EditPatientModal({
         onClose(false);
       }
       return;
+    } else if (!isNewAppointment && isPatient) {
+      console.log(
+        "Updating patient info",
+        formData,
+        "patient--",
+        patient,
+        "clinic_id",
+        clinic_id
+      );
+      const { data, error } = await updatePatient({
+        patientId: formData.patient_id,
+        clinic_id: clinic_id,
+        patientChanges: {
+          fname: formData?.fname,
+          lname: formData?.lname,
+          mobile: formData?.mobile,
+          email: formData?.email,
+          gender: formData?.gender,
+        },
+        patientDetailsChanges: {
+          height: formData?.height,
+          weight: formData?.weight,
+          dob: formData?.dob,
+          address: formData?.address,
+          occupation: formData?.occupation,
+          blood_group: formData?.blood_group,
+          emergency_contact_number: formData?.emergency_contact_number,
+          adhar: formData?.adhar,
+          pan: formData?.pan,
+        },
+      });
+      if (error) {
+        console.log("Error on update", error);
+      }
+      if (data) {
+        onSave();
+        onClose(false);
+      }
+      return;
     }
     // onClose(false);
   };
-  const pageTitle = isNewAppointment
-    ? "Book Appointment"
-    : isPatient
+  const editPageTitle = isPatient
     ? "Edit Patient Details"
     : "Edit Appointment Details";
+  const pageTitle = isNewAppointment ? "Book Appointment" : editPageTitle;
   if (!isOpen) return null;
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">
@@ -181,6 +284,9 @@ export default function EditPatientModal({
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       disabled={isNewAppointment || !isPatient}
                     />
+                    {fieldErrors?.fname && (
+                      <h3 className="text-red-600">{fieldErrors.fname}</h3>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <label className="mb-1" htmlFor="firstname">
@@ -196,6 +302,9 @@ export default function EditPatientModal({
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       disabled={isNewAppointment || !isPatient}
                     />
+                    {fieldErrors?.lname && (
+                      <h3 className="text-red-600">{fieldErrors.lname}</h3>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <label className="mb-1" htmlFor="mobile">
@@ -212,10 +321,8 @@ export default function EditPatientModal({
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       disabled={isNewAppointment || !isPatient}
                     />
-                    {!isMobileValid && (
-                      <h3 className="text-red-600">
-                        Please enter valid mobile no.
-                      </h3>
+                    {fieldErrors?.mobile && (
+                      <h3 className="text-red-600">{fieldErrors.mobile}</h3>
                     )}
                   </div>
                   <div className="flex flex-col">
@@ -230,7 +337,9 @@ export default function EditPatientModal({
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       disabled={isNewAppointment || !isPatient}
                     >
-                      <option value="">Select Gender</option>
+                      <option value="" disabled>
+                        Select Gender
+                      </option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                       <option value="Other">Other</option>
@@ -240,17 +349,26 @@ export default function EditPatientModal({
                     <label className="mb-1" htmlFor="blood_group">
                       Blood Group:
                     </label>
-                    <input
-                      type="text"
-                      id="blood_group"
+                    <select
                       name="blood_group"
+                      id="blood_group"
                       value={formData.blood_group}
-                      placeholder="Blood group"
                       onChange={handleBloodGroupChange}
-                      maxLength="10"
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       disabled={isNewAppointment || !isPatient}
-                    />
+                    >
+                      <option value="" disabled>
+                        Select Blood Group
+                      </option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </select>
                   </div>
                   {(isNewAppointment || (!isPatient && !isNewAppointment)) && (
                     <>
@@ -282,9 +400,19 @@ export default function EditPatientModal({
                           onChange={handleTimeChange}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                          <option value="">Select Time</option>
+                          <option
+                            value=""
+                            className="cursor-not-allowed"
+                            disabled
+                          >
+                            Select Time
+                          </option>
                           {generateTimeSlots().map((time) => (
-                            <option key={time} value={time}>
+                            <option
+                              key={time}
+                              value={time}
+                              className="cursor-pointer"
+                            >
                               {time}
                             </option>
                           ))}
@@ -310,10 +438,8 @@ export default function EditPatientModal({
                         onChange={handleEmailChange}
                         disabled={isNewAppointment || !isPatient}
                       />
-                      {!isValidEmail && (
-                        <h3 className="text-red-600">
-                          Please enter valid Email.
-                        </h3>
+                      {fieldErrors.email && (
+                        <h3 className="text-red-600">{fieldErrors.email}</h3>
                       )}
                     </div>
                   )}
@@ -348,6 +474,9 @@ export default function EditPatientModal({
                           className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           // disabled={isNewAppointment || !isPatient}
                         />
+                        {fieldErrors?.weight && (
+                          <h3 className="text-red-600">{fieldErrors.weight}</h3>
+                        )}
                       </div>
                     </label>
                   </div>
@@ -367,6 +496,9 @@ export default function EditPatientModal({
                           className="bg-gray-50 border w-1/2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           // disabled={isNewAppointment || !isPatient}
                         />
+                        {fieldErrors?.height && (
+                          <h3 className="text-red-600">{fieldErrors.height}</h3>
+                        )}
                       </div>
                     </label>
                   </div>
@@ -400,7 +532,13 @@ export default function EditPatientModal({
                           }}
                           className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                          <option value="select_option">Select Option</option>
+                          <option
+                            value="select_option"
+                            className="cursor-not-allowed"
+                            disabled
+                          >
+                            Select Option
+                          </option>
                           {doctorsNameList.map((doctor) => (
                             <option key={doctor} value={doctor}>
                               {doctor}
@@ -466,7 +604,8 @@ export default function EditPatientModal({
                 type="button"
                 data-autofocus
                 onClick={handleSaveButton}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-green-700 sm:mt-0 sm:w-auto"
+                className={`${disable && "cursor-not-allowed"} mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-green-700 sm:mt-0 sm:w-auto`}
+                disabled={disable}
               >
                 Save
               </button>

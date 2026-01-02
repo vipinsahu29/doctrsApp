@@ -43,10 +43,10 @@ export const createPatient = async (patientData, patientDetailsData) => {
       );
       // Rollback: Delete the inserted record from the `patient` table
       const { error: rollbackError, data: rollbackData } = await supabase
-      .from("patient")
-      .delete()
-      .eq("patient_id", patientId);
-      
+        .from("patient")
+        .delete()
+        .eq("patient_id", patientId);
+
       console.log("Rolling back patient insertion...", rollbackData);
       if (rollbackError) {
         console.error("Error during rollback:", rollbackError.message);
@@ -102,9 +102,9 @@ export const getPatientData = async (clinic_id) => {
 };
 
 export async function getPatientDetails(clinicId) {
-    const { data, error } = await supabase.rpc("get_patientdetails_data", {
-        c_id: clinicId,
-    });
+  const { data, error } = await supabase.rpc("get_patientdetails_data", {
+    c_id: clinicId,
+  });
 
   if (error) {
     console.error("Error fetching joined patient data:", error);
@@ -113,3 +113,56 @@ export async function getPatientDetails(clinicId) {
 
   return data;
 }
+
+export async function updatePatient({
+  patientId,
+  patientChanges,
+  patientDetailsChanges,
+  clinic_id
+}) {
+  try {
+    if (!patientId || !clinic_id) {
+      return { error: "Patient ID is required for update.",clinic_id };
+    }
+    const { data, error } = await supabase.rpc("update_patient_and_details", {
+      p_patient_id: patientId,
+      p_patient_changes: patientChanges,
+      p_details_changes: patientDetailsChanges,
+      p_clinic_id: clinic_id,
+    });
+
+    if (error) {
+      console.error("Error updating patient data:", error);
+      return { error: error.message };
+    }
+    return { data };
+  } catch (error) {
+    console.error("Error updating patient data:", error);
+    return { error: "An unexpected error occurred while updating patient." };
+  }
+}
+
+export const UpdatePatientsData = async (
+  patientId,
+  patientChanges,
+  patientDetailsChanges,
+  clinic_id
+) => {
+  try {
+    // Update patient tabl
+    const { data: patientData, error: patientError } = await updatePatient(
+      patientId,
+      patientChanges,
+      patientDetailsChanges,
+      clinic_id
+    );
+    if (patientError) {
+      console.error("Error updating patient data:", patientError);
+      return { error: patientError };
+    }
+    return { data: patientData };
+  } catch (error) {
+    console.error("Error updating patient data:", error);
+    return { error: "An unexpected error occurred while updating patient." };
+  }
+};
