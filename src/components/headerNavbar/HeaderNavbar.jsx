@@ -27,10 +27,10 @@ export default function HeaderNavbar() {
       }
     };
     fetchUserData();
-  }, [ UUID]);
+  }, [UUID]);
   return (
     <Disclosure as="nav" className="bg-gray-600 fixed top-0 right-0 left-0">
-      <div className="mx-auto px-2 sm:px-6 lg:px-8">
+      <div className=" px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-13 mt-3 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}
@@ -48,9 +48,10 @@ export default function HeaderNavbar() {
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex shrink-0 items-center">
+            {/*<div className="flex shrink-0 items-center">
               <img alt="Your Company" src={drLogo} className="h-8 w-auto" />
-            </div>
+            </div>*/}
+
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-0">
                 {navigation.map((items) => (
@@ -61,6 +62,11 @@ export default function HeaderNavbar() {
                   />
                 ))}
               </div>
+            </div>
+            <div className="flex shrink-0 items-center md:pl-6">
+              <h3 className="text-xl flex justify-center pb-6 font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300 animate-pulse">
+                {userData?.name}
+              </h3>
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -131,7 +137,6 @@ export default function HeaderNavbar() {
           ))}
         </div>
       </DisclosurePanel>
-      <h3 className="text-xl flex justify-center mb-1 font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300 animate-pulse">{userData?.name}</h3>
     </Disclosure>
   );
 }

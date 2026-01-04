@@ -53,7 +53,7 @@ const PrivateRoute = ({ children }) => {
   }
 
   return (
-    <div className=" bg-gray-400">
+    <div className=" bg-gray-300">
       <HeaderNavbar/>
       {children}
     </div>
@@ -69,7 +69,7 @@ export default function AppRoutes() {
           const Component = loadComponent(component); // Lazy component function
           return (
             <Route
-              className=" bg-gray-400"
+              className=" bg-gray-300"
               key={path}
               path={path}
               element={

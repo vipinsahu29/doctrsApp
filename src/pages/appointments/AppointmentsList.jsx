@@ -14,7 +14,7 @@ const appointmentColumns = [
   "Full Name",
   "Mobile",
   "Gender",
-  "Appointment date",
+  // "Appointment date",
   "Time",
   "Payment Status",
   "Action",
@@ -48,24 +48,7 @@ const AppointmentsList = ({ source = "" }) => {
   const [date, setDate] = useState(
     isPatient ? "" : new Date().toISOString().split("T")[0]
   );
-  // const getAppointmentList = React.useCallback(async (clinicId, pageNumber) => {
-  //   try {
-  //     const data = await fetchJoinedAppointmentData(clinicId, pageNumber);
-  //     if (!data || data.length === 0) {
-  //       setErrorMessage(
-  //         "No data found for the your clinic. Please ensure that there are appointments available. Or try to logout and login again."
-  //       );
-  //     }
-  //     if (data || data.length > 0){
-  //       setErrorMessage("")
-  //     }
-  //     setPatientData(data || []);
-  //   } catch (error) {
-  //     setErrorMessage("An error occurred while fetching appointments.");
-  //     console.error(error);
-  //   }
-  // }, []);
-
+  const today = new Date().toISOString().split("T")[0];
   const getAppointmentListByDate = React.useCallback(
     async (clinicId, pageNumber) => {
       try {
@@ -132,7 +115,10 @@ const AppointmentsList = ({ source = "" }) => {
     isPatientUpdated,
     getAppointmentListByDate,
   ]);
-
+  const hidenAppointmentsData =
+    hidePaidAppointments && !isPatient
+      ? patientData?.filter((item) => item.payment_mode === "Pending")
+      : patientData;
   const filteredUsers = searchValue
     ? patientData.filter((item) => {
         const fullName = `${item.fname} ${item.lname}`.toLowerCase();
@@ -141,9 +127,7 @@ const AppointmentsList = ({ source = "" }) => {
           item.mobile.toString().includes(searchValue)
         );
       })
-    : hidePaidAppointments && !isPatient
-    ? patientData?.filter((item) => item.payment_mode === "Pending")
-    : patientData;
+    : hidenAppointmentsData;
 
   const totalPages =
     filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
@@ -192,11 +176,16 @@ const AppointmentsList = ({ source = "" }) => {
   };
   const heading = isPatient ? "Patients List" : "Appointment List";
   const pageName = isPatient ? "Patients" : "Appointment";
+
+  const isNotPastDate = (dateValue) => {
+    return dateValue >= today;
+  };
+
   return (
-    <div className="min-h-screen flex md:items-center bg-gray-400 flex-col gap-1 ">
+    <div className="min-h-screen flex md:items-center bg-gray-300 flex-col gap-2 pt-4 ">
       <AppointmentRouting pageName={pageName} />
       <div className="flex flex-wrap w-auto flex-col gap-7 items-center ">
-        <div className="w-full md:max-w-5xl  bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mx-4">
+        <div className="w-full md:max-w-5xl  bg-slate-700 p-6 rounded-lg shadow-lg space-y-6 mb-10">
           <h2 className="text-2xl font-semibold text-center text-yellow-400">
             {heading}
           </h2>
@@ -226,21 +215,11 @@ const AppointmentsList = ({ source = "" }) => {
                   type="checkbox"
                   checked={hidePaidAppointments}
                   onChange={(e) => setHidePaidAppointments(e.target.checked)}
-                  className="mr-1 w-8 h-8"
+                  className="mr-1 md:w-8 md:h-8 sm:w-4 sm:h-4"
                 />
                 Hide Paid Appointments
               </label>
             )}
-            <div className="w-full flex md:justify-end sm: justify-center mt-4 bottom-4 right-4">
-              {/*isFetching && (
-          <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>
-        )*/}
-              <Pagination
-                pageNumber={currentPage}
-                setPageNumber={setCurrentPage}
-                total_page={totalPages}
-              />
-            </div>
           </div>
           {errorMessage && (
             <div className="text-red-600 text-center bg-yellow-200 ">
@@ -307,12 +286,12 @@ const AppointmentsList = ({ source = "" }) => {
                       </td>
                       {!isPatient && (
                         <>
-                          <td
+                          {/*<td
                             scope="row"
                             className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                           >
                             {d?.appointment_date}
-                          </td>
+                          </td>*/}
                           <td
                             scope="row"
                             className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
@@ -353,18 +332,23 @@ const AppointmentsList = ({ source = "" }) => {
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-900"
                       >
                         <div className="flex justify-start items-center gap-4">
-                          <button
-                            title="Edit"
-                            tabIndex={-1}
-                            onClick={() =>
-                              handleEditDetails(d.patient_id, d.appointment_id)
-                            }
-                            className="p-[6px] bg-yellow-300 rounded hover:shadow-lg hover:shadow-orange-500/50 cursor-pointer"
-                          >
-                            {" "}
-                            <FaEdit color="black" />{" "}
-                          </button>
-
+                          {(isNotPastDate(d?.appointment_date) ||
+                            isPatient) && (
+                            <button
+                              title="Edit"
+                              tabIndex={-1}
+                              onClick={() =>
+                                handleEditDetails(
+                                  d.patient_id,
+                                  d.appointment_id
+                                )
+                              }
+                              className="p-[6px] bg-yellow-300 rounded hover:shadow-lg hover:shadow-orange-500/50 cursor-pointer"
+                            >
+                              {" "}
+                              <FaEdit color="black" />{" "}
+                            </button>
+                          )}
                           <button
                             title="View"
                             tabIndex={-1}
@@ -410,13 +394,23 @@ const AppointmentsList = ({ source = "" }) => {
               </table>
             </div>
           </div>
+          <div className="w-full flex md:justify-end sm: justify-center mt-4 bottom-4 right-4">
+            {/*isFetching && (
+          <h3 className="text-lg text-yellow-50 font-semibold">Loading...</h3>
+        )*/}
+            <Pagination
+              pageNumber={currentPage}
+              setPageNumber={setCurrentPage}
+              total_page={totalPages}
+            />
+          </div>
         </div>
       </div>
       {viewDetails && (
         <AppointmentViewDetailsModal
           isOpen={viewDetails}
           onClose={() => setViewDetails(false)}
-          data={viewData.length > 0 ? viewData[0] : []}
+          data={viewData?.length > 0 ? viewData[0] : []}
           isPatient={isPatient}
           onNewAppointment={() => setNewAppointment(true)}
         />

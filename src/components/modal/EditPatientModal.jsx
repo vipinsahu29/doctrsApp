@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -15,7 +15,6 @@ import {
 import { createAppt, updateAppointment } from "../../SupaBase/AppointmentAPI";
 import Store from "../../store/store";
 import { updatePatient } from "./../../SupaBase/PatientAPI";
-import { add } from "date-fns";
 EditPatientModal.propTypes = {
   isOpen: PropTypes.bool,
   isNewAppointment: PropTypes.bool,
@@ -35,15 +34,15 @@ export default function EditPatientModal({
 }) {
   const clinic_id = Store.getState().clinicId;
   const doctorsNameList = Store.getState().doctorsNameList;
-  const missingFields = {
-    appointment_time: "00:00",
-    appointment_date: "",
-    payment_mode: "select payment",
-    fee: 0,
-    dr_name: "",
-  };
-  const data = isNewAppointment &&
-    isPatient && { ...patient, ...missingFields };
+  // const missingFields = {
+  //   appointment_time: "00:00",
+  //   appointment_date: "",
+  //   payment_mode: "select payment",
+  //   fee: 0,
+  //   dr_name: "",
+  // };
+  // const data = isNewAppointment &&
+  //   isPatient && { ...patient, ...missingFields };
 
   const [formData, setFormData] = useState({ ...patient });
 
@@ -58,7 +57,9 @@ export default function EditPatientModal({
     fieldErrors.mobile ||
     fieldErrors.email ||
     fieldErrors.weight ||
-    fieldErrors.height;
+    fieldErrors.height ||
+    fieldErrors.dob;
+
   const handleFnameChange = (e) => {
     const value = e.target.value;
     if (!value.trim()) {
@@ -113,7 +114,15 @@ export default function EditPatientModal({
     setFormData({ ...formData, appointment_time: e.target.value });
   };
   const handleDobChange = (e) => {
-    setFormData({ ...formData, dob: e.target.value });
+    const value = e.target.value;
+    if (value > today) {
+      setFieldErrors({ ...fieldErrors, dob: "DOB cannot be in the future" });
+    } else if (!value) {
+      setFieldErrors({ ...fieldErrors, dob: "DOB is required" });
+      setFormData({ ...formData, dob: e.target.value });
+    } else {
+      setFieldErrors({ ...fieldErrors, dob: null });
+    }
   };
   const handleEmailChange = (e) => {
     const value = e.target.value;
@@ -234,6 +243,7 @@ export default function EditPatientModal({
       });
       if (error) {
         console.log("Error on update", error);
+        setFieldErrors({ ...fieldErrors, submit: error });
       }
       if (data) {
         onSave();
@@ -241,8 +251,14 @@ export default function EditPatientModal({
       }
       return;
     }
-    // onClose(false);
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setFieldErrors({ ...fieldErrors, submit: null });
+    }, 10000);
+    return () => clearTimeout(timeout);
+  }, [fieldErrors]);
   const editPageTitle = isPatient
     ? "Edit Patient Details"
     : "Edit Appointment Details";
@@ -457,6 +473,10 @@ export default function EditPatientModal({
                       className="bg-gray-50 border w-[250px] border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       disabled={isNewAppointment || !isPatient}
                     />
+                    {}{" "}
+                    {fieldErrors?.dob && (
+                      <h3 className="text-red-600">{fieldErrors.dob}</h3>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     {/* Weight Field */}
@@ -591,6 +611,11 @@ export default function EditPatientModal({
                   )}
                 </div>
               </form>
+              {fieldErrors?.submit && (
+                <div className="mt-4 text-red-600 font-semibold">
+                  {fieldErrors.submit}
+                </div>
+              )}
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
@@ -604,7 +629,9 @@ export default function EditPatientModal({
                 type="button"
                 data-autofocus
                 onClick={handleSaveButton}
-                className={`${disable && "cursor-not-allowed"} mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-green-700 sm:mt-0 sm:w-auto`}
+                className={`${
+                  disable && "cursor-not-allowed"
+                } mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-green-700 sm:mt-0 sm:w-auto`}
                 disabled={disable}
               >
                 Save

@@ -275,7 +275,7 @@ const BookAppointment = () => {
     inputRef.current?.focus(); // Keep focus on the input field
   };
   return (
-    <div className="min-h-screen flex items-center justify-cente py-6 flex-col gap-1 bg-gray-400">
+    <div className="min-h-screen flex items-center justify-cente py-6 flex-col gap-1 bg-gray-300">
       <AppointmentRouting pageName="Appointment" />
       <div className="w-full max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-center text-yellow-400">
