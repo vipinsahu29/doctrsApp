@@ -102,7 +102,7 @@ export const expensesInputFields = [
     label: "Payment Mode",
     name: "PaymentMode",
     type: "select",
-    options: ["Cash", "UPI/NB", "Credit Card", "Cheque"],
+    options: ["Cash", "UPI/NB", "Credit Card","Debit Card", "Cheque"],
   },
 ];
 export const appointmentFields = [
