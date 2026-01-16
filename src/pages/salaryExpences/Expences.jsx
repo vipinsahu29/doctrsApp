@@ -81,9 +81,9 @@ const Expenses = () => {
   };
 
   return (
-    <div className="min-h-screen w-auto flex items-center bg-gray-300 flex-col gap-7">
+    <div className="min-h-screen w-auto flex items-center bg-gray-300 flex-col gap-7 mt-4">
       <AppointmentRouting pageName="MoreSalary" />
-      <div className="overflow-x-auto w-full md:max-w-5xl  bg-slate-700 rounded-lg shadow-lg space-y-6 mb-10">
+      <div className="pb-10 overflow-x-auto w-full md:max-w-5xl  bg-slate-700 rounded-lg shadow-lg space-y-6 px-1">
         <h2 className="text-2xl font-semibold text-center text-yellow-400 pt-6">
           Expence Page
         </h2>
@@ -140,7 +140,7 @@ const Expenses = () => {
         {insertError && (
           <p className="text-red-500 text-center">Data not saved try again!</p>
         )}
-        <table className="w-full mt-4 border-collapse border border-gray-900 p-2 mb-10">
+        <table className="w-full mt-4 border-collapse border border-gray-900 p-2 pb-10">
           <thead>
             <tr className="bg-gray-200">
               <th className="border p-2 border-gray-900 w-[20px]">S.No.</th>

@@ -189,7 +189,7 @@ const AppointmentsList = ({ source = "" }) => {
           <h2 className="text-2xl font-semibold text-center text-yellow-400">
             {heading}
           </h2>
-          <div className="flex justify-between items-center md:flex-row sm: flex-col">
+          <div className="flex justify-between items-center md:flex-row sm: flex-col gap-4">
             <input
               className="px-4 mx-3 py-2 focus:border-[#030331] outline-none bg-[#efeff2] border  border-slate-700 rounded-md text-[#0b0b0b]"
               type="text"
