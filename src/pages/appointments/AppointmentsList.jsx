@@ -45,6 +45,7 @@ const AppointmentsList = ({ source = "" }) => {
   const [isPatientUpdated, setIsPatientUpdated] = useState(false);
   const [serialNumber, setSerialNumber] = useState(1);
   const [hidePaidAppointments, setHidePaidAppointments] = useState(false);
+  const dataPerPage = 50
   const [date, setDate] = useState(
     isPatient ? "" : new Date().toISOString().split("T")[0]
   );
@@ -55,7 +56,7 @@ const AppointmentsList = ({ source = "" }) => {
         const data = await fetchAppointmentDataByDate(
           clinicId,
           pageNumber,
-          20,
+          dataPerPage,
           date
         );
         if (!data || data.length === 0) {
@@ -86,7 +87,7 @@ const AppointmentsList = ({ source = "" }) => {
     [date]
   );
   const getPatientsDetails = React.useCallback(async (clinicId) => {
-    await getPatientDetails(clinicId).then((data) => {
+    await getPatientDetails(clinicId, currentPage, dataPerPage).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."
@@ -97,14 +98,14 @@ const AppointmentsList = ({ source = "" }) => {
       }
       setPatientData(data || []);
     });
-  }, []);
+  }, [currentPage]);
   useEffect(() => {
     if (!isPatient && currentPage) {
       setSerialNumber(currentPage);
       // getAppointmentList(clinic_id, currentPage);
       getAppointmentListByDate(clinic_id, currentPage);
     } else if (isPatient) {
-      getPatientsDetails(clinic_id);
+      getPatientsDetails(clinic_id, currentPage-1, dataPerPage);
     }
   }, [
     source,
@@ -117,10 +118,10 @@ const AppointmentsList = ({ source = "" }) => {
   ]);
   const hidenAppointmentsData =
     hidePaidAppointments && !isPatient
-      ? patientData?.filter((item) => item.payment_mode === "Pending")
+      ? patientData?.filter((item) => item?.payment_mode.toLowerCase() === "pending")
       : patientData;
   const filteredUsers = searchValue
-    ? patientData.filter((item) => {
+    ? patientData?.filter((item) => {
         const fullName = `${item.fname} ${item.lname}`.toLowerCase();
         return (
           fullName.includes(searchValue.toLowerCase()) ||
@@ -129,11 +130,20 @@ const AppointmentsList = ({ source = "" }) => {
       })
     : hidenAppointmentsData;
 
-  const totalPages =
-    filteredUsers && filteredUsers.length > 0 && filteredUsers[0].total_pages
-      ? filteredUsers[0].total_pages
-      : 1;
+  const calculateTotalPages = () => {
+    if (filteredUsers && filteredUsers.length > 0 && filteredUsers[0]?.total_pages && !isPatient) {
+      return filteredUsers[0]?.total_pages
+    }
+    if (isPatient) {
+      return Math.ceil(filteredUsers[0]?.total_count / dataPerPage);
+      // return filteredUsers[0]?.offset_used
+    }
+    return 1;
+  };
 
+  const totalPages = calculateTotalPages();
+    console.log("Current Page:", currentPage, 'total_page:', totalPages,filteredUsers[0]?.total_count );
+  console.log("Total Pages:", totalPages, filteredUsers[0]?.total_pages,'--',Math.ceil(filteredUsers[0]?.total_count / dataPerPage));
   const navigate = useNavigate();
   const handleEditmodal = () => {
     setNewAppointment(false);
@@ -215,7 +225,7 @@ const AppointmentsList = ({ source = "" }) => {
                   type="checkbox"
                   checked={hidePaidAppointments}
                   onChange={(e) => setHidePaidAppointments(e.target.checked)}
-                  className="mr-1 md:w-8 md:h-8 sm:w-4 sm:h-4"
+                  className="mr-1 md:w-4 md:h-4 sm:w-4 sm:h-4"
                 />
                 Hide Paid Appointments
               </label>
@@ -301,7 +311,7 @@ const AppointmentsList = ({ source = "" }) => {
                           <td
                             scope="row"
                             className={`py-1 px-4 font-medium whitespace-nowrap border border-gray-900 ${
-                              d.payment_mode === "Pending" || !d.payment_mode
+                              d.payment_mode.toLowerCase() === "pending" || !d.payment_mode
                                 ? " text-red-600 font-semibold"
                                 : " text-green-700"
                             }`}

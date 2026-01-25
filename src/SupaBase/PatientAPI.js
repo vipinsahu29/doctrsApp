@@ -101,9 +101,12 @@ export const getPatientData = async (clinic_id) => {
   }
 };
 
-export async function getPatientDetails(clinicId) {
-  const { data, error } = await supabase.rpc("get_patientdetails_data", {
-    c_id: clinicId,
+export async function getPatientDetails(clinicId, pageNumber = 1,
+  pageSize = 20,) {
+  const { data, error } = await supabase.rpc("get_patientdetails_data_v2", {
+    p_clinic_id: clinicId,
+    p_limit: pageSize,
+    p_page: pageNumber,
   });
 
   if (error) {
