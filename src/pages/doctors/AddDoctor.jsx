@@ -67,13 +67,14 @@ export default function AddDoctor() {
         graduateddate: formData.GraduatedDate,
         shift: formData.Shifts,
         gender: formData.Gender,
-        specialization: formData.Specialization
+        specialization: formData.Specialization,
       });
       if (error) {
         console.log("Not able to insert Record");
         setIsSubmitting(false);
         setError(error.message, "Failed to insert data");
       }
+
       if (data) {
         setFormData({
           FirstName: "",
@@ -105,6 +106,14 @@ export default function AddDoctor() {
       setIsSubmitting(false);
     }
   };
+  const disableButton =
+    !formData.FirstName ||
+    !formData.LastName ||
+    !formData.Mobile1 ||
+    !formData.Email ||
+    !formData.DOB ||
+    !formData.Qualification;
+
   const handleShiftChange = (shiftIndex, field, value) => {
     const updatedShifts = [...formData.Shifts];
     updatedShifts[shiftIndex][field] = value;
@@ -116,7 +125,7 @@ export default function AddDoctor() {
     const dayExists = updatedShifts[shiftIndex].Days.includes(day);
     if (dayExists) {
       updatedShifts[shiftIndex].Days = updatedShifts[shiftIndex].Days.filter(
-        (d) => d !== day
+        (d) => d !== day,
       );
     } else {
       updatedShifts[shiftIndex].Days.push(day);
@@ -192,7 +201,7 @@ export default function AddDoctor() {
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
               maxLength="10"
             />
-            {!isMobileValid && (
+            {!validateMobile(formData.Mobile1) && (
               <h3 className="text-red-600">
                 Please enter a valid mobile number.
               </h3>
@@ -214,7 +223,7 @@ export default function AddDoctor() {
               className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
               maxLength="10"
             />
-            {!isMobileValid && (
+            {formData.Mobile2.length > 0 && !validateMobile(formData.Mobile2) && (
               <h3 className="text-red-600">
                 Please enter a valid mobile number.
               </h3>
@@ -418,17 +427,19 @@ export default function AddDoctor() {
             </div>
           </div>
         ))}
-        {isSubmitting && (<p className="text-white">Submitting...</p>)}
-        {error && (<p className="text-red-600">Error: {error}</p>)}
-        {/* Submit Button Handle*/}        
+        {isSubmitting && <p className="text-white">Submitting...</p>}
+        {error && <p className="text-red-600">Error: {error}</p>}
+        {/* Submit Button Handle*/}
         <button
           type="submit"
           onClick={handleSubmit}
-          className="w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-          disabled={isSubmitting}
+          className={`w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700  ${disableButton || isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={isSubmitting || disableButton}
         >
           Save details
         </button>
+        { disableButton && <p className="text-red-600 text-center">Please fill all required fields.</p>}
+        { !disableButton && error && <p className="text-red-600 text-center mt-2">Error: {error}</p>}
       </div>
     </div>
   );
