@@ -41,10 +41,10 @@ const AtomInput = ({
           value={value}
           onChange={onChange}
           onBlur={handleBlur}
-          className="mt-1 block w-full px-3 py-2 border border-gray-900 rounded-md"
+          className="mt-1 block w-[160] px-3 py-2 border border-gray-900 rounded-md"
           required={required}
         >
-          <option value="">Select {label}</option>
+          <option value="" disabled>--Select--</option>
           {options.map((option) => (
             <option key={option} value={option}>
               {option}

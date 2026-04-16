@@ -12,10 +12,7 @@ const Expenses = () => {
   const [inserted, setInserted] = useState(false);
   const [addNewSalary, setAddNewSalary] = useState(false);
   const [response, setResponse] = useState([]);
-  const { data,refetch } = useGetApiData(
-    clinic_id,
-    getExpenseData
-  );
+  const { data, refetch } = useGetApiData(clinic_id, getExpenseData);
 
   useEffect(() => {
     if (data) {
@@ -81,9 +78,9 @@ const Expenses = () => {
   };
 
   return (
-    <div className="min-h-screen w-auto flex items-center bg-gray-300 flex-col gap-7 mt-4">
+    <div className="min-h-screen w-auto flex items-center bg-gray-300 flex-col gap-7 mt-4 px-3">
       <AppointmentRouting pageName="MoreSalary" />
-      <div className="pb-10 overflow-x-auto w-full md:max-w-5xl  bg-slate-700 rounded-lg shadow-lg space-y-6 px-1">
+      <div className="pb-10 w-full md:max-w-5xl  bg-slate-700 rounded-lg shadow-lg space-y-6 px-1">
         <h2 className="text-2xl font-semibold text-center text-yellow-400 pt-6">
           Expence Page
         </h2>
@@ -140,41 +137,46 @@ const Expenses = () => {
         {insertError && (
           <p className="text-red-500 text-center">Data not saved try again!</p>
         )}
-        <table className="w-full mt-4 border-collapse border border-gray-900 p-2 pb-10">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-2 border-gray-900 w-[20px]">S.No.</th>
-              {expensesInputFields.map((col) => (
-                <th key={col.name} className="border p-2 border-gray-900">
-                  {col.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          {response?.length > 0 && (
-            <tbody>
-              {response.map((data, index) => (
-                <tr key={data.description} className="text-center bg-gray-100">
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {index + 1}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-[130px]">
-                    {data.expense_date}
-                  </td>
-                  <td className="border p-2 border-gray-900">
-                    {data.description}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.amount}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-17">
-                    {data.payment_mode}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          )}
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full mt-4 border-collapse border border-gray-900 p-2 pb-10">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2 border-gray-900 w-[20px]">S.No.</th>
+                {expensesInputFields.map((col) => (
+                  <th key={col.name} className="border p-2 border-gray-900">
+                    {col.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {response?.length > 0 && (
+              <tbody>
+                {response.map((data, index) => (
+                  <tr
+                    key={data.description}
+                    className="text-center bg-gray-100"
+                  >
+                    <td className="border p-2 border-gray-900 w-[20px]">
+                      {index + 1}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-[130px]">
+                      {data.expense_date}
+                    </td>
+                    <td className="border p-2 border-gray-900">
+                      {data.description}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-[20px]">
+                      {data.amount}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-17">
+                      {data.payment_mode}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div>
       </div>
     </div>
   );

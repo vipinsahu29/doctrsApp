@@ -41,22 +41,23 @@ const Salary = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center bg-white py-6 flex-col gap-7">
+    <div className="min-h-screen flex items-center bg-white py-6 flex-col gap-7 px-2">
       <AppointmentRouting pageName="MoreSalary" />
-      <div className="md:w-full sm: w-auto md:max-w-3xl bg-slate-700 p-6 rounded-lg shadow-lg space-y-6">
+      <div className="w-full md:max-w-3xl bg-slate-700 p-3 rounded-lg shadow-lg space-y-6 justify-center">
         <h2 className="text-2xl font-semibold text-center text-yellow-400">
           Salary Page
         </h2>
-        { ! addNewSalary &&
-        <button
-          onClick={() => setAddNewSalary(true)}
-          className={`md:px-6 sm: m-2 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-gray-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
-            addNewSalary && "cursor-not-allowed"
-          }`}
-          disabled={addNewSalary}
-        >
-          Add New Data
-        </button>}
+        {!addNewSalary && (
+          <button
+            onClick={() => setAddNewSalary(true)}
+            className={`md:px-6 sm: m-2 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-gray-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
+              addNewSalary && "cursor-not-allowed"
+            }`}
+            disabled={addNewSalary}
+          >
+            Add New Data
+          </button>
+        )}
         {addNewSalary && (
           <>
             <div className="grid md:grid-cols-3 sm: grid-cols-2 gap-2 sm: m-2">
@@ -91,45 +92,46 @@ const Salary = () => {
             </button>
           </>
         )}
-
-        <table className="w-full mt-4 border-collapse border border-gray-900 p-2 ">
-          <thead>
-            <tr className="bg-gray-200 ">
-              <th className="border p-2 border-gray-900 w-[20px]">S.No.</th>
-              {salaryInputFields.map((col) => (
-                <th key={col.name} className="border p-2 border-gray-900">
-                  {col.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          {salaryData.length > 0 && (
-            <tbody>
-              {salaryData.map((data, index) => (
-                <tr key={data.Name} className="text-center bg-gray-100">
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {index + 1}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.Name}
-                  </td>
-                  <td className="border p-2 border-gray-900">
-                    {data.Designation}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.BasicSalary}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-14">
-                    {data.Deduction}
-                  </td>
-                  <td className="border p-2 border-gray-900 w-[20px]">
-                    {data.NetSalary}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          )}
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full mt-4 border-collapse border border-gray-900 p-2 ">
+            <thead>
+              <tr className="bg-gray-200 ">
+                <th className="border p-2 border-gray-900 w-[20px]">S.No.</th>
+                {salaryInputFields.map((col) => (
+                  <th key={col.name} className="border p-2 border-gray-900">
+                    {col.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {salaryData.length > 0 && (
+              <tbody>
+                {salaryData.map((data, index) => (
+                  <tr key={data.Name} className="text-center bg-gray-100">
+                    <td className="border p-2 border-gray-900 w-[20px]">
+                      {index + 1}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-[20px]">
+                      {data.Name}
+                    </td>
+                    <td className="border p-2 border-gray-900">
+                      {data.Designation}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-[20px]">
+                      {data.BasicSalary}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-14">
+                      {data.Deduction}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-[20px]">
+                      {data.NetSalary}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div>
       </div>
     </div>
   );
