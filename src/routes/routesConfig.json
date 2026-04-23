@@ -78,6 +78,11 @@
       "path": "/registration",
       "component": "Registration",
       "role": "all"
+    },
+    {
+      "path": "/profile",
+      "component": "Profile",
+      "role": "all"
     }
     
   ]

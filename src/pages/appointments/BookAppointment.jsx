@@ -205,12 +205,11 @@ const BookAppointment = () => {
   useEffect(() => {
     const getDoctors = async () => {
       const { data } = await fetchDocters(clinic_id);
-      setDoctorsList(data); //(data.map((doc)=> doc.name))
+      setDoctorsList(data || []); //(data.map((doc)=> doc.name))
       Store.getState().setDoctorsNameList(data.map((doc) => doc.name));
     };
     getDoctors();
   }, [clinic_id]);
-
   useEffect(() => {
     if (selectDoctor) {
       const timeSlots =

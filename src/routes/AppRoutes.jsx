@@ -27,7 +27,8 @@ const loadComponent = (componentName) => {
     Expences: lazy(() => import("../pages/salaryExpences/Expences")),
     Salary: lazy(() => import("../pages/salaryExpences/Salary")),
     LoginRegister: lazy(() => import("../pages/LoginRegister/LoginRegister")),
-    Registration: lazy(() => import("../pages/registration/Registration") )
+    Registration: lazy(() => import("../pages/registration/Registration") ),
+    Profile: lazy(() => import("../pages/profile/Profile")),
   };
   return Components[componentName] || (() => <h2>Component Not Found</h2>);
 };
