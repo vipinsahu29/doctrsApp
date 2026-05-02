@@ -15,7 +15,7 @@ import useAuthStore from "../../store/authStore";
 import Store from "../../store/store";
 import { checkClinicExists } from "../../SupaBase/ClinicTableAPI";
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 export default function HeaderNavbar() {
   const { logout } = useAuthStore();
   const userData = Store((state) => state.userData);
