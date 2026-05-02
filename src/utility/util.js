@@ -70,3 +70,29 @@ export const validatePasswords = (
   }
   return null;
 };
+export const getDateRange = (type) => {
+  const today = new Date();
+  let start = new Date();
+
+  switch (type) {
+    case "1W":
+      start.setDate(today.getDate() - 7);
+      break;
+
+    case "1M":
+      start.setMonth(today.getMonth() - 1);
+      break;
+
+    case "1Y":
+      start.setFullYear(today.getFullYear() - 1);
+      break;
+
+    default:
+      start = null;
+  }
+
+  return {
+    startDate: start,
+    endDate: today,
+  };
+};

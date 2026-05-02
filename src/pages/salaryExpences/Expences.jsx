@@ -4,7 +4,8 @@ import { expensesInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
 import useGetApiData from "../../hooks/useGetApiData";
 import Store from "../../store/store";
-import { createExpense, getExpenseData } from "../../SupaBase/ExpenseApi";
+import { createExpense, getExpenseData, getExpenseDataByDate } from "../../SupaBase/ExpenseApi";
+import { getDateRange } from "../../utility/util";
 const Expenses = () => {
   const clinic_id = Store((state) => state.clinicId);
   const UID = Store((state) => state.UID);
@@ -13,7 +14,18 @@ const Expenses = () => {
   const [addNewSalary, setAddNewSalary] = useState(false);
   const [response, setResponse] = useState([]);
   const { data, refetch } = useGetApiData(clinic_id, getExpenseData);
-
+  const [filterType, setFilterType] = useState("1M"); // default
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [error, setError] = useState("");
+  console.log("range", startDate, endDate);
+  const [tableData, setTableData] = useState({
+    Date: "",
+    Description: "",
+    Amount: "",
+    PaymentMode: "",
+  });
+  const today = new Date().toISOString().split("T")[0];
   useEffect(() => {
     if (data) {
       setResponse(data);
@@ -27,12 +39,6 @@ const Expenses = () => {
       }, 1500);
     }
   }, [inserted, refetch]);
-  const [tableData, setTableData] = useState({
-    Date: "",
-    Description: "",
-    Amount: "",
-    PaymentMode: "",
-  });
 
   const disabled =
     !tableData.Date ||
@@ -45,6 +51,19 @@ const Expenses = () => {
 
     setTableData({ ...tableData, [name]: value });
   };
+  useEffect(() => {
+    if (startDate && endDate && startDate > endDate) {
+      setError("From date cannot be greater than To date");
+    } else {
+      setError("");
+    }
+  }, [startDate, endDate]);
+
+  // useEffect(()=>{
+  //   const { startDate, endDate } = getDateRange("1M");
+  //     setStartDate(startDate);
+  //     setEndDate(endDate);
+  // },[])
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission
     const newData = { user: UID, clinicId: clinic_id, ...tableData };
@@ -76,7 +95,98 @@ const Expenses = () => {
     });
     setAddNewSalary(false);
   };
+  const handleFilterChange = (value) => {
+    setFilterType(value);
 
+    if (value !== "CUSTOM") {
+      const { startDate, endDate } = getDateRange(value);
+      setStartDate(startDate);
+      setEndDate(endDate);
+    } else {
+      // Reset for custom selection
+      setStartDate(null);
+      setEndDate(null);
+    }
+  };
+  const handleCustomDateChange = (start, end) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  useEffect(()=>{
+    const apiData = async() =>{
+      const {data,error} = await getExpenseDataByDate(clinic_id, startDate, endDate)
+      console.log("called", data, error)
+      return data
+    }
+    apiData()
+  },[clinic_id, startDate, endDate])
+  const filterSection = () => {
+    return (
+      <div className="ml-5">
+        <label
+          htmlFor={"filter"}
+          className="block text-sm font-medium text-white"
+        >
+          {"Filter"}
+        </label>
+        <select
+          id="filter"
+          onChange={(e) => handleFilterChange(e.target.value)}
+          className="mt-1 block w-[160] px-3 py-2 border border-gray-900 rounded-md"
+          value={filterType}
+        >
+          <option value="1W">1 Week</option>
+          <option value="1M">1 Month</option>
+          <option value="1Y">1 Year</option>
+          <option value="CUSTOM">Custom Date</option>
+        </select>
+        {filterType === "CUSTOM" && (
+          <div className="flex flex-col md:flex-row md:gap-8 sm: gap-2 mt-4">
+            <div>
+              <label
+                htmlFor="startDate"
+                className="block text-sm font-medium text-white"
+              >
+                start Date
+              </label>
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                max={today} // Prevent past dates
+                // value={startDate}
+                onChange={(e) =>
+                  handleCustomDateChange(new Date(e.target.value), endDate)
+                }
+                className="mt-1 block w-[200px] px-2 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="endDate"
+                className="block text-sm font-medium text-white"
+              >
+                End Date
+              </label>
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                max={today} // Prevent past dates
+                // value={endDate}
+                onChange={(e) =>
+                  handleCustomDateChange(startDate, new Date(e.target.value))
+                }
+                className="mt-1 block w-[200px] px-2 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+  console.log(startDate, "end-", endDate, "filter", filterType);
   return (
     <div className="min-h-screen w-auto flex items-center bg-gray-300 flex-col gap-7 mt-4 px-3">
       <AppointmentRouting pageName="MoreSalary" />
@@ -120,13 +230,23 @@ const Expenses = () => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className={`md:px-6 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-gray-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
+              className={`md:px-6 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-green-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
                 disabled && "cursor-not-allowed"
               }`}
               disabled={disabled}
             >
               Save details
             </button>
+            {addNewSalary && (
+              <button
+                onClick={() => setAddNewSalary(false)}
+                className={`md:px-6 md:py-2 ml-4 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-red-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white 
+                }`}
+                disabled={!addNewSalary}
+              >
+                Cancel
+              </button>
+            )}
           </>
         )}
         {inserted && (
@@ -138,6 +258,7 @@ const Expenses = () => {
           <p className="text-red-500 text-center">Data not saved try again!</p>
         )}
         <div className="overflow-x-auto">
+          {filterSection()}
           <table className="w-full mt-4 border-collapse border border-gray-900 p-2 pb-10">
             <thead>
               <tr className="bg-gray-200">
