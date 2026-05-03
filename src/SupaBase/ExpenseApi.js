@@ -42,7 +42,6 @@ export const getExpenseData = async (clinic_id) => {
 };
 
 export const getExpenseDataByDate = async (clinicId, startDate, endDate) => {
-  console.log("Dates:",startDate, endDate)
   if (!startDate || !endDate) {
     const { startDate: p_startDate, endDate: p_endDate } = getDateRange("1M");
     const { data, error } = await supabase.rpc("get_expenses", {

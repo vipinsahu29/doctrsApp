@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { expensesInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
-import useGetApiData from "../../hooks/useGetApiData";
 import Store from "../../store/store";
-import { createExpense, getExpenseData, getExpenseDataByDate } from "../../SupaBase/ExpenseApi";
+import { createExpense, getExpenseDataByDate } from "../../SupaBase/ExpenseApi";
 import { getDateRange } from "../../utility/util";
 const Expenses = () => {
   const clinic_id = Store((state) => state.clinicId);
@@ -13,12 +12,10 @@ const Expenses = () => {
   const [inserted, setInserted] = useState(false);
   const [addNewSalary, setAddNewSalary] = useState(false);
   const [response, setResponse] = useState([]);
-  const { data, refetch } = useGetApiData(clinic_id, getExpenseData);
   const [filterType, setFilterType] = useState("1M"); // default
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState("");
-  console.log("range", startDate, endDate);
   const [tableData, setTableData] = useState({
     Date: "",
     Description: "",
@@ -26,19 +23,14 @@ const Expenses = () => {
     PaymentMode: "",
   });
   const today = new Date().toISOString().split("T")[0];
+
   useEffect(() => {
-    if (data) {
-      setResponse(data);
-    }
-  }, [data]);
-  useEffect(() => {
-    refetch();
     if (inserted) {
       setTimeout(() => {
         setInserted(false);
       }, 1500);
     }
-  }, [inserted, refetch]);
+  }, [inserted]);
 
   const disabled =
     !tableData.Date ||
@@ -59,15 +51,16 @@ const Expenses = () => {
     }
   }, [startDate, endDate]);
 
-  // useEffect(()=>{
-  //   const { startDate, endDate } = getDateRange("1M");
-  //     setStartDate(startDate);
-  //     setEndDate(endDate);
-  // },[])
+  useEffect(() => {
+    const { startDate, endDate } = getDateRange("1M");
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission
     const newData = { user: UID, clinicId: clinic_id, ...tableData };
-
+    if (!newData.clinicId || !newData?.Description || newData?.Date) return;
     const { data, error } = await createExpense({
       clinic_id: newData.clinicId,
       user: newData.user,
@@ -113,14 +106,34 @@ const Expenses = () => {
     setEndDate(end);
   };
 
-  useEffect(()=>{
-    const apiData = async() =>{
-      const {data,error} = await getExpenseDataByDate(clinic_id, startDate, endDate)
-      console.log("called", data, error)
-      return data
+  useEffect(() => {
+    if (!clinic_id || !startDate || !endDate || error) return;
+    const apiData = async () => {
+      const { data, errors } = await getExpenseDataByDate(
+        clinic_id,
+        startDate,
+        endDate,
+      );
+      console.log("called", data, error, errors);
+      if (!errors) {
+        // cacheRef.current[cacheKey] = data
+        setResponse(data);
+        setError("");
+      }
+    };
+    if (!error || inserted) {
+      apiData();
+      setInserted(false);
+      setError("");
     }
-    apiData()
-  },[clinic_id, startDate, endDate])
+  }, [clinic_id, startDate, endDate, error, inserted]);
+
+  const totalExpenses = response?.reduce((sum, item) => {
+    return sum + Number(item.amount);
+  }, 0);
+  const totalAmount = (amount) => {
+    return new Intl.NumberFormat("en-IN").format(amount);
+  };
   const filterSection = () => {
     return (
       <div className="ml-5">
@@ -141,6 +154,9 @@ const Expenses = () => {
           <option value="1Y">1 Year</option>
           <option value="CUSTOM">Custom Date</option>
         </select>
+        <p className="block text-sm font-medium text-white mt-4">
+          Total- {totalAmount(totalExpenses)}
+        </p>
         {filterType === "CUSTOM" && (
           <div className="flex flex-col md:flex-row md:gap-8 sm: gap-2 mt-4">
             <div>
@@ -183,10 +199,10 @@ const Expenses = () => {
             </div>
           </div>
         )}
+        {error && <p>Select the valid date</p>}
       </div>
     );
   };
-  console.log(startDate, "end-", endDate, "filter", filterType);
   return (
     <div className="min-h-screen w-auto flex items-center bg-gray-300 flex-col gap-7 mt-4 px-3">
       <AppointmentRouting pageName="MoreSalary" />
@@ -207,7 +223,7 @@ const Expenses = () => {
         )}
         {addNewSalary && (
           <>
-            <div className="grid md:grid-cols-3 sm: grid-cols-2 gap-2">
+            <div className="grid md:ml-4 md:grid-cols-3 sm: grid-cols-2 gap-2">
               {expensesInputFields.map((field) => (
                 <div key={field.name}>
                   <AtomInput
@@ -230,7 +246,7 @@ const Expenses = () => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className={`md:px-6 md:py-2 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-green-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
+              className={`md:px-6 md:py-2 md:ml-4 sm: px-4 sm: py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-green-600 focus:ring-4 focus:ring-blue-300 font-semibold text-sm dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 hover:font-bold border-2 border-gray-200 hover:text-white ${
                 disabled && "cursor-not-allowed"
               }`}
               disabled={disabled}
