@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { FaEdit, FaRegEye } from "react-icons/fa";
-import AppointmentRouting from '../../components/RoutingButtons/AppointmentRouting';
-import Pagination from '../../components/pagination/Paginations';
-import { staffsData } from '../../Constants/staffsListData';
-
+import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
+import Pagination from "../../components/pagination/Paginations";
+import { staffsData } from "../../Constants/staffsListData";
+import { getEmployeeAndSalary } from "../../SupaBase/Employee";
+import Store from "../../store/store";
+import { staffDetailsFields } from "../../Constants/constantUtil"
+import ViewDetailModal from "../../components/modal/ViewDetailModal";
 const columns = [
   "No.",
   "Name",
@@ -16,31 +19,33 @@ const columns = [
 ];
 
 const StaffList = () => {
+  const clinic_id = Store((state) => state.clinicId);
+
   const [parPage, setParPage] = useState(10);
   const [viewData, setViewData] = useState();
+  const [empData, setEmpData] = useState([])
   const [searchValue, setSearchValue] = useState("");
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [newAppointment, setNewAppointment] = useState(false);
-
+  const [error,setError] = useState("")
   const filteredUsers =
     searchValue && isNaN(searchValue)
       ? staffsData.filter((user) =>
-          user.FirstName.toLowerCase().includes(searchValue.toLowerCase())
+          user.FirstName.toLowerCase().includes(searchValue.toLowerCase()),
         )
       : staffsData.filter((user) =>
-          user.Mobile.toLowerCase().includes(searchValue.toLowerCase())
+          user.Mobile.toLowerCase().includes(searchValue.toLowerCase()),
         );
 
   const handleEditmodal = () => {
     setNewAppointment(false);
     setIsEditOpen(false);
   };
-
   const handleViewDetails = (id) => {
     setViewDetails(true);
-    setViewData(staffsData.filter((value) => value.Id === id));
+    setViewData(empData.filter((value) => value.employee_id === id));
   };
 
   const handleCloseView = () => {
@@ -52,7 +57,7 @@ const StaffList = () => {
   const handleEditDetails = (id) => {
     setNewAppointment(false);
     setIsEditOpen(true);
-    setViewData(staffsData.filter((value) => value.Id === id));
+    setViewData(empData.filter((value) => value.employee_id === id));
   };
 
   const handleSearch = (e) => {
@@ -60,7 +65,21 @@ const StaffList = () => {
       setSearchValue(e.target.value);
     }, 1000);
   };
-
+  useEffect(() => {
+    const callApi = async () => {
+      const { data, error } = await getEmployeeAndSalary(clinic_id);
+      if(error){
+        setError("Somthing went wrong try again," + error)
+        return;
+      }
+      if(!data){
+        setError("No record found.")
+        return;
+      }
+      setEmpData(data)
+    }
+    if(clinic_id) callApi()
+  }, [clinic_id]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-300 py-6 flex-col gap-7">
       <AppointmentRouting pageName="MoreStaff" />
@@ -92,8 +111,8 @@ const StaffList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((d, i) => (
-                    <tr key={d.Mobile + d.FirstName}>
+                  {empData.map((d, i) => (
+                    <tr key={d.employee_id}>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
@@ -104,19 +123,20 @@ const StaffList = () => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.FirstName + " " + d.LastName}
+                        {d.employee_fname + " " + d.employee_lname}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Department} {/* Assuming `Department` is in the data */}
+                        {d.employee_department}{" "}
+                        {/* Assuming `Department` is in the data */}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Specialization}
+                        {d.employee_specialization}
                       </td>
                       <td
                         scope="row"
@@ -128,13 +148,13 @@ const StaffList = () => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Email}
+                        {d.employee_email}
                       </td>
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Mobile}
+                        {d.employee_mobile}
                       </td>
                       <td
                         scope="row"
@@ -152,7 +172,7 @@ const StaffList = () => {
                           <button
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
-                            onClick={() => handleViewDetails(d.Id)}
+                            onClick={() => handleViewDetails(d?.employee_id)}
                           >
                             <FaRegEye />
                           </button>
@@ -174,6 +194,15 @@ const StaffList = () => {
             />
           </div>
         </div>
+        {viewDetails && (
+          <ViewDetailModal
+            isOpen={viewDetails}
+            onClose={() => setViewDetails(false)}
+            data={ viewData[0] || []}
+            title="Staff Details"
+            fields={staffDetailsFields}
+          />
+        )}
       </div>
     </div>
   );

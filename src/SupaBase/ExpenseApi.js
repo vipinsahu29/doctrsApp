@@ -56,7 +56,6 @@ export const getExpenseDataByDate = async (clinicId, startDate, endDate) => {
       p_date1: startDate,
       p_date2: endDate,
   });
-  console.log("custom-", data);
   if (error) console.error(error);
   else console.log(data);
   return { data, error };

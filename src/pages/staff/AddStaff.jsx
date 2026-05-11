@@ -3,7 +3,11 @@ import { validateEmail, validateMobile } from "../../utility/util";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import { addStaffInputFields } from "../../Constants/constantUtil";
 import AtomInput from "../../components/Atom/AtomInput";
+import { createEmployee } from "../../SupaBase/Employee";
+import Store from "../../store/store";
+
 const AddStaff = () => {
+  const clinic_id = Store((state) => state.clinicId);
   //! States
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -17,7 +21,7 @@ const AddStaff = () => {
     Qualification: "",
     Specialization: "",
     Department: "",
-    City: "",
+    Address: "",
     State: "",
     Country: "",
     PANCard: "",
@@ -35,12 +39,16 @@ const AddStaff = () => {
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const insertData = async(formData)=>{
+    const {data, error} = await createEmployee({...formData, clincId:clinic_id })
+    return {data, error}
+  }
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission
     if (!isMobileValid || !isValidEmail) {
       return; // Prevent form submission if validation fails
     }
+    insertData(formData)
   };
 
   return (

@@ -39,7 +39,15 @@ export const addPatientsInputFields = [
     label: "Occupation",
     name: "Occupation",
     type: "select",
-    options: ["Farmer", "Business", "Private Job","Gov Job", "Student", "Other","House wife"],
+    options: [
+      "Farmer",
+      "Business",
+      "Private Job",
+      "Gov Job",
+      "Student",
+      "Other",
+      "House wife",
+    ],
     required: true,
   },
   {
@@ -55,7 +63,18 @@ export const addPatientsInputFields = [
 ];
 
 export const addStaffInputFields = [
-  ...commonFields,
+  { label: "First Name", name: "FirstName", type: "text", required: true },
+  { label: "Last Name", name: "LastName", type: "text", required: true },
+  { label: "Mobile", name: "Mobile", type: "tel", required: true },
+  { label: "Email", name: "Email", type: "email", required: false },
+  { label: "DOB", name: "DOB", type: "date", max: today, required: true },
+  {
+    label: "Gender",
+    name: "Gender",
+    type: "select",
+    options: ["Male", "Female", "Other"],
+    required: true,
+  },
   { label: "PAN Card", name: "PANCard", type: "text", required: true },
   { label: "Adhar number", name: "Adhar", type: "text", required: true },
   {
@@ -74,12 +93,26 @@ export const addStaffInputFields = [
     label: "Department",
     name: "Department",
     type: "select",
-    options: ["Orthopedics", "Dentist", "Bones"],
+    options: [
+      "Doctor",
+      "Dentist",
+      "Compounder",
+      "Pantry",
+      "Cleaner",
+      "Electrician",
+      "Plumber",
+      "Nurse",
+      "HR",
+      "Cashier",
+      "CA",
+      "Assistent",
+      "Other",
+    ],
     required: true,
   },
+  { label: "Address", name: "Address", type: "text", required: true },
   { label: "City", name: "City", type: "text", required: true },
-  { label: "State", name: "State", type: "text", required: true },
-  { label: "Country", name: "Country", type: "text", required: true },
+  // { label: "Country", name: "Country", type: "text", required: true },
 ];
 
 export const salaryInputFields = [
@@ -102,7 +135,7 @@ export const expensesInputFields = [
     label: "Payment Mode",
     name: "PaymentMode",
     type: "select",
-    options: ["Cash", "UPI/NB", "Credit Card","Debit Card", "Cheque"],
+    options: ["Cash", "UPI/NB", "Credit Card", "Debit Card", "Cheque"],
   },
 ];
 export const appointmentFields = [
@@ -127,4 +160,19 @@ export const registrationFields = [
   { label: "Address", name: "Address", type: "text", required: true },
   { label: "Dr Name", name: "DrName", type: "text", required: true },
   { label: "Mobile", name: "Mobile", type: "tel", required: true },
+];
+
+export const staffDetailsFields = [
+  { label: "First Name", key: "employee_fname" },
+  { label: "Last Name", key: "employee_lname" },
+  { label: "Department", key: "employee_department" },
+  { label: "Specialization", key: "employee_specialization" },
+  { label: "Qualification", key: "employee_qualification" },
+  { label: "Email", key: "employee_email" },
+  { label: "Salary Deduction", key: "salary_deduction" },
+  { label: "Gross Salary", key: "salary_gross" },
+  { label: "Net Salary", key: "salary_net" },
+  { label: "Payment mode", key: "salary_payment_mode" },
+  { label: "Tax deduction", key: "salary_tax" },
+  { label: "UPI ID", key: "salary_upi_id" },
 ];

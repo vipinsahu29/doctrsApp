@@ -114,7 +114,6 @@ const Expenses = () => {
         startDate,
         endDate,
       );
-      console.log("called", data, error, errors);
       if (!errors) {
         // cacheRef.current[cacheKey] = data
         setResponse(data);
