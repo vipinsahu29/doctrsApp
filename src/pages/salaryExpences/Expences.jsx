@@ -21,6 +21,7 @@ const Expenses = () => {
     Description: "",
     Amount: "",
     PaymentMode: "",
+    Category: "", 
   });
   const today = new Date().toISOString().split("T")[0];
 
@@ -60,7 +61,7 @@ const Expenses = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission
     const newData = { user: UID, clinicId: clinic_id, ...tableData };
-    if (!newData.clinicId || !newData?.Description || newData?.Date) return;
+    if (!newData.clinicId || !newData?.Description || !newData?.Date) return;
     const { data, error } = await createExpense({
       clinic_id: newData.clinicId,
       user: newData.user,
@@ -68,6 +69,7 @@ const Expenses = () => {
       description: newData.Description,
       amount: newData.Amount,
       payment_mode: newData.PaymentMode,
+      category: newData.Category,
     });
 
     if (error) {
@@ -85,6 +87,7 @@ const Expenses = () => {
       Description: "",
       Amount: "",
       PaymentMode: "",
+      Category: "",
     });
     setAddNewSalary(false);
   };
@@ -289,7 +292,7 @@ const Expenses = () => {
               <tbody>
                 {response.map((data, index) => (
                   <tr
-                    key={data.description}
+                    key={data.id}
                     className="text-center bg-gray-100"
                   >
                     <td className="border p-2 border-gray-900 w-[20px]">
@@ -306,6 +309,9 @@ const Expenses = () => {
                     </td>
                     <td className="border p-2 border-gray-900 w-17">
                       {data.payment_mode}
+                    </td>
+                    <td className="border p-2 border-gray-900 w-17">
+                      {data.category}
                     </td>
                   </tr>
                 ))}

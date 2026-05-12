@@ -211,14 +211,6 @@ export default function EditPatientModal({
       }
       return;
     } else if (!isNewAppointment && isPatient) {
-      console.log(
-        "Updating patient info",
-        formData,
-        "patient--",
-        patient,
-        "clinic_id",
-        clinic_id
-      );
       const { data, error } = await updatePatient({
         patientId: formData.patient_id,
         clinic_id: clinic_id,

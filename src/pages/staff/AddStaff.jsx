@@ -39,16 +39,43 @@ const AddStaff = () => {
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const insertData = async(formData)=>{
-    const {data, error} = await createEmployee({...formData, clincId:clinic_id })
-    return {data, error}
-  }
+  const insertData = async (formData) => {
+    const { data, error } = await createEmployee({
+      ...formData,
+      clincId: clinic_id,
+    });
+    console.log("insertData-", data, error);
+    if (error) {
+      setError("Failed to add staff, try again," + error);
+      return;
+    }
+    if (data) {
+      setError("");
+      alert("Staff added successfully");
+      setFormData({
+        FirstName: "",
+        LastName: "",
+        Mobile: "",
+        Email: "",
+        DOB: "",
+        Gender: "",
+        Qualification: "",
+        Specialization: "",
+        Department: "",
+        Address: "",
+        State: "",
+        Country: "",
+        PANCard: "",
+        Adhar: "",
+      });
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission
     if (!isMobileValid || !isValidEmail) {
       return; // Prevent form submission if validation fails
     }
-    insertData(formData)
+    insertData(formData);
   };
 
   return (
@@ -87,7 +114,8 @@ const AddStaff = () => {
           disabled={error.length > 0}
         >
           Save details
-        </button>   
+        </button>
+        {error && <p className="text-red-500 text-center">{error}</p>}
       </div>
     </div>
   );

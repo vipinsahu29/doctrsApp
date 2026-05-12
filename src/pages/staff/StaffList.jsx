@@ -142,7 +142,7 @@ const StaffList = () => {
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
-                        {d.Qualification}
+                        {d.employee_qualification}
                       </td>
                       <td
                         scope="row"
