@@ -7,6 +7,7 @@ import { getEmployeeAndSalary } from "../../SupaBase/Employee";
 import Store from "../../store/store";
 import { staffDetailsFields } from "../../Constants/constantUtil"
 import ViewDetailModal from "../../components/modal/ViewDetailModal";
+import EditModal from "../../components/modal/EditModal";
 const columns = [
   "No.",
   "Name",
@@ -28,7 +29,6 @@ const StaffList = () => {
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [newAppointment, setNewAppointment] = useState(false);
   const [error,setError] = useState("")
   const filteredUsers =
     searchValue && isNaN(searchValue)
@@ -39,10 +39,6 @@ const StaffList = () => {
           user.Mobile.toLowerCase().includes(searchValue.toLowerCase()),
         );
 
-  const handleEditmodal = () => {
-    setNewAppointment(false);
-    setIsEditOpen(false);
-  };
   const handleViewDetails = (id) => {
     setViewDetails(true);
     setViewData(empData.filter((value) => value.employee_id === id));
@@ -55,7 +51,6 @@ const StaffList = () => {
   };
 
   const handleEditDetails = (id) => {
-    setNewAppointment(false);
     setIsEditOpen(true);
     setViewData(empData.filter((value) => value.employee_id === id));
   };
@@ -163,7 +158,7 @@ const StaffList = () => {
                         <div className="flex justify-start items-center gap-4">
                           <button
                             tabIndex={-1}
-                            onClick={() => handleEditDetails(d.Id)}
+                            onClick={() => handleEditDetails(d.employee_id)}
                             className="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 cursor-pointer"
                           >
                             <FaEdit color="black" />
@@ -203,6 +198,18 @@ const StaffList = () => {
             fields={staffDetailsFields}
           />
         )}
+         {isEditOpen && (
+          <EditModal
+            isOpen={isEditOpen}
+            onClose={() => setIsEditOpen(false)}
+            data={viewData[0] || []}
+            pageTitle="Edit Staff Details"
+            onSave={() => {
+              setIsEditOpen(false);
+              setViewData("");
+            }}
+          />
+        )} 
       </div>
     </div>
   );
