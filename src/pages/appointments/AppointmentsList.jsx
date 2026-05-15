@@ -268,7 +268,7 @@ const AppointmentsList = ({ source = "" }) => {
                   {filteredUsers.map((d, i) => (
                     <tr
                       key={isPatient ? d.patient_id : d.appointment_id}
-                      className="text-center bg-gray-100 border border-gray-900"
+                      className="text-center bg-gray-100 border border-gray-900 hover:bg-gray-200"
                     >
                       <td
                         scope="row"

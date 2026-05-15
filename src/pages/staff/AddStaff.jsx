@@ -26,10 +26,13 @@ const AddStaff = () => {
     Country: "",
     PANCard: "",
     Adhar: "",
+    City: "",
   });
 
   const [error, setError] = useState("");
+  const disabled = !isMobileValid || !isValidEmail || !Object.values(formData).some((value) => value.length > 0) || error.length > 0;
 
+  console.log(isMobileValid, isValidEmail, formData, error,"Null--->", Object.values(formData).some((value) => value === "") );
   const handleChange = (e) => {
     if (e.target.name === "mobile") {
       setIsMobileValid(validateMobile(e.target.value));
@@ -44,7 +47,6 @@ const AddStaff = () => {
       ...formData,
       clincId: clinic_id,
     });
-    console.log("insertData-", data, error);
     if (error) {
       setError("Failed to add staff, try again," + error);
       return;
@@ -67,6 +69,7 @@ const AddStaff = () => {
         Country: "",
         PANCard: "",
         Adhar: "",
+        City: "",
       });
     }
   };
@@ -109,9 +112,9 @@ const AddStaff = () => {
           type="submit"
           onClick={handleSubmit}
           className={`w-full mt-4 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 ${
-            error.length > 0 && "cursor-not-allowed"
+            disabled && "cursor-not-allowed"
           }`}
-          disabled={error.length > 0}
+          disabled={disabled}
         >
           Save details
         </button>

@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import Pagination from "../../components/pagination/Paginations";
-import { staffsData } from "../../Constants/staffsListData";
-import { getEmployeeAndSalary } from "../../SupaBase/Employee";
+import { getEmployeeAndSalary, updateEmployee } from "../../SupaBase/Employee";
 import Store from "../../store/store";
-import { staffDetailsFields } from "../../Constants/constantUtil"
+import { staffDetailsFields } from "../../Constants/constantUtil";
 import ViewDetailModal from "../../components/modal/ViewDetailModal";
 import EditModal from "../../components/modal/EditModal";
 const columns = [
   "No.",
   "Name",
   "Department",
-  "Specialization",
   "Qualification",
   "Email",
   "Mobile",
@@ -22,27 +20,28 @@ const columns = [
 const StaffList = () => {
   const clinic_id = Store((state) => state.clinicId);
 
-  const [parPage, setParPage] = useState(10);
   const [viewData, setViewData] = useState();
-  const [empData, setEmpData] = useState([])
+  const [empData, setEmpData] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [error,setError] = useState("")
-  const filteredUsers =
-    searchValue && isNaN(searchValue)
-      ? staffsData.filter((user) =>
-          user.FirstName.toLowerCase().includes(searchValue.toLowerCase()),
-        )
-      : staffsData.filter((user) =>
-          user.Mobile.toLowerCase().includes(searchValue.toLowerCase()),
-        );
+  const [refetch, setRefetch] = useState(false);
+  const [error, setError] = useState("");
 
   const handleViewDetails = (id) => {
     setViewDetails(true);
     setViewData(empData.filter((value) => value.employee_id === id));
   };
+
+  const filteredData = empData.filter((item) => {
+    if (!searchValue) return true; // If search value is empty, show all data
+    return (
+      item.employee_fname.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.employee_lname.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.employee_email.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.employee_mobile.toString().includes(searchValue)
+    );
+  });
 
   const handleCloseView = () => {
     setViewDetails(false);
@@ -63,18 +62,83 @@ const StaffList = () => {
   useEffect(() => {
     const callApi = async () => {
       const { data, error } = await getEmployeeAndSalary(clinic_id);
-      if(error){
-        setError("Somthing went wrong try again," + error)
+      if (error) {
+        setError("Somthing went wrong try again," + error);
         return;
       }
-      if(!data){
-        setError("No record found.")
+      if (!data) {
+        setError("No record found.");
         return;
       }
-      setEmpData(data)
+      setEmpData(data);
+    };
+    if (clinic_id || refetch) callApi();
+  }, [clinic_id, refetch]);
+
+  const updateEmployeeData = async (formdata, empId) => {
+    const { data, error } = await updateEmployee(clinic_id, formdata, empId);
+    if (error) {
+      setError("Somthing went wrong try again," + error);
+      return;
     }
-    if(clinic_id) callApi()
-  }, [clinic_id]);
+    if (!data) {
+      setError("No record found.");
+      return;
+    }
+    setRefetch(true);
+  };
+  console.log(error);
+  const handleUpdateEmployee = async (formData) => {
+    if (!formData) {
+      setError("Form data is missing.");
+      return;
+    }
+    if (
+      formData.employee_fname.trim() === "" ||
+      formData.employee_lname.trim() === "" ||
+      formData.employee_email.trim() === ""
+    ) {
+      setError("All fields are required.");
+      return;
+    }
+    if (
+      formData.employee_joiningdate &&
+      formData.employee_lastdate &&
+      new Date(formData.employee_joiningdate) >
+        new Date(formData.employee_lastdate)
+    ) {
+      setError("Joining date cannot be greater than last work date.");
+      return;
+    }
+    if (formData.employee_dob && new Date(formData.employee_dob) > new Date()) {
+      setError("Date of birth cannot be in the future.");
+      return;
+    }
+    const data = {
+      fname: formData.employee_fname,
+      lname: formData.employee_lname,
+      department: formData.employee_department,
+      specialization: formData.employee_specialization,
+      qualification: formData.employee_qualification,
+      email: formData.employee_email,
+      mobile: formData.employee_mobile,
+      adhar: formData.employee_aadhar,
+      pan: formData.employee_pan,
+      dob: formData.employee_dob || "1990-01-01",
+      gender: formData.employee_gender,
+      city: formData.employee_city,
+      full_address: formData.employee_full_address || "NA",
+      status: formData.employee_status,
+      // joiningdate: formData.employee_joiningdate || "2020-01-01",
+      // lastdate: formData.employee_lastdate || "2020-01-01",
+    };
+
+    setIsEditOpen(false);
+    setViewData("");
+    updateEmployeeData(data, viewData[0]?.employee_id);
+    setRefetch(false);
+    console.log("updated data-", data);
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-300 py-6 flex-col gap-7">
       <AppointmentRouting pageName="MoreStaff" />
@@ -106,8 +170,8 @@ const StaffList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {empData.map((d, i) => (
-                    <tr key={d.employee_id}>
+                  {filteredData.map((d, i) => (
+                    <tr key={d.employee_id} className="hover:bg-gray-600 cursor-pointer transition duration-200">
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
@@ -127,12 +191,12 @@ const StaffList = () => {
                         {d.employee_department}{" "}
                         {/* Assuming `Department` is in the data */}
                       </td>
-                      <td
+                      {/* <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
                       >
                         {d.employee_specialization}
-                      </td>
+                      </td>*/}
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
@@ -179,37 +243,26 @@ const StaffList = () => {
               </table>
             </div>
           </div>
-          <div className="w-full flex justify-end mt-4 bottom-4 right-4">
-            <Pagination
-              pageNumber={currentPage}
-              setPageNumber={setCurrentPage}
-              totalItem={staffsData.length}
-              parPage={parPage}
-              showItem={10}
-            />
-          </div>
         </div>
         {viewDetails && (
           <ViewDetailModal
             isOpen={viewDetails}
             onClose={() => setViewDetails(false)}
-            data={ viewData[0] || []}
+            data={viewData[0] || []}
             title="Staff Details"
             fields={staffDetailsFields}
           />
         )}
-         {isEditOpen && (
+        {isEditOpen && (
           <EditModal
             isOpen={isEditOpen}
             onClose={() => setIsEditOpen(false)}
             data={viewData[0] || []}
             pageTitle="Edit Staff Details"
-            onSave={() => {
-              setIsEditOpen(false);
-              setViewData("");
-            }}
+            onSave={handleUpdateEmployee}
+            errorMessage={error}
           />
-        )} 
+        )}
       </div>
     </div>
   );

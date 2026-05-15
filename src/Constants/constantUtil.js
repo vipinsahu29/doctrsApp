@@ -99,7 +99,7 @@ export const addStaffInputFields = [
     required: true,
   },
   { label: "PAN Card", name: "PANCard", type: "text", required: true },
-  { label: "Adhar number", name: "Adhar", type: "text", required: true },
+  { label: "Adhar number", name: "Adhar", type: "number", required: true },
   {
     label: "Qualification",
     name: "Qualification",
@@ -121,7 +121,8 @@ export const addStaffInputFields = [
   },
   { label: "Address", name: "Address", type: "text", required: true },
   { label: "City", name: "City", type: "text", required: true },
-  // { label: "Country", name: "Country", type: "text", required: true },
+  {label: "Date of joining", name: "JoiningDate", type: "date", max: today, required: true},
+  // { label: "Country", name: "Country", type: "text", required: true }m  ,
 ];
 
 export const salaryInputFields = [
@@ -204,6 +205,8 @@ export const registrationFields = [
 export const staffDetailsFields = [
   { label: "First Name", key: "employee_fname", type: "text", required: true},
   { label: "Last Name", key: "employee_lname",type: "text", required: true },
+  { label: "Date Of Birth", key: "employee_dob", type: "date" },
+  {label: "Gender", key: "employee_gender", type: "select", options: ["Male", "Female", "Other"], required: true},
   { label: "Department", key: "employee_department", type: "select", options: departmentOptions, required: true },
   { label: "Specialization", key: "employee_specialization", type: "text", required: true },
   { label: "Qualification", key: "employee_qualification", type: "text", required: true },
@@ -212,6 +215,10 @@ export const staffDetailsFields = [
   { label: "Status", key: "employee_status", type: "select", options: ["Active", "Inactive"], required: true },
   { label: "Joining Date", key: "employee_joiningdate", type: "date" },
   { label: "Last Work Date", key: "employee_lastdate", type: "date" },
+  { label: "Aadhar Number", key: "employee_adhar", type: "number" },
+  { label: "PAN Number", key: "employee_pan", type: "text" },
+  { label: "City", key: "employee_city", type: "text" },
+  { label: "Full Address", key: "employee_full_address", type: "text" },
 
   { label: "Salary Deduction", key: "salary_deduction", type: "number" },
   { label: "Gross Salary", key: "salary_gross", type: "number" },

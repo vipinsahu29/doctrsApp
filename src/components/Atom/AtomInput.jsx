@@ -16,7 +16,7 @@ const AtomInput = ({
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleBlur = () => {
-    if (required && value.trim() === "") {
+    if (required && value === "") {
       setErrorMessage(`${label} is required.`);
       setError(`${label} is required.`);
       

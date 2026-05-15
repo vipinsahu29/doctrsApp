@@ -15,10 +15,10 @@ const EditModal = ({
   pageTitle,
   onClose,
   onSave,
-  handleSubmit,
+  errorMessage,
 }) => {
   const [formData, setFormData] = React.useState(data);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState(errorMessage || "");
   const [isMobileValid, setIsMobileValid] = React.useState(true);
   const [isValidEmail, setIsValidEmail] = React.useState(true);
   const handleChange = (e) => {
@@ -30,6 +30,11 @@ const EditModal = ({
     }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  if (!isMobileValid) {
+    setError("Please enter a valid mobile number.");
+  } else if (!isValidEmail) {
+    setError("Please enter a valid email address.");
+  }
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10 ">
       <DialogBackdrop
@@ -43,12 +48,12 @@ const EditModal = ({
             transition
             className="relative md:bottom-0 sm: bottom-[73px] transform overflow-hidden rounded-lg bg-gray-700 text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg md:max-w-5xl data-closed:sm:translate-y-0 data-closed:sm:scale-95"
           >
-            <div className="bg-gray-600 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <DialogTitle as="h3" className="text-lg text-white font-bold">
                 {pageTitle}
               </DialogTitle>
               <form
-                onSubmit={handleSubmit}
+                onSubmit={onSave}
                 className="grid grid-cols-2 gap-4  mt-4 font-black"
               >
                 {/* First Name */}
@@ -71,7 +76,7 @@ const EditModal = ({
               <div className="flex justify-center gap-4">
                 <button
                   type="submit"
-                  onClick={handleSubmit}
+                  onClick={()=>onSave(formData)}
                   className={`w-44 mt-4 p-2 bg-green-600 text-white rounded hover:bg-green-700 ${
                     error.length > 0 && "cursor-not-allowed"
                   }`}
@@ -103,6 +108,7 @@ EditModal.defaultProps = {
   pageTitle: "Edit Details",
 };
 EditModal.propTypes = {
+  data: PropTypes.object,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   onSave: PropTypes.func,
