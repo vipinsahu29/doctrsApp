@@ -102,7 +102,7 @@ const DoctrsList = () => {
             <div className="relative overflow-x-auto min-h-auto pb-5">
               <table className=" border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
                 <thead className=" text-sm 1 uppercase">
-                  <tr>
+                  <tr className="bg-gray-800 text-center text-[#f7f8f9]" >
                     {columns.map((items) => (
                       <th
                         scope="col"
@@ -127,7 +127,7 @@ const DoctrsList = () => {
               </tr>
             ) : (*/}
                   {filteredUsers?.map((d, i) => (
-                    <tr key={d.id}>
+                    <tr key={d.id} className="hover:bg-gray-900 cursor-pointer transition duration-200">
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"

@@ -220,10 +220,10 @@ export const staffDetailsFields = [
   { label: "City", key: "employee_city", type: "text" },
   { label: "Full Address", key: "employee_full_address", type: "text" },
 
-  { label: "Salary Deduction", key: "salary_deduction", type: "number" },
   { label: "Gross Salary", key: "salary_gross", type: "number" },
+  { label: "Salary Deduction", key: "salary_deduction", type: "number" },
+  { label: "Tax deduction", key: "salary_tax", type: "number" },
   { label: "Net Salary", key: "salary_net", type: "number" },
   { label: "Payment mode", key: "salary_payment_mode", type: "select", options: ["Cash", "UPI/NB", "Credit Card", "Debit Card", "Cheque"] },
-  { label: "Tax deduction", key: "salary_tax", type: "number" },
   { label: "UPI ID", key: "salary_upi_id", type: "text" },
 ];

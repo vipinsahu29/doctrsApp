@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaRegEye } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
-import Pagination from "../../components/pagination/Paginations";
 import { getEmployeeAndSalary, updateEmployee } from "../../SupaBase/Employee";
 import Store from "../../store/store";
 import { staffDetailsFields } from "../../Constants/constantUtil";
 import ViewDetailModal from "../../components/modal/ViewDetailModal";
 import EditModal from "../../components/modal/EditModal";
+import { UpdateSalary } from "../../SupaBase/Salary";
 const columns = [
   "No.",
   "Name",
@@ -42,13 +42,6 @@ const StaffList = () => {
       item.employee_mobile.toString().includes(searchValue)
     );
   });
-
-  const handleCloseView = () => {
-    setViewDetails(false);
-    setIsEditOpen(false);
-    setViewData("");
-  };
-
   const handleEditDetails = (id) => {
     setIsEditOpen(true);
     setViewData(empData.filter((value) => value.employee_id === id));
@@ -87,7 +80,6 @@ const StaffList = () => {
     }
     setRefetch(true);
   };
-  console.log(error);
   const handleUpdateEmployee = async (formData) => {
     if (!formData) {
       setError("Form data is missing.");
@@ -129,15 +121,27 @@ const StaffList = () => {
       city: formData.employee_city,
       full_address: formData.employee_full_address || "NA",
       status: formData.employee_status,
-      // joiningdate: formData.employee_joiningdate || "2020-01-01",
-      // lastdate: formData.employee_lastdate || "2020-01-01",
+      joiningdate: formData.employee_joiningdate || "2020-01-01",
+      lastdate: formData.employee_lastdate || "2020-01-01",
     };
-
+    const salaryData = {
+      p_bank_details: { accountNo: "123456789", IFSC: "KKBK0001769" },
+      p_clinic_id: clinic_id,
+      p_deduction: formData.salary_deduction,
+      p_emp_id: formData.employee_id,
+      p_gross_salary: formData.salary_gross,
+      p_id: formData.salary_id,
+      p_net_salary: formData.salary_net,
+      p_payment_mode: formData.salary_payment_mode,
+      p_prev_salary: formData.prev_salary || 0,
+      p_tax: formData.salary_tax,
+      p_upi_id: formData.salary_upi_id,
+    };
     setIsEditOpen(false);
     setViewData("");
     updateEmployeeData(data, viewData[0]?.employee_id);
+    UpdateSalary(viewData[0].salary_id, salaryData, viewData[0]?.employee_id);
     setRefetch(false);
-    console.log("updated data-", data);
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-300 py-6 flex-col gap-7">
@@ -157,7 +161,7 @@ const StaffList = () => {
             <div className=" overflow-x-auto min-h-auto pb-5">
               <table className="border-collapse border border-gray-400 w-full text-sm text-left text-[#d0d2d6]">
                 <thead className="text-sm uppercase">
-                  <tr>
+                  <tr className="bg-gray-800 text-center text-[#f7f8f9]">
                     {columns.map((item) => (
                       <th
                         scope="col"
@@ -171,7 +175,10 @@ const StaffList = () => {
                 </thead>
                 <tbody>
                   {filteredData.map((d, i) => (
-                    <tr key={d.employee_id} className="hover:bg-gray-600 cursor-pointer transition duration-200">
+                    <tr
+                      key={d.employee_id}
+                      className="hover:bg-gray-900 cursor-pointer transition duration-200 hover:text-white"
+                    >
                       <td
                         scope="row"
                         className="py-1 px-4 font-medium whitespace-nowrap border border-gray-300"
