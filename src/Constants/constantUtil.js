@@ -201,8 +201,14 @@ export const registrationFields = [
   { label: "Dr Name", name: "DrName", type: "text", required: true },
   { label: "Mobile", name: "Mobile", type: "tel", required: true },
 ];
+export const salaryDataFields = [{ label: "Gross Salary", key: "salary_gross", type: "number" },
+  { label: "Salary Deduction", key: "salary_deduction", type: "number" },
+  { label: "Tax deduction", key: "salary_tax", type: "number" },
+  { label: "Net Salary", key: "salary_net", type: "number", disabled: true },
+  { label: "Payment mode", key: "salary_payment_mode", type: "select", options: ["Cash", "UPI/NB", "Credit Card", "Debit Card", "Cheque"] },
+  { label: "UPI ID", key: "salary_upi_id", type: "text" }]
 
-export const staffDetailsFields = [
+  export const staffDetailsFields = [
   { label: "First Name", key: "employee_fname", type: "text", required: true},
   { label: "Last Name", key: "employee_lname",type: "text", required: true },
   { label: "Date Of Birth", key: "employee_dob", type: "date" },
@@ -220,10 +226,10 @@ export const staffDetailsFields = [
   { label: "City", key: "employee_city", type: "text" },
   { label: "Full Address", key: "employee_full_address", type: "text" },
 
-  { label: "Gross Salary", key: "salary_gross", type: "number" },
-  { label: "Salary Deduction", key: "salary_deduction", type: "number" },
-  { label: "Tax deduction", key: "salary_tax", type: "number" },
-  { label: "Net Salary", key: "salary_net", type: "number" },
-  { label: "Payment mode", key: "salary_payment_mode", type: "select", options: ["Cash", "UPI/NB", "Credit Card", "Debit Card", "Cheque"] },
-  { label: "UPI ID", key: "salary_upi_id", type: "text" },
+  ...salaryDataFields
 ];
+export const salaryPageFields = [
+  { label: "First Name", key: "employee_fname", type: "text", required: true},
+  { label: "Last Name", key: "employee_lname",type: "text", required: true },
+  ...salaryDataFields
+]

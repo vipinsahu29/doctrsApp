@@ -28,8 +28,32 @@ const EditModal = ({
     if (e.target.name === "email") {
       setIsValidEmail(validateEmail(e.target.value));
     }
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const updatedFormData = {
+      ...formData,
+      [e.target.name]: e.target.value,
+    };
+
+    if (
+      e.target.name === "salary_gross" ||
+      e.target.name === "salary_deduction" ||
+      e.target.name === "salary_tax"
+    ) {
+      const gross = Number(updatedFormData.salary_gross) || 0;
+      const deduction = Number(updatedFormData.salary_deduction) || 0;
+      const tax = Number(updatedFormData.salary_tax) || 0;
+      updatedFormData.salary_net = gross - deduction - tax;
+      if (updatedFormData.salary_net < 0) {
+        updatedFormData.salary_net = 0;
+        setError("Net salary cannot be negative. Please check the gross salary, deduction, and tax values.");
+      }
+      else {
+        setError("");
+      }
+    }
+    // Update state once
+    setFormData(updatedFormData);
   };
+
   if (!isMobileValid) {
     setError("Please enter a valid mobile number.");
   } else if (!isValidEmail) {
@@ -69,6 +93,7 @@ const EditModal = ({
                       options={field.options}
                       required={field.required}
                       setError={setError}
+                      disableInput={field.disabled}
                     />
                   </div>
                 ))}
@@ -76,7 +101,7 @@ const EditModal = ({
               <div className="flex justify-center gap-4">
                 <button
                   type="submit"
-                  onClick={()=>onSave(formData)}
+                  onClick={() => onSave(formData)}
                   className={`w-44 mt-4 p-2 bg-green-600 text-white rounded hover:bg-green-700 ${
                     error.length > 0 && "cursor-not-allowed"
                   }`}
@@ -104,6 +129,7 @@ const EditModal = ({
 };
 
 export default EditModal;
+
 EditModal.defaultProps = {
   pageTitle: "Edit Details",
 };
@@ -113,5 +139,5 @@ EditModal.propTypes = {
   onClose: PropTypes.func,
   onSave: PropTypes.func,
   pageTitle: PropTypes.string,
-  handleSubmit: PropTypes.func,
+  errorMessage: PropTypes.string,
 };
