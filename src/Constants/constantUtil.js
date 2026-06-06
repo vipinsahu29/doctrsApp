@@ -233,3 +233,19 @@ export const salaryPageFields = [
   { label: "Last Name", key: "employee_lname",type: "text", required: true },
   ...salaryDataFields
 ]
+
+export const checkInFields = [
+  { label: "First Name", name: "firstName", type: "text", required: true },
+  { label: "Last Name", name: "lastName", type: "text", required: true },
+  { label: "Appointment Id", name: "appointment_id", type: "tel", required: true },
+  { label: "Check-in Time", name: "created_at", type: "datetime-local", required: true },
+  { label: "Symptoms", name: "symptoms", type: "text", required: true },
+  { label: "Doctor Name", name: "doctor_name", type: "text", required: true },
+  { label: "Family History", name: "family_history", type: "text", required: false },
+  { label: "Allergies", name: "allergies", type: "text", required: false },
+  { label: "Medications", name: "medications", type: "select", options: ["medicineName", "dose", "timeADay", "durationDays", "remark"], required: false },
+  { label: "pathology Tests", name: "pathology_tests", type: "text",required: false },
+  { label: "Advice", name: "advice", type: "text", required: false },
+  { label: "Diet", name: "diet", type: "text", required: false },
+  { label: "Next Follow-up Date", name: "followup_date", type: "date", required: false },
+]

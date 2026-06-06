@@ -136,13 +136,14 @@ const Salary = () => {
                     key={data.employee_fname}
                     className="text-center bg-gray-100 hover:bg-gray-900 hover:text-white cursor-pointer"
                   >
-                    <td className="border p-2 border-gray-900 w-[20px]">
+                    <td className="border p-2 border-gray-900 w-[10px]">
                       {index + 1}
                     </td>
                     <td className="border p-2 border-gray-900 w-[20px]">
                       {data.employee_fname}
                     </td>
-                    <td className="border p-2 border-gray-900">
+                   
+                    <td className="border p-2 border-gray-900 w-[20px]">
                       {data.employee_lname}
                     </td>
                     <td className="border p-2 border-gray-900 w-[20px]">
