@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import symptomsData from "../../Constants/symptoms.json";
 
 const CheckInMiddlePart = ({
@@ -6,6 +7,8 @@ const CheckInMiddlePart = ({
   setFamiliyHistory,
   selectedSymptoms,
   setSelectedSymptoms,
+  allergies,
+  setAllergies,
 }) => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -29,9 +32,9 @@ const CheckInMiddlePart = ({
 
     // Ask for number of days (1-30)
     const days = prompt(`For how many days? (1-30)`, "1");
-    const daysNum = parseInt(days, 10);
+    const daysNum = Number.parseInt(days, 10);
 
-    if (isNaN(daysNum) || daysNum < 1 || daysNum > 30) {
+    if (Number.isNaN(daysNum) || daysNum < 1 || daysNum > 30) {
       alert("Please enter a valid number between 1 and 30.");
       return;
     }
@@ -119,6 +122,22 @@ const CheckInMiddlePart = ({
           htmlFor="FHistory"
           className="block text-sm font-medium text-gray-900"
         >
+          Allergies (if any)
+        </label>
+        <textarea
+          type="text"
+          id="FHistory"
+          name="FHistory"
+          value={allergies}
+          onChange={(e) => setAllergies(e.target.value)}
+          className="mt-1/2 block w-full h-12 px-3 py-2 border border-gray-300 rounded-md"
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="FHistory"
+          className="block text-sm font-medium text-gray-900"
+        >
           Family History for any kind of illness
         </label>
         <textarea
@@ -132,6 +151,15 @@ const CheckInMiddlePart = ({
       </div>
     </div>
   );
+};
+
+CheckInMiddlePart.propTypes = {
+  familyHistory: PropTypes.string,
+  setFamiliyHistory: PropTypes.func.isRequired,
+  selectedSymptoms: PropTypes.string,
+  setSelectedSymptoms: PropTypes.func.isRequired,
+  allergies: PropTypes.string,
+  setAllergies: PropTypes.func.isRequired,
 };
 
 export default CheckInMiddlePart;

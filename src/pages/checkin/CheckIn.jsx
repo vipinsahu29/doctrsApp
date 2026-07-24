@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { calculateExperience } from "../../utility/util";
 import { checkInFields } from "../../Constants/checkinPageFields";
 import CheckInMiddlePart from "./CheckInMiddlePart";
@@ -9,15 +9,27 @@ import PrintPrescription from "./PrintPrescription";
 import { useReactToPrint } from "react-to-print";
 import CheckInLabTest from "./CheckInLabTest";
 import { createCheckin } from "../../SupaBase/CheckinAPI";
-// import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
+
+function getItemValue(items, checkinData) {
+  if (items.lable
+     === "Name:") {
+    return checkinData[0].fname + " " + checkinData[0].lname;
+  } else if (items.lable === "Age:") {
+    return calculateExperience(checkinData[0].dob);
+  } else {
+    return checkinData[0]?.[items?.value];
+  }
+}
+
 const CheckIn = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const clinic_id = Store.getState().clinicId;
   const location = useLocation();
   const checkinData = location.state || {};
   const componentRef = useRef();
   const [familyHistory, setFamilyHistory] = useState("");
+  const [allergies, setAllergies] = useState("");
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [medicines, setMedicines] = useState([]);
   const [advice, setAdvice] = useState("");
@@ -25,7 +37,6 @@ const CheckIn = () => {
   const [followUpDate, setFollowUpDate] = useState("");
   const [selectedData, setSelectedData] = useState("");
 
-  console.log("Checkin Data:", checkinData[0].appointment_id);
   const printData = {
     ...checkinData,
     familyHistory: familyHistory,
@@ -40,7 +51,6 @@ const CheckIn = () => {
     contentRef: componentRef,
   });
   const handleCheckin = async () => {
-    console.log("PrintData--------->:", printData);
     if (
       !printData.familyHistory ||
       !printData.selectedSymptoms ||
@@ -61,6 +71,10 @@ const CheckIn = () => {
       advice: advice || "",
       diet: diet || "",
       followup_date: followUpDate || "",
+      allergies: allergies || "",
+      notes: "NA",
+      medical_history: "NA",
+      family_history: familyHistory || "",
     });
     if (error) {
       console.error("Error creating checkin:", error);
@@ -75,10 +89,11 @@ const CheckIn = () => {
       setDiet("");
       setFollowUpDate("");
       setSelectedData("");
-      // navigate("/appointment_list");
+      setAllergies("");
+      
+      navigate("/appointment_list");
     }
   };
-
   if (clinic_id === undefined || clinic_id === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -110,11 +125,7 @@ const CheckIn = () => {
               >
                 {" "}
                 &nbsp;
-                {items.lable === "Name:"
-                  ? checkinData[0].fname + " " + checkinData[0].lname
-                  : items.lable === "Age:"
-                  ? calculateExperience(checkinData[0].dob)
-                  : checkinData[0]?.[items?.value]}
+                {getItemValue(items, checkinData)}
               </h3>
             </div>
           ))}
@@ -125,6 +136,8 @@ const CheckIn = () => {
         setFamiliyHistory={setFamilyHistory}
         selectedSymptoms={selectedSymptoms}
         setSelectedSymptoms={setSelectedSymptoms}
+        setAllergies={setAllergies}
+        allergies={allergies}
       />
       <CheckInMedecine medicines={medicines} setMedicines={setMedicines} />
       <CheckInLabTest
