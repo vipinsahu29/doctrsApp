@@ -3,12 +3,15 @@ import Pagination from "../../components/pagination/Paginations";
 import { FaEdit, FaRegEye, FaHistory } from "react-icons/fa";
 import AppointmentRouting from "../../components/RoutingButtons/AppointmentRouting";
 import AppointmentViewDetailsModal from "../../components/modal/AppointmentViewDetailsModal";
+import ViewHistoryModal from "../../components/modal/ViewHistoryModal";
 import EditPatientModal from "../../components/modal/EditPatientModal";
 import { useNavigate } from "react-router-dom";
 import Store from "../../store/store";
 import { getPatientDetails } from "../../SupaBase/PatientAPI";
+import { getCheckInItems } from "../../SupaBase/CheckinAPI";
 import { fetchAppointmentDataByDate } from "../../SupaBase/AppointmentAPI";
 import PropTypes from "prop-types";
+
 const appointmentColumns = [
   "No.",
   "Full Name",
@@ -32,7 +35,8 @@ const patientsColumns = [
 
 const AppointmentsList = ({ source = "" }) => {
   const clinic_id = Store((state) => state.clinicId);
-  const [viewData, setViewData] = useState();
+  const [viewData, setViewData] = useState([]);
+  const [history, setHistory] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [viewDetails, setViewDetails] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -45,6 +49,8 @@ const AppointmentsList = ({ source = "" }) => {
   const [isPatientUpdated, setIsPatientUpdated] = useState(false);
   const [serialNumber, setSerialNumber] = useState(1);
   const [hidePaidAppointments, setHidePaidAppointments] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const dataPerPage = 50
   const [date, setDate] = useState(
     isPatient ? "" : new Date().toISOString().split("T")[0]
@@ -86,6 +92,37 @@ const AppointmentsList = ({ source = "" }) => {
     },
     [date]
   );
+  const getPatientHistory = React.useCallback(async (patientId, clinicId) => {
+    try {
+      setIsFetching(true);
+      const { data, error } = await getCheckInItems(patientId, clinicId);
+      if (error) {
+        console.error("Error fetching patient history:", error);
+        setIsFetching(false);
+        return [];
+      }
+      setIsFetching(false);
+      return data || [];
+    }
+    catch (error) {
+      console.error("Error fetching patient history:", error);
+      setIsFetching(false);
+      return [];
+    }
+  }, []);
+  useEffect(() => {
+    if (showHistory && viewData && viewData.length > 0) {
+      const patientId = viewData[0].patient_id;
+      getPatientHistory(patientId, clinic_id).then((historyData) => {
+        if (historyData && historyData.length > 0) {
+          historyData.sort((a, b) => new Date(b.checkin_date) - new Date(a.checkin_date));          
+          setHistory(historyData);
+        } else {
+          setHistory([]);
+        }
+      });
+    }
+  }, [showHistory, viewData, clinic_id, getPatientHistory]);
   const getPatientsDetails = React.useCallback(async (clinicId) => {
     await getPatientDetails(clinicId, currentPage, dataPerPage).then((data) => {
       if (!data || data.length === 0) {
@@ -140,18 +177,22 @@ const AppointmentsList = ({ source = "" }) => {
     }
     return 1;
   };
-
   const totalPages = calculateTotalPages();
-    console.log("Current Page:", currentPage, 'total_page:', totalPages,filteredUsers[0]?.total_count );
-  console.log("Total Pages:", totalPages, filteredUsers[0]?.total_pages,'--',Math.ceil(filteredUsers[0]?.total_count / dataPerPage));
   const navigate = useNavigate();
   const handleEditmodal = () => {
     setNewAppointment(false);
     setIsEditOpen(false);
   };
-
-  const handleViewDetails = (patientId, appointmentId) => {
-    setViewDetails(true);
+  const handleCloseHistory = () => {
+    setShowHistory(false); 
+    setHistory([]);
+    setViewData([]);
+  }
+  const handleViewDetails = (patientId, appointmentId, type) => {
+    if(type === "view")
+      setViewDetails(true);
+    if(type==="history")
+      setShowHistory(true)
     setViewData(
       filteredUsers.filter(
         (value) =>
@@ -364,7 +405,7 @@ const AppointmentsList = ({ source = "" }) => {
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
                             onClick={() =>
-                              handleViewDetails(d.patient_id, d.appointment_id)
+                              handleViewDetails(d.patient_id, d.appointment_id,'view')
                             }
                           >
                             {" "}
@@ -375,7 +416,9 @@ const AppointmentsList = ({ source = "" }) => {
                               title="History"
                               tabIndex={-1}
                               className="p-[6px] bg-green-500 rounded hover:shadow-lg hover:shadow-blue-500/50 cursor-pointer"
-                              onClick={() => ""}
+                              onClick={() =>
+                              handleViewDetails(d.patient_id, d.appointment_id,'history')
+                            }
                             >
                               {" "}
                               <FaHistory />{" "}
@@ -424,6 +467,15 @@ const AppointmentsList = ({ source = "" }) => {
           isPatient={isPatient}
           onNewAppointment={() => setNewAppointment(true)}
         />
+      )}
+      {showHistory && (
+        <ViewHistoryModal
+          open={showHistory}
+          history={history}
+          patientData={viewData?.length > 0 ? viewData : []}
+          onClose={handleCloseHistory} 
+          isLoading={isFetching}
+          />
       )}
       {(isEditOpen || newAppointment) && (
         <EditPatientModal

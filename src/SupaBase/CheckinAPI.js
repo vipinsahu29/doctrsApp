@@ -17,3 +17,13 @@ export const createCheckin = async (checkinData) => {
     return { error: "An unexpected error occurred.", err };
   }
 };
+
+export const getCheckInItems = async(patient_id, clinic_id)=>{
+  const {data, error} = await supabase.rpc("get_checkin_data", {
+       p_patient_id: patient_id,
+        p_clinic_id: clinic_id,
+    });
+  if (error) console.error(error);
+  else console.log(data);
+  return { data, error };
+}

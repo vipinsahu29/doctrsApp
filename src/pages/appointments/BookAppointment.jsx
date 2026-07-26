@@ -293,7 +293,7 @@ const BookAppointment = () => {
           <ul className="border p-2 bg-white shadow mt-1 h-[200px] overflow-auto">
             {patientData.map((items, index) => (
               <button
-                key={items.patient_id}
+                key={items.patient_id + index}
                 className={`cursor-pointer p-1 flex w-full ${
                   highlightedIndex === index
                     ? "bg-blue-200"
