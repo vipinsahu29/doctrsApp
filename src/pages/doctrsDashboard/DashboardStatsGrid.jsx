@@ -12,7 +12,7 @@ const DashboardStatsGrid = ({stats, bgColor="bg-white"}) => {
                   stat.positive ? "text-green-500" : "text-red-500"
                 }`}
               >
-                {stat.change} vs last month
+                {stat.change}
               </p>
             </div>
           ))}

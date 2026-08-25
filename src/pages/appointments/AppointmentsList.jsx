@@ -124,7 +124,7 @@ const AppointmentsList = ({ source = "" }) => {
     }
   }, [showHistory, viewData, clinic_id, getPatientHistory]);
   const getPatientsDetails = React.useCallback(async (clinicId) => {
-    await getPatientDetails(clinicId, currentPage, dataPerPage).then((data) => {
+    await getPatientDetails(clinicId, currentPage, dataPerPage, isNaN(searchValue) ? null : Number(searchValue) , isNaN(searchValue) ? searchValue : null).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."
@@ -135,7 +135,7 @@ const AppointmentsList = ({ source = "" }) => {
       }
       setPatientData(data || []);
     });
-  }, [currentPage]);
+  }, [currentPage,searchValue]);
   useEffect(() => {
     if (!isPatient && currentPage) {
       setSerialNumber(currentPage);
@@ -153,6 +153,12 @@ const AppointmentsList = ({ source = "" }) => {
     isPatientUpdated,
     getAppointmentListByDate,
   ]);
+
+  useEffect(()=>{
+    if(searchValue && isPatient){
+      getPatientsDetails(clinic_id, currentPage, dataPerPage, isNaN(searchValue) ? null : Number(searchValue) , isNaN(searchValue) ? searchValue : null);
+    }
+  },[searchValue, clinic_id, currentPage, isPatient, getPatientsDetails])
   const hidenAppointmentsData =
     hidePaidAppointments && !isPatient
       ? patientData?.filter((item) => item?.payment_mode.toLowerCase() === "pending")
