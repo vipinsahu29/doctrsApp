@@ -69,3 +69,56 @@ export async function getAppointmentsCount(date1, date2, clinicId) {
     throw error;
   }
 }
+
+export async function getExpenseStats(date1, date2, clinicId) {
+  try {
+    const { data, error } = await supabase.rpc("expense_summry", {
+      p_start_date: date1,
+      p_end_date: date2,
+      p_clinic_id: clinicId,
+    });
+    if (error) {
+      console.error("Error fetching patient count:", error);
+      return { data: null, error };
+    }
+    const expenseData = data?.[0] ?? {};
+    console.log("Exp Data--", expenseData);
+    // return expenseData
+    return {
+      total_expense_sum: expenseData?.total_expense_sum ?? 0,
+      fixed_expenses: expenseData?.fixed_expenses ?? 0,
+      professional_expenses: expenseData?.professional_expenses ?? 0,
+      facility_expenses: expenseData?.facility_expenses ?? 0,
+      business_miscellaneous: expenseData?.business_miscellaneous ?? 0,
+    };
+  } catch (error) {
+    console.error("getAppointmentsCount:", error);
+    throw error;
+  }
+}
+
+export async function GetExpenseStats(date1, date2, clinicId) {
+  const data = await getExpenseStats(date1, date2, clinicId);
+  console.log("-->", data);
+  return data;
+}
+
+export async function getChartStats(date1, date2, clinicId) {
+  try {
+    const { data, error } = await supabase.rpc("chartdatastats", {
+      startdate: date1,
+      enddate: date2,
+      clinic_id: clinicId,
+    });
+    if (error) {
+      console.error("Error fetching patient count:", error);
+      return { data: null, error };
+    }
+    const chartData = data ?? {};
+    // return expenseData
+    return chartData;
+  } catch (error) {
+    console.error("getAppointmentsCount:", error);
+    throw error;
+  }
+}

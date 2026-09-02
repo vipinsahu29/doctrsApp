@@ -124,7 +124,7 @@ const AppointmentsList = ({ source = "" }) => {
     }
   }, [showHistory, viewData, clinic_id, getPatientHistory]);
   const getPatientsDetails = React.useCallback(async (clinicId) => {
-    await getPatientDetails(clinicId, currentPage, dataPerPage, isNaN(searchValue) ? null : Number(searchValue) , isNaN(searchValue) ? searchValue : null).then((data) => {
+    await getPatientDetails(clinicId, currentPage, dataPerPage, Number.isNaN(searchValue) ? null : Number(searchValue) , Number.isNaN(searchValue) ? searchValue : null).then((data) => {
       if (!data || data.length === 0) {
         setErrorMessage(
           "No data found for the your clinic. Please ensure that there are patients available. Or try to logout and login again."

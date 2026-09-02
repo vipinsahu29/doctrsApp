@@ -7,11 +7,14 @@ import DashboardChart from "./DashboardChart";
 import {
   getPatientStats,
   getRevenueStats,
+  getExpensesStats,
 } from "../../Constants/DashboardStats";
 import Store from "../../store/store";
 import {
   getPatientsCountNew,
   getAppointmentsCount,
+  getExpenseStats,
+  getChartStats,
 } from "../../SupaBase/DashboardApi";
 
 const getToday = () => {
@@ -23,8 +26,11 @@ const Dashboard = () => {
   // Default dates = today
   const [startDate, setStartDate] = useState(getToday);
   const [endDate, setEndDate] = useState(getToday);
-
+  const [chartStartDate, setChartStartDate] = useState(getToday);
+  const [chartEndDate, setChartEndDate] = useState(getToday);
   const [timePeriod, setTimePeriod] = useState("today");
+  const [chartPeriod, setChartPeriod] = React.useState("month");
+  const [chartData, setChartData] = useState([{ days: 0, visitors: 0 }]);
   const [patientStats, setPatientStats] = useState({
     totalPatients: 0,
     newPatients: 0,
@@ -40,6 +46,14 @@ const Dashboard = () => {
     card: 0,
     totalAppointments: 0,
     revisited: 0,
+  });
+
+  const [expenseStats, setExpenseStats] = useState({
+    totalExpenses: 0,
+    fixedExpenses: 0,
+    professionalExpenses: 0,
+    facilityExpenses: 0,
+    businessMiscellaneous: 0,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -66,7 +80,6 @@ const Dashboard = () => {
 
   const handleEndDateChange = (e) => {
     const selectedDate = e.target.value;
-
     setEndDate(selectedDate);
     setTimePeriod("custom");
   };
@@ -75,7 +88,7 @@ const Dashboard = () => {
   // Time Period
   // --------------------------------------------------
 
-  const handleTimePeriodChange = (period) => {
+  const handleTimePeriodChange = (period, isChart = false) => {
     const todayDate = new Date();
 
     let start = new Date(todayDate);
@@ -91,23 +104,43 @@ const Dashboard = () => {
         start = new Date(todayDate);
         start.setDate(todayDate.getDate() - 6);
         break;
-
+      case "quarter":
+        start = new Date(todayDate);
+        start.setMonth(todayDate.getMonth() - 3);
+        break;
       case "month":
         start = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         break;
-
+      case "year":
+        start = new Date(
+          todayDate.getFullYear(),
+          0, // January
+          1, // First day
+        );
+        break;
       default:
         return;
     }
 
-    setStartDate(start.toISOString().split("T")[0]);
-    setEndDate(end.toISOString().split("T")[0]);
-    setTimePeriod(period);
+    if (isChart) {
+      setChartStartDate(start.toISOString().split("T")[0]);
+      setChartEndDate(end.toISOString().split("T")[0]);
+      setChartPeriod(period);
+    } else {
+      setStartDate(start.toISOString().split("T")[0]);
+      setEndDate(end.toISOString().split("T")[0]);
+      setTimePeriod(period);
+    }
   };
 
   // --------------------------------------------------
   // Fetch Patient Counts
   // --------------------------------------------------
+
+  useEffect(() => {
+    handleTimePeriodChange(chartPeriod, true);
+  }, [chartPeriod]);
+
   useEffect(() => {
     if (!clinicId || !startDate || !endDate) {
       return;
@@ -116,7 +149,6 @@ const Dashboard = () => {
       try {
         const data = await getAppointmentsCount(startDate, endDate, clinicId);
         if (error) {
-          console.error("Error fetching appointment count:", error);
           setError(error.message || "Unable to fetch appointment stats");
           setRevenueStats({
             totalRevenue: 0,
@@ -151,7 +183,30 @@ const Dashboard = () => {
         throw error;
       }
     };
-
+    const fetchExpenseStats = async () => {
+      try {
+        const data = await getExpenseStats(startDate, endDate, clinicId);
+        if (!data || data.length === 0) {
+          setExpenseStats({
+            totalExpenses: 0,
+            fixedExpenses: 0,
+            professionalExpenses: 0,
+            facilityExpenses: 0,
+            businessMiscellaneous: 0,
+          });
+          return;
+        }
+        setExpenseStats({
+          totalExpenses: data.total_expense_sum,
+          fixedExpenses: data.fixed_expenses,
+          professionalExpenses: data.professional_expenses,
+          facilityExpenses: data.facility_expenses,
+          businessMiscellaneous: data.business_miscellaneous,
+        });
+      } catch (err) {
+        console.log("Error while fetching expense data-", err);
+      }
+    };
     const fetchPatientCounts = async () => {
       try {
         setLoading(true);
@@ -201,13 +256,19 @@ const Dashboard = () => {
     };
     getAppointmentsCountData();
     fetchPatientCounts();
+    fetchExpenseStats();
   }, [startDate, endDate, clinicId, error]);
 
   // --------------------------------------------------
   // Patient Stats
   // --------------------------------------------------
   const statsPatient = useMemo(
-    () => getPatientStats(patientStats, revenueStats.totalAppointments, revenueStats.revisited),
+    () =>
+      getPatientStats(
+        patientStats,
+        revenueStats.totalAppointments,
+        revenueStats.revisited,
+      ),
     [patientStats, revenueStats.totalAppointments, revenueStats.revisited],
   );
 
@@ -225,56 +286,33 @@ const Dashboard = () => {
   // --------------------------------------------------
 
   const expenses = useMemo(
-    () => [
-      {
-        label: "Total Expenses",
-        value: "₹1,000",
-        change: "-5%",
-        positive: false,
-      },
-      {
-        label: "Item Purchases",
-        value: "₹200",
-        change: "+10%",
-        positive: true,
-      },
-      {
-        label: "Salary",
-        value: "₹50",
-        change: "-2%",
-        positive: false,
-      },
-      {
-        label: "Other",
-        value: "₹300",
-        change: "+5%",
-        positive: true,
-      },
-      {
-        label: "Total Expenses",
-        value: "₹1,000",
-        change: "-5%",
-        positive: false,
-      },
-    ],
-    [],
+    () => getExpensesStats(expenseStats),
+    [expenseStats],
   );
 
   // --------------------------------------------------
   // Chart Data
   // --------------------------------------------------
-
-  const chartData = useMemo(() => {
-    return Array.from({ length: 30 }, (_, index) => ({
-      day: (index + 1).toString(),
-      visitors: Math.floor(Math.random() * 400),
-    }));
-  }, []);
-
-  // --------------------------------------------------
-  // Render
-  // --------------------------------------------------
-
+  useEffect(() => {
+    const getChartData = async () => {
+      try {
+        const data = await getChartStats(
+          chartStartDate,
+          chartEndDate,
+          clinicId,
+        );
+        setChartData(
+          data?.map((item) => ({
+            day: item.appointment_date ?? "",
+            visitors: item.total_count ?? 0,
+          })) ?? [],
+        );
+      } catch (err) {
+        console.error("Error fetching chart data:", err);
+      }
+    };
+    getChartData();
+  }, [chartStartDate, chartEndDate, clinicId]);
   return (
     <div className="min-h-screen bg-gray-500 p-8">
       <h1 className="mt-11 mb-6 text-3xl font-bold text-yellow-400">
@@ -360,6 +398,17 @@ const Dashboard = () => {
         >
           This Month
         </button>
+        <button
+          type="button"
+          className={`rounded-xl px-4 py-2 text-sm ${
+            timePeriod === "month"
+              ? "bg-indigo-600 text-white"
+              : "bg-gray-100 text-black"
+          }`}
+          onClick={() => handleTimePeriodChange("year")}
+        >
+          This Year
+        </button>
       </div>
 
       {/* Loading */}
@@ -386,7 +435,11 @@ const Dashboard = () => {
       <DashboardStatsGrid stats={expenses} bgColor="bg-[#f3d7ca]" />
 
       {/* Analytics Chart */}
-      <DashboardChart chartData={chartData} />
+      <DashboardChart
+        chartData={chartData}
+        period={chartPeriod}
+        setPeriod={setChartPeriod}
+      />
     </div>
   );
 };
