@@ -249,3 +249,13 @@ export const checkInFields = [
   { label: "Diet", name: "diet", type: "text", required: false },
   { label: "Next Follow-up Date", name: "followup_date", type: "date", required: false },
 ]
+
+export const followUpColumns = [
+  { label: "First Name", key: "fname", type: "text", required: true, disabled: true },
+  { label: "Last Name", key: "lname", type: "text", required: true,disabled: true },
+  { label: "Mobile", key: "mobile", type: "tel", required: true, disabled: true },
+  { label: "Gender", key: "gender", type: "select", disabled: true },
+  { label: "Date", key: "followup_date", type: "date", disabled: false },
+  { label: "Notes", key: "follow_up_notes", type: "text", disabled: false },
+  { label: "Status", key: "followup_status", type: "select", options: ["Pending", "Booked", "Not required", "Cancel" ], disabled: false },
+]

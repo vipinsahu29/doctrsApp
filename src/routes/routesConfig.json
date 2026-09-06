@@ -83,7 +83,13 @@
       "path": "/profile",
       "component": "Profile",
       "role": "all"
+    },
+    {
+      "path": "/followup",
+      "component": "FollowUpList",
+      "role": "all"
     }
+
     
   ]
   

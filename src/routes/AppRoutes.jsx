@@ -29,8 +29,9 @@ const loadComponent = (componentName) => {
     LoginRegister: lazy(() => import("../pages/LoginRegister/LoginRegister")),
     Registration: lazy(() => import("../pages/registration/Registration") ),
     Profile: lazy(() => import("../pages/profile/Profile")),
+    FollowUpList: lazy(() => import("../pages/followup/FollowUpList")),
   };
-  return Components[componentName] || (() => <h2>Component Not Found</h2>);
+  return Components[componentName] || (() => <h2 className="top-12 m-10 p-10">Component Not Found</h2>);
 };
 
 const PrivateRoute = ({ children }) => {

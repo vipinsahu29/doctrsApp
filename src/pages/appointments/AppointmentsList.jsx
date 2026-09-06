@@ -392,6 +392,7 @@ const AppointmentsList = ({ source = "" }) => {
                           {(isNotPastDate(d?.appointment_date) ||
                             isPatient) && (
                             <button
+                              type="button"
                               title="Edit"
                               tabIndex={-1}
                               onClick={() =>
@@ -408,6 +409,7 @@ const AppointmentsList = ({ source = "" }) => {
                           )}
                           <button
                             title="View"
+                            type="button"
                             tabIndex={-1}
                             className="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50 cursor-pointer"
                             onClick={() =>
@@ -420,6 +422,7 @@ const AppointmentsList = ({ source = "" }) => {
                           {isPatient && (
                             <button
                               title="History"
+                              type="button"
                               tabIndex={-1}
                               className="p-[6px] bg-green-500 rounded hover:shadow-lg hover:shadow-blue-500/50 cursor-pointer"
                               onClick={() =>
@@ -432,6 +435,8 @@ const AppointmentsList = ({ source = "" }) => {
                           )}
                           {!isPatient && (
                             <button
+                              title="Check-in"
+                              type="button"
                               tabIndex={-1}
                               className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-small rounded-lg text-sm px-3 py-1 text-center me-1 mb-1 border-2 border-gray-900"
                               onClick={() =>
