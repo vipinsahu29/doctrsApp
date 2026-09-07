@@ -48,7 +48,6 @@
     "styled-components": "^6.1.12",
     "tailwind-merge": "^2.4.0",
     "tsparticles": "^3.5.0",
-    "tsparticles-preset-sea-anemone": "^2.12.0",
     "web-vitals": "^4.2.2",
     "yup": "^1.6.1",
     "zustand": "^4.5.4"
