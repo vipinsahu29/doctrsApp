@@ -5,6 +5,8 @@ export const navigation = [
     options: [
       { name: "Book Appointment", path: "/book_appointment" },
       { name: "Appointment List", path: "/appointment_list" },
+      { name: "Follow-up", path: "/followup" },
+
     ],
   },
   {

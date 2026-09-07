@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const AtomDateRangeSelector = ({
   onDateChange,
   defaultPeriod = "week",
-  futureDate = false,
+  futureDate = false, 
 }) => {
   const [activePeriod, setActivePeriod] = useState(defaultPeriod);
 
@@ -21,7 +21,7 @@ const AtomDateRangeSelector = ({
     return `${year}-${month}-${day}`;
   };
 
-  const getDateRange = (period) => {
+  const getDateRange = useCallback((period) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -181,7 +181,7 @@ const AtomDateRangeSelector = ({
       endDate: formatDate(endDate),
       period,
     };
-  };
+  }, [futureDate]);
 
   // ==========================
   // PERIOD BUTTON CLICK
@@ -235,7 +235,7 @@ const AtomDateRangeSelector = ({
     });
 
     onDateChange?.(range);
-  }, []);
+  }, [defaultPeriod, getDateRange, onDateChange]);
 
   const periods = [
     { label: "This Week", value: "week" },
@@ -268,11 +268,15 @@ const AtomDateRangeSelector = ({
       <div className="flex flex-wrap items-end gap-4">
         {/* START DATE */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">
+          <label
+            htmlFor="start-date"
+            className="text-sm font-medium text-gray-700"
+          >
             Start Date
           </label>
 
           <input
+            id="start-date"
             type="date"
             value={dateRange.startDate}
             max={dateRange.endDate || undefined}
@@ -288,11 +292,15 @@ const AtomDateRangeSelector = ({
 
         {/* END DATE */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">
+          <label
+            htmlFor="end-date"
+            className="text-sm font-medium text-gray-700"
+          >
             End Date
           </label>
 
           <input
+            id="end-date"
             type="date"
             value={dateRange.endDate}
             min={dateRange.startDate || undefined}
